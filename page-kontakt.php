@@ -39,7 +39,7 @@ get_header();
 					<label for="contact-message">Vaša poruka</label>
 				</div>
 				<div class="ing-form__actions">
-					<button class="pill-button" type="submit"><span>Pošaljite upit</span><span class="pill-button__icon" aria-hidden="true">→</span></button>
+					<button class="pill-button" type="submit"><span class="pill-button__label">Pošaljite upit</span><span class="pill-button__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/arrow-right.svg' ) ); ?>" alt=""></span></button>
 				</div>
 			</form>
 		</div>
@@ -48,4 +48,3 @@ get_header();
 </main>
 <?php
 get_footer();
-

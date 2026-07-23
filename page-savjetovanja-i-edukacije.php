@@ -10,13 +10,16 @@ get_header();
 $events = new WP_Query(
 	array(
 		'post_type'      => 'ing_event',
-		'posts_per_page' => 3,
+		'posts_per_page' => 6,
 		'post_status'    => 'publish',
+		'meta_key'       => 'ing_event_start_date',
+		'orderby'        => 'meta_value',
+		'order'          => 'ASC',
 	)
 );
 ?>
 <main id="main" class="page-main">
-	<section class="page-hero">
+	<section class="page-hero page-hero--education">
 		<div class="container">
 			<div class="page-hero__copy">
 				<h1>Savjetovanja i edukacije</h1>
@@ -25,35 +28,40 @@ $events = new WP_Query(
 				</div>
 			</div>
 			<div class="page-hero__image">
-				<img src="<?php echo esc_url( ingbiro_asset( 'images/education-hero.jpg' ) ); ?>" alt="Stručno savjetovanje">
+				<img src="<?php echo esc_url( ingbiro_asset( 'images/education-hero.jpg' ) ); ?>" alt="Sudionici stručnog savjetovanja">
 			</div>
 		</div>
 	</section>
 
-	<section class="section">
+	<section class="section education-overview">
 		<div class="container">
 			<?php ingbiro_section_label( 'Područja djelovanja' ); ?>
-			<div class="content-cards">
+			<div class="content-cards content-cards--education">
 				<article class="content-card">
 					<h2>Savjetovanja</h2>
-					<p>Redovito organiziramo savjetovanja koja okupljaju vodeće stručnjake i znanstvenike iz raznih područja prava, javne uprave i gospodarstva, a koja je moguće pratiti uživo ili online.</p>
-					<p>Izvršni smo organizator tradicionalnog godišnjeg savjetovanja Hrvatskog društva ekonomista kojem je moguće prisustvovati isključivo uživo.</p>
-					<?php ingbiro_button( 'Pogledajte arhivu savjetovanja', ingbiro_page_url( 'arhiva' ), 'pill-button--outline pill-button--small' ); ?>
+					<div class="content-card__body">
+						<p>Redovito organiziramo savjetovanja koja okupljaju vodeće stručnjake i znanstvenike iz raznih područja prava, javne uprave i gospodarstva, a koja je moguće pratiti uživo ili online.</p>
+						<p>Izvršni smo organizator tradicionalnog godišnjeg savjetovanja Hrvatskog društva ekonomista kojem je moguće prisustvovati isključivo uživo.</p>
+					</div>
+					<?php ingbiro_button( 'Pogledajte arhivu savjetovanja', ingbiro_page_url( 'arhiva' ), 'pill-button--cream pill-button--small' ); ?>
 				</article>
 				<article class="content-card">
 					<h2>Edukacije</h2>
-					<p>INŽENJERSKI BIRO d.o.o. ovlašteni je nositelj Programa izobrazbe u području javne nabave prema Rješenju o ovlaštenju Ministarstva gospodarstva izdanom u 2024. godini na rok od tri godine.</p>
-					<p>Naš tim predavača čine certificirani i renomirani stručnjaci te redovni predavači na specijalističkim programima, seminarima i radionicama.</p>
-					<p>Ujedno smo ovlašteni pružatelj edukacije radi kontinuiranog ispunjavanja uvjeta stručnosti u području osiguranja.</p>
+					<div class="content-card__body">
+						<p>INŽENJERSKI BIRO d.o.o. ovlašteni je nositelj Programa izobrazbe u području javne nabave prema Rješenju o ovlaštenju Ministarstva gospodarstva, od 1. ožujka 2024. godine, izdanom na rok od tri godine.</p>
+						<p>Naš tim predavača čine certificirani i renomirani stručnjaci te redovni predavači na specijalističkim programima izobrazbe, seminarima, radionicama i stručnim programima usavršavanja.</p>
+						<p>Ujedno smo ovlašteni pružatelj edukacije radi kontinuiranog ispunjavanja uvjeta stručnosti distributera osiguranja i reosiguranja.</p>
+					</div>
 				</article>
 			</div>
+			<div class="education-gears" aria-hidden="true"><span></span><span></span></div>
 		</div>
 	</section>
 
-	<section class="container content-list">
+	<section class="container content-list content-list--education">
 		<article class="content-list__item">
 			<div class="content-list__image">
-				<img src="<?php echo esc_url( ingbiro_asset( 'images/consulting-hero.jpg' ) ); ?>" alt="">
+				<img src="<?php echo esc_url( ingbiro_asset( 'images/education-procurement.jpg' ) ); ?>" alt="Poslovni razgovor o javnoj nabavi">
 			</div>
 			<div>
 				<h2>Javna nabava</h2>
@@ -62,16 +70,16 @@ $events = new WP_Query(
 		</article>
 		<article class="content-list__item">
 			<div class="content-list__image">
-				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-team.jpg' ) ); ?>" alt="">
+				<img src="<?php echo esc_url( ingbiro_asset( 'images/education-insurance.jpg' ) ); ?>" alt="Stručnjaci na edukaciji iz osiguranja">
 			</div>
 			<div>
 				<h2>Osiguranje</h2>
-				<p>Inženjerski biro d.o.o. ovlašteni je pružatelj edukacije radi kontinuiranog ispunjavanja uvjeta stručnosti distributera osiguranja i reosiguranja.</p>
+				<p>Inženjerski biro d.o.o. ovlašteni je pružatelj edukacije radi kontinuiranog ispunjavanja uvjeta stručnosti iz članka 422. Zakona o osiguranju i u skladu s Pravilnikom o stručnosti i primjerenosti distributera osiguranja i reosiguranja.</p>
 			</div>
 		</article>
 	</section>
 
-	<section class="section">
+	<section class="section event-section">
 		<div class="container">
 			<?php ingbiro_section_label( 'Aktualna događanja' ); ?>
 			<div class="event-list">
@@ -80,11 +88,11 @@ $events = new WP_Query(
 					$events->the_post();
 					?>
 					<article class="event-card">
-						<div class="event-card__image">
-							<img src="<?php echo esc_url( get_the_post_thumbnail_url( get_the_ID(), 'large' ) ?: ingbiro_asset( 'images/education-event.jpg' ) ); ?>" alt="">
-						</div>
-						<div>
-							<h2><?php the_title(); ?></h2>
+						<a class="event-card__image" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr( get_the_title() ); ?>">
+							<img src="<?php echo esc_url( get_the_post_thumbnail_url( get_the_ID(), 'large' ) ?: ingbiro_asset( 'images/education-event-figma.png' ) ); ?>" alt="">
+						</a>
+						<div class="event-card__content">
+							<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
 							<div class="tag-list">
 								<span><?php echo esc_html( get_post_meta( get_the_ID(), 'ing_event_format', true ) ?: 'UŽIVO · WEBINAR' ); ?></span>
 								<span><?php echo esc_html( get_post_meta( get_the_ID(), 'ing_event_date', true ) ); ?></span>
@@ -100,4 +108,3 @@ $events = new WP_Query(
 </main>
 <?php
 get_footer();
-

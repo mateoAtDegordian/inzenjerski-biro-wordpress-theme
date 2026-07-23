@@ -7,7 +7,10 @@ Prijenosna custom WordPress tema izrađena prema Figma dokumentu **UI Design Ver
 - responsive naslovnica, O nama, Konzalting, Pravni portal LING, Savjetovanja i edukacije, Arhiva, Kontakt, Newsletter i Karijera
 - detalj događanja i detalj radne pozicije
 - prijava na edukaciju i prijava za posao
-- WordPress administracija za događanja, pozicije i zaprimljene web prijave
+- WordPress administracija za događanja, savjetovanja u arhivi, konzultantske usluge, pozicije i zaprimljene web prijave
+- Gutenberg sadržaj za edukacije i karijere, uz dodatna strukturirana polja za datum, format, predavača, lokaciju i kotizaciju
+- inline prijava na događanje preko Forminatora, s formom koja se može mijenjati bez izmjene koda
+- pravi PDF dokument događanja generiran iz aktualnih CMS podataka i Gutenberg sadržaja
 - kontakt i newsletter obrasci koji spremaju prijave u WordPress i šalju obavijest administratoru
 - desktop i mobilna navigacija te pristupačni accordion elementi
 - lokalno spremljeni originalni Figma asseti; tema ne ovisi o privremenim Figma URL-ovima
@@ -19,13 +22,16 @@ Prijenosna custom WordPress tema izrađena prema Figma dokumentu **UI Design Ver
 3. Pri prvoj aktivaciji tema kreira potrebne stranice i početni primjer događanja/pozicije.
 4. U **Postavke → Čitanje** provjerite da je “Naslovnica” odabrana kao statična početna stranica.
 5. U **Izgled → Izbornici** po želji kreirajte i dodijelite glavni meni.
+6. Instalirajte i aktivirajte besplatni plugin **Forminator** za prijave na događanja. Tema će automatski pripremiti početnu formu, a na svakom događanju moguće je odabrati drugi Forminator form ID.
 
 Postojeći sadržaj se pri ponovnoj aktivaciji ne briše niti prepisuje.
 
 ## Uređivanje sadržaja
 
-- **Događanja**: naslov, opis, istaknuta slika, datum, format, trajanje, predavač i kotizacija.
-- **Pozicije**: naslov, opis, istaknuta slika i lokacija/način rada.
+- **Događanja**: naslov, Gutenberg sadržaj, istaknuta slika, strojni i prikazni datum, format, trajanje, početak, lokacija, predavač, kotizacija i obrazac za prijavu.
+- **Arhiva savjetovanja**: naziv, datum i link na preneseni HTML ili vanjski zapis. Prikaz se automatski grupira po godinama.
+- **Konzultantske usluge**: naslov, redoslijed i puni Gutenberg sadržaj svakog accordion panela.
+- **Pozicije**: naslov, Gutenberg sadržaj, istaknuta slika, lokacija/način rada i opcionalni Forminator obrazac.
 - **Web prijave**: privatni zapisi kontaktnih upita, newsletter pretplata, prijava na događanja i prijava za posao.
 - Opći WordPress sadržaj i politika privatnosti uređuju se kroz **Stranice**.
 
@@ -33,7 +39,7 @@ E-mail obavijesti koriste standardni WordPress `wp_mail()`. Na produkciji je pre
 
 ## Razvoj
 
-Tema nema build korak ni JavaScript/CSS framework. Potrebni su WordPress 6.4+ i PHP 8.0+.
+Tema nema build korak ni JavaScript/CSS framework. Potrebni su WordPress 6.4+ i PHP 8.0+. Paketirani Dompdf 3.1.5 nalazi se u `vendor/dompdf/dompdf` kako bi PDF radio odmah nakon instalacije teme.
 
 Brza PHP provjera:
 
@@ -49,4 +55,3 @@ find . -name '*.php' -print0 | xargs -0 -n1 php -l
 ## Licenca
 
 GNU General Public License v2 ili novija. Pogledajte `LICENSE`.
-

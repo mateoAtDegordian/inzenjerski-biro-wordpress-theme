@@ -27,7 +27,7 @@ get_header();
 				<div class="ing-field"><input id="nl-country" name="country" type="text" placeholder=" "><label for="nl-country">Država</label></div>
 				<div class="ing-field"><input id="nl-company" name="company" type="text" placeholder=" "><label for="nl-company">Tvrtka</label></div>
 				<div class="ing-form__actions">
-					<button class="pill-button" type="submit"><span>Pretplatite se</span><span class="pill-button__icon" aria-hidden="true">→</span></button>
+					<button class="pill-button" type="submit"><span class="pill-button__label">Pretplatite se</span><span class="pill-button__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/arrow-right.svg' ) ); ?>" alt=""></span></button>
 				</div>
 			</form>
 		</div>
@@ -36,4 +36,3 @@ get_header();
 </main>
 <?php
 get_footer();
-

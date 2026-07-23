@@ -6,6 +6,8 @@
  */
 
 get_header();
+
+$services = ingbiro_get_consulting_services();
 ?>
 <main id="main" class="page-main">
 	<section class="page-hero">
@@ -25,52 +27,18 @@ get_header();
 	<section class="container accordion-layout">
 		<div><?php ingbiro_section_label( 'Naše usluge' ); ?></div>
 		<div class="accordion">
-			<article class="accordion-item is-open">
-				<button class="accordion-item__button" type="button" aria-expanded="true">
-					<span class="accordion-item__number">01</span>
-					<span class="accordion-item__title">Ekonomski konzalting</span>
-					<span class="accordion-item__toggle">⌃</span>
-				</button>
-				<div class="accordion-item__panel">
-					<p><strong>Savjetovanje pri spajanju i preuzimanju kompanija (M&amp;A):</strong></p>
-					<ul>
-						<li>Izrada informacijskog memoranduma i analiza poslovanja</li>
-						<li>Financijski, komercijalni i porezni due diligence</li>
-						<li>Procjena vrijednosti poduzeća, udjela i dionica</li>
-						<li>Pronalaženje investitora i strukturiranje transakcija</li>
-						<li>Pravno-formalna priprema prodaje</li>
-					</ul>
-					<p><strong>Strateško i financijsko planiranje:</strong></p>
-					<ul>
-						<li>Financijsko, operativno i vlasničko restrukturiranje</li>
-						<li>Razvojne studije za potrebe restrukturiranja i novih zaduživanja</li>
-						<li>Investicijske studije i studije gospodarske opravdanosti</li>
-						<li>Priprema projekata za financiranje iz EU fondova</li>
-					</ul>
-				</div>
-			</article>
-
-			<article class="accordion-item">
-				<button class="accordion-item__button" type="button" aria-expanded="false">
-					<span class="accordion-item__number">02</span>
-					<span class="accordion-item__title">Pravni konzalting</span>
-					<span class="accordion-item__toggle">⌄</span>
-				</button>
-				<div class="accordion-item__panel">
-					<p>Pružamo podršku u korporativnom pravu, usklađivanju poslovanja s propisima, pravnoj analizi poslovnih odluka, statusnim promjenama i ugovornim odnosima.</p>
-				</div>
-			</article>
-
-			<article class="accordion-item">
-				<button class="accordion-item__button" type="button" aria-expanded="false">
-					<span class="accordion-item__number">03</span>
-					<span class="accordion-item__title">Organizacijski konzalting</span>
-					<span class="accordion-item__toggle">⌄</span>
-				</button>
-				<div class="accordion-item__panel">
-					<p>Projektiramo organizacijske modele, optimiziramo poslovne procese i pomažemo upravama u provedbi promjena, restrukturiranja i unapređenja učinkovitosti.</p>
-				</div>
-			</article>
+			<?php foreach ( $services as $index => $service ) : ?>
+				<article class="accordion-item <?php echo 0 === $index ? 'is-open' : ''; ?>">
+					<button class="accordion-item__button" type="button" aria-expanded="<?php echo 0 === $index ? 'true' : 'false'; ?>">
+						<span class="accordion-item__number"><?php echo esc_html( str_pad( (string) ( $index + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
+						<span class="accordion-item__title"><?php echo esc_html( get_the_title( $service ) ); ?></span>
+						<span class="accordion-item__toggle" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/chevron.svg' ) ); ?>" alt=""></span>
+					</button>
+					<div class="accordion-item__panel">
+						<?php echo apply_filters( 'the_content', $service->post_content ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					</div>
+				</article>
+			<?php endforeach; ?>
 		</div>
 	</section>
 
@@ -84,4 +52,3 @@ get_header();
 </main>
 <?php
 get_footer();
-

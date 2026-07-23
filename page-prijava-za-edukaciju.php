@@ -30,7 +30,7 @@ $event    = $event_id ? get_post( $event_id ) : null;
 				<div class="ing-field"><input id="event-address" name="address" type="text" placeholder=" "><label for="event-address">Adresa</label></div>
 				<div class="ing-field ing-field--full ing-field--textarea"><textarea id="event-message" name="message" placeholder=" "></textarea><label for="event-message">Napomena</label></div>
 				<div class="ing-form__actions">
-					<button class="pill-button" type="submit"><span>Pošaljite prijavu</span><span class="pill-button__icon" aria-hidden="true">→</span></button>
+					<button class="pill-button" type="submit"><span class="pill-button__label">Pošaljite prijavu</span><span class="pill-button__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/arrow-right.svg' ) ); ?>" alt=""></span></button>
 				</div>
 			</form>
 		</div>
@@ -38,4 +38,3 @@ $event    = $event_id ? get_post( $event_id ) : null;
 </main>
 <?php
 get_footer();
-

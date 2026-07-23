@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.0.0' );
+define( 'INGBIRO_VERSION', '1.1.0' );
 
 function ingbiro_setup() {
 	load_theme_textdomain( 'ingbiro', get_template_directory() . '/languages' );
@@ -18,6 +18,9 @@ function ingbiro_setup() {
 	add_theme_support( 'post-thumbnails' );
 	add_theme_support( 'responsive-embeds' );
 	add_theme_support( 'align-wide' );
+	add_theme_support( 'editor-styles' );
+	add_editor_style( 'style.css' );
+	add_image_size( 'ingbiro-event-hero', 1600, 800, true );
 	add_theme_support(
 		'html5',
 		array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script' )
@@ -76,18 +79,20 @@ function ingbiro_primary_menu_fallback() {
 
 function ingbiro_section_label( $label, $light = false ) {
 	printf(
-		'<div class="section-label%s"><span class="section-label__gear" aria-hidden="true"></span><span>%s</span></div>',
+		'<div class="section-label%s"><img class="section-label__gear" src="%s" alt="" aria-hidden="true"><span>%s</span></div>',
 		$light ? ' section-label--light' : '',
+		esc_url( ingbiro_asset( 'icons/section-gear.svg' ) ),
 		esc_html( $label )
 	);
 }
 
 function ingbiro_button( $label, $url, $class = '' ) {
 	printf(
-		'<a class="pill-button %s" href="%s"><span>%s</span><span class="pill-button__icon" aria-hidden="true">→</span></a>',
+		'<a class="pill-button %s" href="%s"><span class="pill-button__label">%s</span><span class="pill-button__icon" aria-hidden="true"><img src="%s" alt=""></span></a>',
 		esc_attr( $class ),
 		esc_url( $url ),
-		esc_html( $label )
+		esc_html( $label ),
+		esc_url( ingbiro_asset( 'icons/arrow-right.svg' ) )
 	);
 }
 
@@ -131,7 +136,45 @@ function ingbiro_register_content_types() {
 			'menu_icon'    => 'dashicons-businessperson',
 			'has_archive'  => false,
 			'rewrite'      => array( 'slug' => 'pozicija' ),
-			'supports'     => array( 'title', 'editor', 'excerpt', 'thumbnail' ),
+			'supports'     => array( 'title', 'editor', 'excerpt', 'thumbnail', 'page-attributes' ),
+		)
+	);
+
+	register_post_type(
+		'ing_service',
+		array(
+			'labels' => array(
+				'name'          => __( 'Konzalting usluge', 'ingbiro' ),
+				'singular_name' => __( 'Konzalting usluga', 'ingbiro' ),
+				'add_new_item'  => __( 'Dodaj konzalting uslugu', 'ingbiro' ),
+				'edit_item'     => __( 'Uredi konzalting uslugu', 'ingbiro' ),
+			),
+			'public'              => false,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_rest'        => true,
+			'menu_icon'           => 'dashicons-portfolio',
+			'supports'            => array( 'title', 'editor', 'page-attributes' ),
+			'exclude_from_search' => true,
+		)
+	);
+
+	register_post_type(
+		'ing_archive',
+		array(
+			'labels' => array(
+				'name'          => __( 'Arhiva savjetovanja', 'ingbiro' ),
+				'singular_name' => __( 'Arhivski zapis', 'ingbiro' ),
+				'add_new_item'  => __( 'Dodaj arhivski link', 'ingbiro' ),
+				'edit_item'     => __( 'Uredi arhivski link', 'ingbiro' ),
+			),
+			'public'              => false,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_rest'        => true,
+			'menu_icon'           => 'dashicons-archive',
+			'supports'            => array( 'title', 'editor' ),
+			'exclude_from_search' => true,
 		)
 	);
 
@@ -157,11 +200,17 @@ add_action( 'init', 'ingbiro_register_content_types' );
 
 function ingbiro_register_meta() {
 	$event_meta = array(
-		'ing_event_date'    => 'string',
-		'ing_event_format'  => 'string',
-		'ing_event_hours'   => 'string',
-		'ing_event_speaker' => 'string',
-		'ing_event_fee'     => 'string',
+		'ing_event_date'                 => 'string',
+		'ing_event_start_date'           => 'string',
+		'ing_event_format'               => 'string',
+		'ing_event_hours'                => 'string',
+		'ing_event_start'                => 'string',
+		'ing_event_location'             => 'string',
+		'ing_event_speaker'              => 'string',
+		'ing_event_speaker_role'         => 'string',
+		'ing_event_fee'                  => 'string',
+		'ing_event_form_id'              => 'integer',
+		'ing_event_registration_enabled' => 'boolean',
 	);
 
 	foreach ( $event_meta as $key => $type ) {
@@ -172,7 +221,7 @@ function ingbiro_register_meta() {
 				'type'              => $type,
 				'single'            => true,
 				'show_in_rest'      => true,
-				'sanitize_callback' => 'sanitize_text_field',
+				'sanitize_callback' => 'integer' === $type ? 'absint' : ( 'boolean' === $type ? 'rest_sanitize_boolean' : 'sanitize_text_field' ),
 				'auth_callback'     => function () {
 					return current_user_can( 'edit_posts' );
 				},
@@ -193,33 +242,78 @@ function ingbiro_register_meta() {
 			},
 		)
 	);
+
+	register_post_meta(
+		'ing_job',
+		'ing_job_form_id',
+		array(
+			'type'              => 'integer',
+			'single'            => true,
+			'show_in_rest'      => true,
+			'sanitize_callback' => 'absint',
+			'auth_callback'     => function () {
+				return current_user_can( 'edit_posts' );
+			},
+		)
+	);
+
+	foreach ( array( 'ing_archive_date' => 'sanitize_text_field', 'ing_archive_url' => 'esc_url_raw' ) as $key => $sanitize_callback ) {
+		register_post_meta(
+			'ing_archive',
+			$key,
+			array(
+				'type'              => 'string',
+				'single'            => true,
+				'show_in_rest'      => true,
+				'sanitize_callback' => $sanitize_callback,
+				'auth_callback'     => function () {
+					return current_user_can( 'edit_posts' );
+				},
+			)
+		);
+	}
 }
 add_action( 'init', 'ingbiro_register_meta' );
 
 function ingbiro_add_meta_boxes() {
 	add_meta_box( 'ing_event_details', __( 'Detalji događanja', 'ingbiro' ), 'ingbiro_event_meta_box', 'ing_event', 'normal', 'high' );
 	add_meta_box( 'ing_job_details', __( 'Detalji pozicije', 'ingbiro' ), 'ingbiro_job_meta_box', 'ing_job', 'side' );
+	add_meta_box( 'ing_archive_details', __( 'Datum i poveznica', 'ingbiro' ), 'ingbiro_archive_meta_box', 'ing_archive', 'normal', 'high' );
 }
 add_action( 'add_meta_boxes', 'ingbiro_add_meta_boxes' );
 
 function ingbiro_event_meta_box( $post ) {
 	wp_nonce_field( 'ingbiro_save_event', 'ingbiro_event_nonce' );
 	$fields = array(
-		'ing_event_date'    => __( 'Datum', 'ingbiro' ),
-		'ing_event_format'  => __( 'Format (npr. UŽIVO, WEBINAR)', 'ingbiro' ),
-		'ing_event_hours'   => __( 'Vrijeme / broj sati', 'ingbiro' ),
-		'ing_event_speaker' => __( 'Predavač', 'ingbiro' ),
-		'ing_event_fee'     => __( 'Kotizacija', 'ingbiro' ),
+		'ing_event_date'         => array( __( 'Datum za prikaz (npr. 11. lipnja 2026.)', 'ingbiro' ), 'text' ),
+		'ing_event_start_date'   => array( __( 'Datum za sortiranje', 'ingbiro' ), 'date' ),
+		'ing_event_format'       => array( __( 'Format (npr. UŽIVO · WEBINAR)', 'ingbiro' ), 'text' ),
+		'ing_event_hours'        => array( __( 'Trajanje / broj sati', 'ingbiro' ), 'text' ),
+		'ing_event_start'        => array( __( 'Početak', 'ingbiro' ), 'text' ),
+		'ing_event_location'     => array( __( 'Lokacija ili način praćenja', 'ingbiro' ), 'text' ),
+		'ing_event_speaker'      => array( __( 'Predavač', 'ingbiro' ), 'text' ),
+		'ing_event_speaker_role' => array( __( 'Opis predavača', 'ingbiro' ), 'text' ),
+		'ing_event_fee'          => array( __( 'Kotizacija', 'ingbiro' ), 'text' ),
+		'ing_event_form_id'      => array( __( 'Forminator form ID (prazno = zadana forma)', 'ingbiro' ), 'number' ),
 	);
 
-	foreach ( $fields as $key => $label ) {
+	foreach ( $fields as $key => $field ) {
 		printf(
-			'<p><label for="%1$s"><strong>%2$s</strong></label><br><input class="widefat" id="%1$s" name="%1$s" value="%3$s"></p>',
+			'<p><label for="%1$s"><strong>%2$s</strong></label><br><input class="widefat" type="%4$s" id="%1$s" name="%1$s" value="%3$s"></p>',
 			esc_attr( $key ),
-			esc_html( $label ),
-			esc_attr( get_post_meta( $post->ID, $key, true ) )
+			esc_html( $field[0] ),
+			esc_attr( get_post_meta( $post->ID, $key, true ) ),
+			esc_attr( $field[1] )
 		);
 	}
+
+	printf(
+		'<p><label><input type="checkbox" name="ing_event_registration_enabled" value="1" %s> <strong>%s</strong></label></p>',
+		checked( (bool) get_post_meta( $post->ID, 'ing_event_registration_enabled', true ), true, false ),
+		esc_html__( 'Omogući prijavu i prikaži formu na stranici događanja', 'ingbiro' )
+	);
+
+	echo '<p class="description">' . esc_html__( 'Glavni sadržaj programa, upute, raspored, slike, tablice i dodatne sekcije uređuju se u Gutenberg editoru iznad. Istaknuta slika koristi se kao hero fotografija.', 'ingbiro' ) . '</p>';
 }
 
 function ingbiro_job_meta_box( $post ) {
@@ -229,6 +323,27 @@ function ingbiro_job_meta_box( $post ) {
 		esc_html__( 'Lokacija / način rada', 'ingbiro' ),
 		esc_attr( get_post_meta( $post->ID, 'ing_job_location', true ) )
 	);
+	printf(
+		'<p><label for="ing_job_form_id"><strong>%s</strong></label><input class="widefat" type="number" id="ing_job_form_id" name="ing_job_form_id" value="%s"></p><p class="description">%s</p>',
+		esc_html__( 'Forminator form ID', 'ingbiro' ),
+		esc_attr( get_post_meta( $post->ID, 'ing_job_form_id', true ) ),
+		esc_html__( 'Ostavite prazno za standardnu stranicu prijave.', 'ingbiro' )
+	);
+}
+
+function ingbiro_archive_meta_box( $post ) {
+	wp_nonce_field( 'ingbiro_save_archive', 'ingbiro_archive_nonce' );
+	printf(
+		'<p><label for="ing_archive_date"><strong>%s</strong></label><br><input class="widefat" type="date" id="ing_archive_date" name="ing_archive_date" value="%s"></p>',
+		esc_html__( 'Datum savjetovanja', 'ingbiro' ),
+		esc_attr( get_post_meta( $post->ID, 'ing_archive_date', true ) )
+	);
+	printf(
+		'<p><label for="ing_archive_url"><strong>%s</strong></label><br><input class="widefat" type="url" id="ing_archive_url" name="ing_archive_url" value="%s" placeholder="https://..."></p><p class="description">%s</p>',
+		esc_html__( 'Link na snimku ili preneseni stari HTML', 'ingbiro' ),
+		esc_attr( get_post_meta( $post->ID, 'ing_archive_url', true ) ),
+		esc_html__( 'Naslov zapisa automatski postaje tekst linka u arhivi. Dodatnu bilješku možete unijeti u editor.', 'ingbiro' )
+	);
 }
 
 function ingbiro_save_meta( $post_id ) {
@@ -237,19 +352,176 @@ function ingbiro_save_meta( $post_id ) {
 	}
 
 	if ( isset( $_POST['ingbiro_event_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ingbiro_event_nonce'] ) ), 'ingbiro_save_event' ) ) {
-		$keys = array( 'ing_event_date', 'ing_event_format', 'ing_event_hours', 'ing_event_speaker', 'ing_event_fee' );
+		$keys = array(
+			'ing_event_date',
+			'ing_event_start_date',
+			'ing_event_format',
+			'ing_event_hours',
+			'ing_event_start',
+			'ing_event_location',
+			'ing_event_speaker',
+			'ing_event_speaker_role',
+			'ing_event_fee',
+		);
 		foreach ( $keys as $key ) {
 			if ( isset( $_POST[ $key ] ) ) {
 				update_post_meta( $post_id, $key, sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) );
 			}
 		}
+		update_post_meta( $post_id, 'ing_event_form_id', isset( $_POST['ing_event_form_id'] ) ? absint( $_POST['ing_event_form_id'] ) : 0 );
+		update_post_meta( $post_id, 'ing_event_registration_enabled', isset( $_POST['ing_event_registration_enabled'] ) ? 1 : 0 );
 	}
 
 	if ( isset( $_POST['ingbiro_job_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ingbiro_job_nonce'] ) ), 'ingbiro_save_job' ) && isset( $_POST['ing_job_location'] ) ) {
 		update_post_meta( $post_id, 'ing_job_location', sanitize_text_field( wp_unslash( $_POST['ing_job_location'] ) ) );
+		update_post_meta( $post_id, 'ing_job_form_id', isset( $_POST['ing_job_form_id'] ) ? absint( $_POST['ing_job_form_id'] ) : 0 );
+	}
+
+	if ( isset( $_POST['ingbiro_archive_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ingbiro_archive_nonce'] ) ), 'ingbiro_save_archive' ) ) {
+		if ( isset( $_POST['ing_archive_date'] ) ) {
+			update_post_meta( $post_id, 'ing_archive_date', sanitize_text_field( wp_unslash( $_POST['ing_archive_date'] ) ) );
+		}
+		if ( isset( $_POST['ing_archive_url'] ) ) {
+			update_post_meta( $post_id, 'ing_archive_url', esc_url_raw( wp_unslash( $_POST['ing_archive_url'] ) ) );
+		}
 	}
 }
 add_action( 'save_post', 'ingbiro_save_meta' );
+
+function ingbiro_get_consulting_services() {
+	return get_posts(
+		array(
+			'post_type'      => 'ing_service',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'orderby'        => array( 'menu_order' => 'ASC', 'date' => 'ASC' ),
+			'order'          => 'ASC',
+		)
+	);
+}
+
+function ingbiro_get_event_form_id( $event_id ) {
+	$form_id = absint( get_post_meta( $event_id, 'ing_event_form_id', true ) );
+	return $form_id ?: absint( get_option( 'ingbiro_default_event_form_id' ) );
+}
+
+function ingbiro_render_event_form( $event_id ) {
+	$form_id = ingbiro_get_event_form_id( $event_id );
+	if ( $form_id && shortcode_exists( 'forminator_form' ) ) {
+		echo '<div class="event-registration__form forminator-theme-wrap">';
+		echo do_shortcode( sprintf( '[forminator_form id="%d"]', $form_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '</div>';
+		return;
+	}
+
+	echo '<div class="event-registration__fallback">';
+	echo '<p>' . esc_html__( 'Forma se može povezati unosom Forminator form ID-a u detaljima događanja.', 'ingbiro' ) . '</p>';
+	ingbiro_button(
+		__( 'Otvorite prijavnicu', 'ingbiro' ),
+		add_query_arg( 'event_id', $event_id, ingbiro_page_url( 'prijava-za-edukaciju' ) )
+	);
+	echo '</div>';
+}
+
+function ingbiro_create_default_forminator_form() {
+	if ( get_option( 'ingbiro_default_event_form_id' ) || ! class_exists( 'Forminator_Custom_Form_Admin' ) || ! class_exists( 'Forminator_Template_Contact_Form' ) ) {
+		return;
+	}
+
+	$base              = new Forminator_Template_Contact_Form();
+	$template          = new stdClass();
+	$template->settings = $base->settings;
+	$template->settings['thankyou-message'] = __( 'Hvala! Vaša prijava je zaprimljena.', 'ingbiro' );
+	$template->settings['submitData']['custom-submit-text'] = __( 'Pošaljite prijavu', 'ingbiro' );
+	$template->fields = array(
+		array(
+			'wrapper_id' => 'ingbiro-event-name',
+			'fields'     => array(
+				array(
+					'element_id'   => 'name-1',
+					'type'         => 'name',
+					'cols'         => '12',
+					'required'     => 'true',
+					'field_label'  => __( 'Ime i prezime', 'ingbiro' ),
+					'prefix_label' => __( 'Titula', 'ingbiro' ),
+					'fname_label'  => __( 'Ime', 'ingbiro' ),
+					'mname_label'  => __( 'Srednje ime', 'ingbiro' ),
+					'lname_label'  => __( 'Prezime', 'ingbiro' ),
+				),
+			),
+		),
+		array(
+			'wrapper_id' => 'ingbiro-event-contact',
+			'fields'     => array(
+				array(
+					'element_id'      => 'email-1',
+					'type'            => 'email',
+					'cols'            => '6',
+					'required'        => 'true',
+					'field_label'     => __( 'E-mail', 'ingbiro' ),
+					'validation'      => true,
+					'validation_text' => '',
+				),
+				array(
+					'element_id'            => 'phone-1',
+					'type'                  => 'phone',
+					'cols'                  => '6',
+					'required'              => 'true',
+					'field_label'           => __( 'Broj telefona', 'ingbiro' ),
+					'validation'            => 'none',
+					'phone_validation_type' => 'standard',
+					'validation_text'       => '',
+				),
+			),
+		),
+		array(
+			'wrapper_id' => 'ingbiro-event-company',
+			'fields'     => array(
+				array(
+					'element_id'  => 'text-1',
+					'type'        => 'text',
+					'cols'        => '6',
+					'required'    => 'true',
+					'field_label' => __( 'Tvrtka / institucija', 'ingbiro' ),
+				),
+				array(
+					'element_id'  => 'text-2',
+					'type'        => 'text',
+					'cols'        => '6',
+					'required'    => false,
+					'field_label' => __( 'OIB', 'ingbiro' ),
+				),
+			),
+		),
+		array(
+			'wrapper_id' => 'ingbiro-event-message',
+			'fields'     => array(
+				array(
+					'element_id'  => 'textarea-1',
+					'type'        => 'textarea',
+					'cols'        => '12',
+					'required'    => false,
+					'field_label' => __( 'Napomena', 'ingbiro' ),
+					'input_type'  => 'paragraph',
+				),
+			),
+		),
+	);
+
+	$form_id = Forminator_Custom_Form_Admin::create( __( 'Prijava za edukaciju', 'ingbiro' ), Forminator_Form_Model::STATUS_PUBLISH, $template );
+	if ( ! is_wp_error( $form_id ) ) {
+		update_option( 'ingbiro_default_event_form_id', absint( $form_id ) );
+	}
+}
+add_action( 'admin_init', 'ingbiro_create_default_forminator_form' );
+
+function ingbiro_forminator_notice() {
+	if ( ! current_user_can( 'activate_plugins' ) || shortcode_exists( 'forminator_form' ) ) {
+		return;
+	}
+	echo '<div class="notice notice-warning"><p><strong>' . esc_html__( 'Inženjerski biro:', 'ingbiro' ) . '</strong> ' . esc_html__( 'Za uređive prijavnice instalirajte i aktivirajte Forminator. Bez plugina ostaje aktivna ugrađena rezervna prijavnica.', 'ingbiro' ) . '</p></div>';
+}
+add_action( 'admin_notices', 'ingbiro_forminator_notice' );
 
 function ingbiro_handle_submission() {
 	if ( ! isset( $_POST['ingbiro_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ingbiro_nonce'] ) ), 'ingbiro_submit' ) ) {
@@ -377,6 +649,130 @@ function ingbiro_form_status() {
 	}
 }
 
+function ingbiro_event_pdf_url( $event_id ) {
+	return add_query_arg(
+		array(
+			'action'   => 'ingbiro_event_pdf',
+			'event_id' => absint( $event_id ),
+		),
+		admin_url( 'admin-post.php' )
+	);
+}
+
+function ingbiro_pdf_image_data_uri( $path ) {
+	if ( ! $path || ! is_readable( $path ) ) {
+		return '';
+	}
+
+	$filetype = wp_check_filetype( $path );
+	$mime     = $filetype['type'] ?: 'image/jpeg';
+	$data     = file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+
+	return $data ? 'data:' . $mime . ';base64,' . base64_encode( $data ) : ''; // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+}
+
+function ingbiro_handle_event_pdf() {
+	$event_id = isset( $_GET['event_id'] ) ? absint( $_GET['event_id'] ) : 0;
+	$event    = $event_id ? get_post( $event_id ) : null;
+
+	if ( ! $event || 'ing_event' !== $event->post_type || 'publish' !== $event->post_status ) {
+		wp_die( esc_html__( 'Događanje nije pronađeno.', 'ingbiro' ), 404 );
+	}
+
+	$autoload = get_template_directory() . '/vendor/dompdf/dompdf/autoload.inc.php';
+	if ( ! file_exists( $autoload ) ) {
+		wp_die( esc_html__( 'PDF generator nije dostupan.', 'ingbiro' ), 500 );
+	}
+	require_once $autoload;
+
+	$logo_path = get_template_directory() . '/assets/images/logo.png';
+	$hero_path = get_attached_file( get_post_thumbnail_id( $event_id ) );
+	if ( ! $hero_path ) {
+		$hero_path = get_template_directory() . '/assets/images/education-event.jpg';
+	}
+
+	$logo    = ingbiro_pdf_image_data_uri( $logo_path );
+	$hero    = ingbiro_pdf_image_data_uri( $hero_path );
+	$content = apply_filters( 'the_content', $event->post_content );
+
+	$meta_cards = array(
+		__( 'Predavač', 'ingbiro' ) => get_post_meta( $event_id, 'ing_event_speaker', true ),
+		__( 'Datum', 'ingbiro' )     => get_post_meta( $event_id, 'ing_event_date', true ),
+		__( 'Početak', 'ingbiro' )   => get_post_meta( $event_id, 'ing_event_start', true ) ?: get_post_meta( $event_id, 'ing_event_hours', true ),
+		__( 'Lokacija', 'ingbiro' )  => get_post_meta( $event_id, 'ing_event_location', true ),
+		__( 'Kotizacija', 'ingbiro' ) => get_post_meta( $event_id, 'ing_event_fee', true ),
+	);
+
+	ob_start();
+	?>
+	<!doctype html>
+	<html lang="hr">
+	<head>
+		<meta charset="utf-8">
+		<style>
+			@page { margin: 34px 42px 44px; }
+			body { margin: 0; color: #1b1b1b; font-family: "DejaVu Sans", sans-serif; font-size: 10.5px; line-height: 1.45; }
+			.header { padding-bottom: 18px; border-bottom: 2px solid #244e9c; }
+			.logo { width: 175px; }
+			.kicker { margin: 20px 0 8px; color: #244e9c; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+			h1 { margin: 0 0 12px; font-size: 25px; line-height: 1.12; }
+			h2 { margin: 24px 0 8px; color: #244e9c; font-size: 16px; line-height: 1.2; }
+			h3 { margin: 16px 0 6px; font-size: 12px; }
+			p { margin: 0 0 9px; }
+			.hero { width: 100%; height: 230px; margin: 18px 0; object-fit: cover; border-radius: 12px; }
+			.meta { width: 100%; margin: 4px 0 20px; border-collapse: separate; border-spacing: 6px; }
+			.meta td { width: 33.33%; padding: 12px; vertical-align: top; border-radius: 8px; background: #244e9c; color: white; }
+			.meta strong { display: block; margin-bottom: 4px; color: #fff4e5; font-size: 8px; text-transform: uppercase; }
+			.content ul, .content ol { padding-left: 20px; }
+			.content img { max-width: 100%; height: auto; }
+			.footer { position: fixed; right: 42px; bottom: 14px; left: 42px; padding-top: 6px; border-top: 1px solid #dae0e1; color: #61707d; font-size: 8px; }
+			a { color: #244e9c; }
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<?php if ( $logo ) : ?><img class="logo" src="<?php echo esc_attr( $logo ); ?>" alt="Inženjerski biro"><?php endif; ?>
+			<div class="kicker"><?php echo esc_html( get_post_meta( $event_id, 'ing_event_format', true ) ?: __( 'Edukacija', 'ingbiro' ) ); ?></div>
+			<h1><?php echo esc_html( get_the_title( $event_id ) ); ?></h1>
+			<?php if ( has_excerpt( $event_id ) ) : ?><p><?php echo esc_html( get_the_excerpt( $event_id ) ); ?></p><?php endif; ?>
+		</div>
+		<?php if ( $hero ) : ?><img class="hero" src="<?php echo esc_attr( $hero ); ?>" alt=""><?php endif; ?>
+		<table class="meta">
+			<?php
+			$chunks = array_chunk( array_filter( $meta_cards ), 3, true );
+			foreach ( $chunks as $chunk ) :
+				?>
+				<tr>
+					<?php foreach ( $chunk as $label => $value ) : ?>
+						<td><strong><?php echo esc_html( $label ); ?></strong><?php echo esc_html( $value ); ?></td>
+					<?php endforeach; ?>
+					<?php for ( $i = count( $chunk ); $i < 3; $i++ ) : ?><td></td><?php endfor; ?>
+				</tr>
+			<?php endforeach; ?>
+		</table>
+		<div class="content"><?php echo wp_kses_post( $content ); ?></div>
+		<div class="footer">Inženjerski biro d.o.o. · Heinzelova 4A, Zagreb · ingbiro@ingbiro.hr · (+385) 1 46 00 888</div>
+	</body>
+	</html>
+	<?php
+	$html = ob_get_clean();
+
+	$options = new Dompdf\Options();
+	$options->set( 'defaultFont', 'DejaVu Sans' );
+	$options->set( 'isRemoteEnabled', false );
+	$options->setChroot( array( get_template_directory(), wp_upload_dir()['basedir'] ) );
+
+	$pdf = new Dompdf\Dompdf( $options );
+	$pdf->loadHtml( $html, 'UTF-8' );
+	$pdf->setPaper( 'A4', 'portrait' );
+	$pdf->render();
+	$pdf->getCanvas()->page_text( 520, 806, '{PAGE_NUM}/{PAGE_COUNT}', null, 8, array( 0.38, 0.44, 0.49 ) );
+	$pdf->stream( sanitize_file_name( get_the_title( $event_id ) ) . '.pdf', array( 'Attachment' => true ) );
+	exit;
+}
+add_action( 'admin_post_nopriv_ingbiro_event_pdf', 'ingbiro_handle_event_pdf' );
+add_action( 'admin_post_ingbiro_event_pdf', 'ingbiro_handle_event_pdf' );
+
 function ingbiro_install_content() {
 	ingbiro_register_content_types();
 
@@ -454,3 +850,142 @@ function ingbiro_install_content() {
 	flush_rewrite_rules();
 }
 add_action( 'after_switch_theme', 'ingbiro_install_content' );
+
+function ingbiro_seed_post( $post_type, $slug, $title, $content, $args = array(), $meta = array() ) {
+	$existing = get_page_by_path( $slug, OBJECT, $post_type );
+	if ( $existing ) {
+		return $existing->ID;
+	}
+
+	$post_id = wp_insert_post(
+		wp_parse_args(
+			$args,
+			array(
+				'post_type'    => $post_type,
+				'post_status'  => 'publish',
+				'post_name'    => $slug,
+				'post_title'   => $title,
+				'post_content' => $content,
+			)
+		)
+	);
+
+	if ( $post_id && ! is_wp_error( $post_id ) ) {
+		foreach ( $meta as $key => $value ) {
+			update_post_meta( $post_id, $key, $value );
+		}
+	}
+
+	return $post_id;
+}
+
+function ingbiro_upgrade_content_model() {
+	if ( version_compare( (string) get_option( 'ingbiro_content_model_version', '0' ), '1.1.0', '>=' ) ) {
+		return;
+	}
+
+	$services = array(
+		array(
+			'ekonomski-konzalting',
+			'Ekonomski konzalting',
+			'<p><strong>Savjetovanje pri spajanju i preuzimanju kompanija (M&amp;A):</strong></p><ul><li>Izrada informacijskog memoranduma i analiza poslovanja</li><li>Financijski, komercijalni i porezni due diligence</li><li>Procjena vrijednosti poduzeća, udjela i dionica</li><li>Pronalaženje investitora i strukturiranje transakcija</li><li>Pravno-formalna priprema prodaje (skupštine, registracija u trgovačkom registru)</li></ul><p><strong>Strateško i financijsko planiranje:</strong></p><ul><li>Financijsko, operativno i vlasničko restrukturiranje</li><li>Razvojne studije za potrebe restrukturiranja i novih zaduživanja</li><li>Investicijske studije i studije gospodarske opravdanosti za javni sektor</li><li>Priprema projekata za financiranje iz EU fondova i ostalih izvora</li></ul>',
+		),
+		array(
+			'pravni-konzalting',
+			'Pravni konzalting',
+			'<p><strong>Pravni due diligence</strong> – Dubinska pravna analiza poslovanja.</p><p><strong>Konzultantske usluge</strong> – Podrška gospodarskim subjektima u primjeni propisa iz svih područja građanskog, trgovačkog i radnog prava.</p><p><strong>Edukacije i savjetovanja</strong> – Organizacija općih, tematskih i specijalističkih seminara te radionica o upravljanju društvom i primjeni zakona.</p><p><strong>Stručna literatura</strong> – Izdavanje zbornika radova, autorskih knjiga i priručnika koji prate relevantnu pravnu i stručnu praksu.</p>',
+		),
+		array(
+			'organizacijski-konzalting',
+			'Organizacijski konzalting',
+			'<p><strong>Snimka i dijagnostika stanja</strong> – Analiza postojećeg organizacijskog sustava i usklađivanje s novim rješenjima.</p><p><strong>Projektiranje organizacije</strong> – Izrada projekata i programa za uvođenje novih, naprednijih organizacijskih rješenja.</p><p><strong>Izrada korporativnih akata</strong> – Pravilnici o organizaciji, sistematizaciji radnih mjesta i radu.</p><p><strong>Tehnički segment</strong> – Izrada tehničkog due diligencea i procjena vrijednosti materijalne imovine (oprema, nekretnine).</p>',
+		),
+	);
+
+	foreach ( $services as $index => $service ) {
+		ingbiro_seed_post(
+			'ing_service',
+			$service[0],
+			$service[1],
+			$service[2],
+			array( 'menu_order' => $index + 1 )
+		);
+	}
+
+	$archive_items = array(
+		array( 'savjetovanje-12-2025', 'Savjetovanje o novostima u javnoj nabavi (12/2025)', '2025-12-01' ),
+		array( 'savjetovanje-10-2025', 'Praktična primjena propisa u poslovanju (10/2025)', '2025-10-01' ),
+		array( 'savjetovanje-09-2025', 'Aktualnosti iz radnog prava (09/2025)', '2025-09-01' ),
+		array( 'savjetovanje-04-2025', 'Korporativno upravljanje u praksi (04/2025)', '2025-04-01' ),
+		array( 'savjetovanje-02-2025', 'Godišnje ekonomsko savjetovanje (02/2025)', '2025-02-01' ),
+	);
+
+	foreach ( $archive_items as $item ) {
+		ingbiro_seed_post(
+			'ing_archive',
+			$item[0],
+			$item[1],
+			'',
+			array(),
+			array(
+				'ing_archive_date' => $item[2],
+				'ing_archive_url'  => 'https://ingbiro.hr/',
+			)
+		);
+	}
+
+	$event_content = '<!-- wp:heading --><h2 class="wp-block-heading">Zašto sudjelovati na webinaru?</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Izmjene i dopune ZJN 2016 u području jednostavne nabave donose niz novina koje zahtijevaju razumijevanje zakonodavnog okvira i sigurnost u njihovoj praktičnoj primjeni. Program uključuje konkretne prikaze rada u EOJN RH, od pripreme postupka do objave ugovora.</p><!-- /wp:paragraph --><!-- wp:heading --><h2 class="wp-block-heading">Program webinara</h2><!-- /wp:heading --><!-- wp:list --><ul><li>Usklađivanje općeg akta o provedbi jednostavne nabave</li><li>Priprema i slanje poziva gospodarskim subjektima</li><li>Otvaranje, pregled i ocjena ponuda</li><li>Donošenje odluke o odabiru i objava ugovora</li><li>Pitanja i odgovori</li></ul><!-- /wp:list --><!-- wp:heading --><h2 class="wp-block-heading">Upute za sudionike</h2><!-- /wp:heading --><!-- wp:list --><ul><li>Prijavnicu popunite točnim i obveznim podacima.</li><li>Kotizaciju uplatite najkasnije jedan dan prije održavanja.</li><li>Poveznica za webinar dostavlja se na e-mail naveden u prijavi.</li><li>Registraciju napravite najkasnije 15 minuta prije početka.</li></ul><!-- /wp:list -->';
+
+	$primary_events = get_posts(
+		array(
+			'post_type'      => 'ing_event',
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+		)
+	);
+	if ( $primary_events ) {
+		$primary_id = $primary_events[0]->ID;
+		if ( strlen( trim( $primary_events[0]->post_content ) ) < 700 ) {
+			wp_update_post( array( 'ID' => $primary_id, 'post_content' => $event_content ) );
+		}
+		$primary_meta = array(
+			'ing_event_start_date'           => '2026-06-11',
+			'ing_event_start'                => '9:00 sati',
+			'ing_event_location'             => 'Webinar uživo',
+			'ing_event_speaker_role'         => 'Savjetnica za pravne poslove i stručnjakinja za javnu nabavu',
+			'ing_event_registration_enabled' => 1,
+		);
+		foreach ( $primary_meta as $key => $value ) {
+			if ( '' === (string) get_post_meta( $primary_id, $key, true ) ) {
+				update_post_meta( $primary_id, $key, $value );
+			}
+		}
+	}
+
+	ingbiro_seed_post(
+		'ing_event',
+		'prakticna-primjena-novog-pravilnika-javne-nabave',
+		'Praktična primjena novog Pravilnika o izobrazbi u području javne nabave',
+		'<!-- wp:heading --><h2 class="wp-block-heading">Program edukacije</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Interaktivna jednodnevna edukacija vodi polaznike kroz obveze nositelja i polaznika programa, evidenciju prisutnosti, izdavanje potvrda te primjenu novih pravila na stvarnim primjerima.</p><!-- /wp:paragraph --><!-- wp:heading --><h2 class="wp-block-heading">Što ćete naučiti?</h2><!-- /wp:heading --><!-- wp:list --><ul><li>pravilno evidentirati sudjelovanje i nastavne sate</li><li>primijeniti nova pravila u svakodnevnom radu</li><li>prepoznati najčešće proceduralne pogreške</li><li>pripremiti dokumentaciju za nadzor i obnovu certifikata</li></ul><!-- /wp:list --><!-- wp:heading --><h2 class="wp-block-heading">Dodatne informacije</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Materijali za rad uključeni su u cijenu. Broj mjesta je ograničen, a prijave se prihvaćaju redoslijedom zaprimanja.</p><!-- /wp:paragraph -->',
+		array(
+			'post_excerpt' => 'Nova jednodnevna edukacija s praktičnim primjerima i materijalima za rad.',
+		),
+		array(
+			'ing_event_date'                 => '25. rujna 2026.',
+			'ing_event_start_date'           => '2026-09-25',
+			'ing_event_format'               => 'UŽIVO · WEBINAR',
+			'ing_event_hours'                => '8 nastavnih sati',
+			'ing_event_start'                => '9:00 sati',
+			'ing_event_location'             => 'Zagreb i online',
+			'ing_event_speaker'              => 'Tim stručnjaka Inženjerskog biroa',
+			'ing_event_speaker_role'         => 'Certificirani predavači iz područja javne nabave',
+			'ing_event_fee'                  => '195,00 eura',
+			'ing_event_registration_enabled' => 1,
+		)
+	);
+
+	update_option( 'ingbiro_content_model_version', '1.1.0' );
+}
+add_action( 'init', 'ingbiro_upgrade_content_model', 30 );

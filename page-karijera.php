@@ -50,7 +50,7 @@ $jobs = new WP_Query(
 								<button class="accordion-item__button" type="button" aria-expanded="<?php echo 1 === $number ? 'true' : 'false'; ?>">
 									<span class="accordion-item__number"><?php echo esc_html( str_pad( (string) $number, 2, '0', STR_PAD_LEFT ) ); ?></span>
 									<span class="accordion-item__title"><?php the_title(); ?></span>
-									<span class="accordion-item__toggle"><?php echo 1 === $number ? '⌃' : '⌄'; ?></span>
+									<span class="accordion-item__toggle" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/chevron.svg' ) ); ?>" alt=""></span>
 								</button>
 								<div class="accordion-item__panel">
 									<p><?php echo esc_html( get_the_excerpt() ?: wp_trim_words( get_the_content(), 32 ) ); ?></p>
@@ -78,4 +78,3 @@ $jobs = new WP_Query(
 </main>
 <?php
 get_footer();
-

@@ -52,8 +52,8 @@ $event = $events ? $events[0] : null;
 		<div class="container">
 			<?php ingbiro_section_label( 'Područja djelovanja' ); ?>
 			<div class="service-grid">
-				<article class="service-card service-card--primary">
-					<span class="service-card__icon" aria-hidden="true">▣</span>
+				<a class="service-card" href="<?php echo esc_url( ingbiro_page_url( 'konzalting' ) ); ?>">
+					<span class="service-card__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/service-consulting.svg' ) ); ?>" alt=""></span>
 					<h3>Konzalting</h3>
 					<p>Ekonomski, pravni i organizacijski konzalting koji pokriva cjelokupan razvoj vašeg poslovanja:</p>
 					<ul>
@@ -63,10 +63,10 @@ $event = $events ? $events[0] : null;
 						<li>Ekonomski, pravni i tehnički <strong>due diligence</strong></li>
 						<li><strong>Razvojne i investicijske studije</strong></li>
 					</ul>
-				</article>
+				</a>
 
-				<article class="service-card">
-					<span class="service-card__icon" aria-hidden="true">◎</span>
+				<a class="service-card" href="<?php echo esc_url( ingbiro_page_url( 'pravni-portal' ) ); ?>">
+					<span class="service-card__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/service-portal.svg' ) ); ?>" alt=""></span>
 					<h3>Pravni portal<br>LING</h3>
 					<p>Pravni portal nove generacije koji poslovnim ljudima omogućuje jednostavno usklađivanje poslovanja s propisima RH i EU.</p>
 					<ul>
@@ -74,17 +74,17 @@ $event = $events ? $events[0] : null;
 						<li><strong>Stručni sadržaj:</strong> sentencije, stručni članci i mišljenja.</li>
 						<li><strong>Lansiran 2024. godine</strong> kao nastavak tradicije pravne publicistike.</li>
 					</ul>
-				</article>
+				</a>
 
-				<article class="service-card">
-					<span class="service-card__icon" aria-hidden="true">⌂</span>
+				<a class="service-card" href="<?php echo esc_url( ingbiro_page_url( 'savjetovanja-i-edukacije' ) ); ?>">
+					<span class="service-card__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/service-education.svg' ) ); ?>" alt=""></span>
 					<h3>Savjetovanja<br>i edukacije</h3>
 					<p>Okupljamo vodeće stručnjake iz područja prava, javne uprave i gospodarstva.</p>
 					<ul>
 						<li><strong>Ovlašteni nositelj:</strong> programi izobrazbe u području javne nabave i edukacije iz područja osiguranja.</li>
 						<li><strong>Tradicija i povjerenje:</strong> izvršni organizator tradicionalnog savjetovanja Hrvatskog društva ekonomista.</li>
 					</ul>
-				</article>
+				</a>
 			</div>
 		</div>
 	</section>
@@ -126,7 +126,7 @@ $event = $events ? $events[0] : null;
 					<?php wp_nonce_field( 'ingbiro_submit', 'ingbiro_nonce' ); ?>
 					<label class="screen-reader-text" for="home-newsletter-email">Vaš e-mail</label>
 					<input id="home-newsletter-email" name="email" type="email" placeholder="Vaš e-mail" required>
-					<button class="pill-button" type="submit"><span>Pretplatite se</span><span class="pill-button__icon" aria-hidden="true">→</span></button>
+					<button class="pill-button" type="submit"><span class="pill-button__label">Pretplatite se</span><span class="pill-button__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/arrow-right.svg' ) ); ?>" alt=""></span></button>
 				</form>
 			</div>
 		</div>
@@ -134,4 +134,3 @@ $event = $events ? $events[0] : null;
 </main>
 <?php
 get_footer();
-

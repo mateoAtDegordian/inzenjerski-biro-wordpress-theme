@@ -29,7 +29,7 @@ $job    = $job_id ? get_post( $job_id ) : null;
 				<div class="ing-field ing-field--full"><input id="career-cv" name="cv" type="file" accept=".pdf,.doc,.docx"><label class="screen-reader-text" for="career-cv">Životopis</label></div>
 				<div class="ing-field ing-field--full ing-field--textarea"><textarea id="career-message" name="message" placeholder=" " required></textarea><label for="career-message">Kratko motivacijsko pismo</label></div>
 				<div class="ing-form__actions">
-					<button class="pill-button" type="submit"><span>Pošaljite prijavu</span><span class="pill-button__icon" aria-hidden="true">→</span></button>
+					<button class="pill-button" type="submit"><span class="pill-button__label">Pošaljite prijavu</span><span class="pill-button__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/arrow-right.svg' ) ); ?>" alt=""></span></button>
 				</div>
 			</form>
 		</div>
@@ -37,4 +37,3 @@ $job    = $job_id ? get_post( $job_id ) : null;
 </main>
 <?php
 get_footer();
-
