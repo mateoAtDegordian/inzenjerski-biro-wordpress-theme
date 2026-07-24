@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.3 — 2026-07-24
+
+- Video banner zamijenjen je izvornim animiranim SVG-om od 1470 × 630 px.
+- Uklonjeni su video markup, MP4 asset i JavaScript namijenjen isključivo reprodukciji videa.
+- Zadržani su postojeći full-bleed wrapper, omjer, responsive ponašanje i pozadina `#FEF4E5`.
+
 ## 1.5.2 — 2026-07-24
 
 - Uklonjen je poster i svako cropanje videa; banner se prikazuje u izvornom omjeru 1470 × 630.

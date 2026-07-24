@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.5.2
+Version: 1.5.3
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -3603,17 +3603,23 @@ select {
 	}
 }
 
-/* Full-bleed ambient building animation at its original 1470:630 ratio. */
+/* Full-bleed SVG building animation at its original 1470:630 ratio. */
 .building-banner {
 	height: auto;
+	aspect-ratio: 1470 / 630;
 	line-height: 0;
+	background: #fef4e5;
 }
 
-.building-banner__video {
+.building-banner img.building-banner__image {
 	display: block;
+	position: static;
+	left: auto;
 	width: 100%;
-	height: auto;
-	aspect-ratio: 1470 / 630;
-	background: var(--ing-cream);
-	pointer-events: none;
+	min-width: 0;
+	max-width: none;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+	transform: none;
 }

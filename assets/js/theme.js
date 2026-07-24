@@ -61,26 +61,6 @@
 
 	const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-	document.querySelectorAll("[data-ambient-video]").forEach((video) => {
-		const syncPlayback = () => {
-			if (document.hidden) {
-				video.pause();
-				return;
-			}
-
-			video.muted = true;
-			video.defaultMuted = true;
-			const playback = video.play();
-			if (playback && typeof playback.catch === "function") {
-				playback.catch(() => {});
-			}
-		};
-
-		syncPlayback();
-		video.addEventListener("canplay", syncPlayback, { once: true });
-		document.addEventListener("visibilitychange", syncPlayback);
-	});
-
 	const typewriterTitles = new Set(document.querySelectorAll("[data-typewriter]"));
 	const primaryTitle = document.querySelector("main h1");
 	if (primaryTitle) {
