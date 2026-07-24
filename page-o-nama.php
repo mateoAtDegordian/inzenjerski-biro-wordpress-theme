@@ -5,7 +5,10 @@
  * @package Ingbiro
  */
 
-get_header();
+$ingbiro_embedded_template = ! empty( $GLOBALS['ingbiro_embedded_template'] );
+if ( ! $ingbiro_embedded_template ) {
+	get_header();
+}
 ?>
 <main id="main" class="page-main">
 	<section class="page-hero">
@@ -38,7 +41,10 @@ get_header();
 
 	<section class="section">
 		<div class="container editorial-grid editorial-grid--reverse">
-			<div class="gear-art" aria-hidden="true"></div>
+			<div class="gear-art" aria-hidden="true">
+				<img class="gear-art__large" src="<?php echo esc_url( ingbiro_asset( 'icons/figma-gear-blue-large.svg' ) ); ?>" alt="">
+				<img class="gear-art__small" src="<?php echo esc_url( ingbiro_asset( 'icons/figma-gear-soft-medium.svg' ) ); ?>" alt="">
+			</div>
 			<div class="editorial-copy">
 				<?php ingbiro_section_label( 'Naša ekspertiza' ); ?>
 				<p>Pružamo konzultantske usluge velikome broju klijenata iz različitih sektora hrvatskoga gospodarstva, iz područja brodogradnje, naftne industrije, obnovljivih izvora energije, regionalnog razvoja, turizma i sektora poduzetništva. Dio svojih poslovnih usluga obavljamo putem revizorskih kuća kojima je INŽENJERSKI BIRO d.o.o. suosnivač.</p>
@@ -62,7 +68,10 @@ get_header();
 
 	<section class="section">
 		<div class="container editorial-grid editorial-grid--reverse">
-			<div class="gear-art" aria-hidden="true"></div>
+			<div class="gear-art" aria-hidden="true">
+				<img class="gear-art__large" src="<?php echo esc_url( ingbiro_asset( 'icons/figma-gear-blue-large.svg' ) ); ?>" alt="">
+				<img class="gear-art__small" src="<?php echo esc_url( ingbiro_asset( 'icons/figma-gear-soft-medium.svg' ) ); ?>" alt="">
+			</div>
 			<div class="editorial-copy">
 				<?php ingbiro_section_label( 'Mjesto susreta znanstvene i stručne zajednice' ); ?>
 				<p>Redovito organiziramo savjetovanja i edukacije koje okupljaju vodeće stručnjake i znanstvenike iz raznih područja prava, javne uprave i gospodarstva. Ovlašteni smo nositelj Programa izobrazbe u području javne nabave i pružatelj edukacije iz područja osiguranja.</p>
@@ -94,5 +103,6 @@ get_header();
 	</section>
 </main>
 <?php
-get_footer();
-
+if ( ! $ingbiro_embedded_template ) {
+	get_footer();
+}

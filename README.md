@@ -12,7 +12,7 @@ Prijenosna custom WordPress tema izrađena prema Figma dokumentu **UI Design Ver
 - svi obrasci preko Forminatora, s poljima, obavijestima, webhooks i integracijama koje se mogu mijenjati bez izmjene koda
 - pravi PDF dokument događanja generiran iz aktualnih CMS podataka i Gutenberg sadržaja
 - isti izvor slike za karticu događanja, detalj i PDF dokument
-- uređive engleske Gutenberg stranice importirane iz dostavljenih DOCX dokumenata
+- zajednički HR/EN predlošci: engleske stranice prate istu strukturu i dizajnerske ispravke kao hrvatske, uz vlastiti prevedeni sadržaj
 - biblioteka Gutenberg patterns za kartice, tekst, sliku s tekstom i CTA sekcije
 - desktop i mobilna navigacija te pristupačni accordion elementi
 - lokalno spremljeni originalni Figma asseti; tema ne ovisi o privremenim Figma URL-ovima
@@ -35,7 +35,7 @@ Postojeći sadržaj se pri ponovnoj aktivaciji ne briše niti prepisuje.
 - **Konzultantske usluge**: naslov, redoslijed i puni Gutenberg sadržaj svakog accordion panela.
 - **Pozicije**: naslov, Gutenberg sadržaj, istaknuta slika, lokacija/način rada i opcionalni Forminator obrazac.
 - **Forminator → Submissions**: kontaktni upiti, newsletter pretplate, prijave na događanja i prijave za posao.
-- **Stranice → English**: uređive engleske stranice složene od standardnih Gutenberg blokova.
+- **Stranice → English**: engleska verzija koristi iste predloške kao hrvatska, dok su engleska događanja namjerno izostavljena.
 - **Umetanje blokova → Patterns → Inženjerski biro sekcije**: gotove modularne sekcije za nove stranice.
 - Opći WordPress sadržaj i politika privatnosti uređuju se kroz **Stranice**.
 

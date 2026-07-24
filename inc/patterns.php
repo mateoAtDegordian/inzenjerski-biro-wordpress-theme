@@ -32,6 +32,18 @@ function ingbiro_register_block_patterns() {
 			'title'   => __( 'Tekstualna sekcija', 'ingbiro' ),
 			'content' => '<!-- wp:group {"className":"modular-section","layout":{"type":"constrained"}} --><div class="wp-block-group modular-section"><!-- wp:heading --><h2 class="wp-block-heading">Naslov sekcije</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Ovdje dodajte odlomke, popise, tablice, slike ili druge Gutenberg blokove.</p><!-- /wp:paragraph --></div><!-- /wp:group -->',
 		),
+		'event-blueprint' => array(
+			'title'   => __( 'Kompletan modularni program edukacije', 'ingbiro' ),
+			'content' => ingbiro_event_blueprint_content(),
+		),
+		'event-text-section' => array(
+			'title'   => __( 'Sekcija programa edukacije', 'ingbiro' ),
+			'content' => '<!-- wp:group {"className":"event-block","layout":{"type":"constrained"}} --><div class="wp-block-group event-block"><!-- wp:heading --><h2 class="wp-block-heading">Naslov sekcije</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Dodajte tekst, raspored, popis, tablicu, slike ili druge Gutenberg blokove.</p><!-- /wp:paragraph --></div><!-- /wp:group -->',
+		),
+		'event-two-columns' => array(
+			'title'   => __( 'Dvije kolone informacija o edukaciji', 'ingbiro' ),
+			'content' => '<!-- wp:group {"className":"event-block event-block--fee","layout":{"type":"constrained"}} --><div class="wp-block-group event-block event-block--fee"><!-- wp:heading --><h2 class="wp-block-heading">Naslov sekcije</h2><!-- /wp:heading --><!-- wp:columns {"className":"event-fee-columns"} --><div class="wp-block-columns event-fee-columns"><!-- wp:column --><div class="wp-block-column"><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Prva kolona</h3><!-- /wp:heading --><!-- wp:paragraph --><p>Uredite podatke.</p><!-- /wp:paragraph --></div><!-- /wp:column --><!-- wp:column --><div class="wp-block-column"><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Druga kolona</h3><!-- /wp:heading --><!-- wp:paragraph --><p>Uredite podatke.</p><!-- /wp:paragraph --></div><!-- /wp:column --></div><!-- /wp:columns --></div><!-- /wp:group -->',
+		),
 	);
 
 	foreach ( $patterns as $slug => $pattern ) {
@@ -46,4 +58,3 @@ function ingbiro_register_block_patterns() {
 	}
 }
 add_action( 'init', 'ingbiro_register_block_patterns', 15 );
-

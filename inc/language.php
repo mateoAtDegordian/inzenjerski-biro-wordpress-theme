@@ -26,6 +26,147 @@ function ingbiro_is_english() {
 	return 'en' === ingbiro_current_language();
 }
 
+/**
+ * Keep Croatian and English pages on the same PHP structure.
+ */
+function ingbiro_l( $croatian, $english ) {
+	return ingbiro_is_english() ? $english : $croatian;
+}
+
+/**
+ * Static copy translations used by the shared HR/EN page templates.
+ *
+ * Keeping one HTML/PHP template per page means structural and CSS changes are
+ * applied to both languages automatically.
+ */
+function ingbiro_english_output_translations() {
+	return array(
+		'Upoznajte najdugovječniju konzultantsku kuću u Republici Hrvatskoj' => 'Meet Croatia’s longest-running consultancy',
+		'75 godina iskustva na izradi studija, elaborata, strategija i pravilnika za klijente iz poduzetničkog i javnog sektora.' => '75 years of experience developing studies, reports, strategies and regulations for private- and public-sector clients.',
+		'Inovativnim funkcionalnim rješenjima, alatima i profesionalnim i poslovnim uslugama pružamo podršku poslovnim i pravnim subjektima u Republici Hrvatskoj u rješavanju poslovnih izazova i ostvarivanju konkurentnosti.' => 'Through innovative solutions, tools and professional services, we help business and legal entities solve complex challenges and strengthen their competitiveness.',
+		'Naši stručnjaci specijalizirani su za područje prava, organizacije poslovanja i ekonomije, što nam omogućuje da projektima pristupimo na interdisciplinaran način te da budemo konkurentni.' => 'Our specialists in law, business organization and economics bring a comprehensive, interdisciplinary approach to every project.',
+		'Neovisno o kojem se sektoru radi, ostvarili smo suradnju s ključnim akterima u njemu. Obratite nam se s povjerenjem.' => 'Across sectors, we have built lasting relationships with key institutions and market participants. Talk to a trusted business adviser.',
+		'Jedan od vodećih poduzetnika u području LegalTecha.' => 'One of Croatia’s LegalTech leaders.',
+		'Područja djelovanja' => 'Areas of expertise',
+		'Ekonomski, pravni i organizacijski konzalting koji pokriva cjelokupan razvoj vašeg poslovanja:' => 'Business, legal and management consulting across the full development of your organization:',
+		'Izrada <strong>poslovnih planova i strategija</strong> te njihova implementacija' => 'Development and implementation of <strong>business plans and strategies</strong>',
+		'Procesi <strong>restrukturiranja i reorganizacije</strong>' => '<strong>Restructuring and reorganization</strong> processes',
+		'<strong>Komunikacijski menadžment i korporativno pravo</strong>' => '<strong>Communications management and corporate law</strong>',
+		'Ekonomski, pravni i tehnički <strong>due diligence</strong>' => 'Economic, legal and technical <strong>due diligence</strong>',
+		'<strong>Razvojne i investicijske studije</strong>' => '<strong>Development and investment studies</strong>',
+		'Pravni portal nove generacije koji poslovnim ljudima omogućuje jednostavno usklađivanje poslovanja s propisima RH i EU.' => 'A next-generation legal portal that helps professionals keep their operations aligned with Croatian and EU regulations.',
+		'<strong>Budite u tijeku:</strong> napredni sustav obavijesti o promjenama u propisima.' => '<strong>Stay informed:</strong> advanced notifications about regulatory changes.',
+		'<strong>Stručni sadržaj:</strong> sentencije, stručni članci i mišljenja.' => '<strong>Professional content:</strong> legal headnotes, expert articles and opinions.',
+		'<strong>Lansiran 2024. godine</strong> kao nastavak tradicije pravne publicistike.' => '<strong>Launched in 2024</strong> as the continuation of our legal publishing tradition.',
+		'Okupljamo vodeće stručnjake iz područja prava, javne uprave i gospodarstva.' => 'We bring together leading experts in law, public administration and economics.',
+		'<strong>Ovlašteni nositelj:</strong> programi izobrazbe u području javne nabave i edukacije iz područja osiguranja.' => '<strong>Authorized provider:</strong> public procurement and insurance training programs.',
+		'<strong>Tradicija i povjerenje:</strong> izvršni organizator tradicionalnog savjetovanja Hrvatskog društva ekonomista.' => '<strong>Tradition and trust:</strong> executive organizer of the Croatian Economic Association’s traditional annual conference.',
+		'Newsletter pretplata' => 'Newsletter subscription',
+		'Budite u tijeku s najnovijim zakonskim promjenama i poslovnim propisima.' => 'Stay up to date with the latest legislative changes and business regulations.',
+		'Pročitajte više' => 'Read more',
+
+		'Evolucija uspjeha: Tradicija u službi modernog poslovanja.' => 'An evolution of success: tradition serving modern business.',
+		'Upoznajte nas<br>Naša ekspertiza<br>Povezanost s korijenima<br>Mjesto susreta znanstvene i stručne zajednice<br>Suradnja s vodećim institucijama' => 'Meet us<br>Our expertise<br>Rooted in history<br>A meeting point for professionals and scholars<br>Cooperation with leading institutions',
+		'Upoznajte nas' => 'Meet us',
+		'INŽENJERSKI BIRO d.o.o. jedna je od vodećih konzultantskih kuća u Republici Hrvatskoj sa 75 godina iskustva na izradi studija, elaborata, strategija i pravilnika za klijente iz poduzetničkog i javnog sektora, kao i jedan od vodećih poduzetnika u području LegalTecha i digitalnog izdavaštva pravnih publikacija.' => 'INŽENJERSKI BIRO d.o.o. is one of Croatia’s leading consultancies, with 75 years of experience developing studies, reports, strategies and regulations for private- and public-sector clients, and is one of the country’s leaders in LegalTech and digital legal publishing.',
+		'Naša ekspertiza' => 'Our expertise',
+		'Pružamo konzultantske usluge velikome broju klijenata iz različitih sektora hrvatskoga gospodarstva, iz područja brodogradnje, naftne industrije, obnovljivih izvora energije, regionalnog razvoja, turizma i sektora poduzetništva. Dio svojih poslovnih usluga obavljamo putem revizorskih kuća kojima je INŽENJERSKI BIRO d.o.o. suosnivač.' => 'We advise clients across many sectors of the Croatian economy, including shipbuilding, oil, renewable energy, regional development, tourism and entrepreneurship. Part of our professional services is delivered through auditing companies co-founded by INŽENJERSKI BIRO d.o.o.',
+		'U veljači 2024. lansirali smo inovativni proizvod u LegalTech niši – Pravni portal' => 'In February 2024, we launched an innovative LegalTech product – the LING Legal Portal',
+		'Portal sadrži napredne funkcionalnosti, ključne kolekcije pravnih dokumenata, izdanja i pravnih alata.' => 'The portal combines advanced functionality with essential collections of legal documents, publications and practical legal tools.',
+		'Povezanost s korijenima' => 'Rooted in history',
+		'Lansiranje LING-a predstavlja nastavak duge tradicije koju Inženjerski biro ima u pravnoj publicistici, a koja seže u 1950-e godine. Tada je počela izlaziti publikacija ING Registar pravnih propisa, pravni priručnik koji je desetljećima bio nezamjenjiv u radu mnogih generacija pravnika i poslovnih stručnjaka.' => 'LING continues Inženjerski biro’s legal publishing tradition, which reaches back to the 1950s and the launch of the ING Register of Regulations, a reference used by generations of legal and business professionals.',
+		'Mjesto susreta znanstvene i stručne zajednice' => 'A meeting point for the scientific and professional community',
+		'Redovito organiziramo savjetovanja i edukacije koje okupljaju vodeće stručnjake i znanstvenike iz raznih područja prava, javne uprave i gospodarstva. Ovlašteni smo nositelj Programa izobrazbe u području javne nabave i pružatelj edukacije iz područja osiguranja.' => 'We regularly organize conferences and training programs that bring together leading experts and scholars in law, public administration and economics. We are an authorized provider of public procurement and insurance training.',
+		'Suradnja s vodećim institucijama' => 'Cooperation with leading institutions',
+		'Naša dugogodišnja suradnja s vodećim obrazovnim i strukovnim institucijama usmjerena je unapređenju ekonomske i pravne znanosti i struke u Republici Hrvatskoj.' => 'Our long-standing cooperation with leading educational and professional institutions supports the advancement of economic and legal scholarship and practice in Croatia.',
+		'Podaci o poduzeću' => 'Company information',
+		'IBAN kod Privredne banke:' => 'IBAN at Privredna banka Zagreb:',
+		'Uprava društva:' => 'Management:',
+
+		'Usmjereni smo ka iznalaženju sigurnih, visokokvalitetnih i dugoročnih rješenja i rezultata koji našim klijentima donose konkurentnu prednost i jačanje tržišne pozicije.' => 'We deliver secure, high-quality and long-term solutions that give our clients a competitive advantage and strengthen their market position.',
+		'Naše usluge' => 'Our services',
+		'Ekonomski konzalting' => 'Business consulting',
+		'Pravni konzalting' => 'Legal consulting',
+		'Organizacijski konzalting' => 'Management consulting',
+		'INŽENJERSKI BIRO d.o.o. ima stručnu potporu ovlaštenih revizorskih kuća, društava-kćeri:' => 'INŽENJERSKI BIRO d.o.o. is professionally supported by its authorized auditing subsidiaries:',
+
+		'Pravni portal<br>LING' => 'LING Legal Portal',
+		'Pravni portal nove generacije, dizajniran da zadovolji sve potrebe modernih pravnih profesionalaca, od sudaca, odvjetnika i javnih bilježnika preko pravnika u gospodarstvu, do djelatnika državnih i lokalnih institucija.' => 'A next-generation legal portal for modern legal professionals — from judges, attorneys and notaries to corporate lawyers and public-sector employees.',
+		'Posjetite portal' => 'Visit the portal',
+		'Vaš preglednik ne podržava HTML5 video.' => 'Your browser does not support HTML5 video.',
+		'Korištenje portala' => 'Using the portal',
+		'Prijava na pravni portal LING omogućuje neograničen pristup svim kolekcijama unutar portala i korištenje alatima koji olakšavaju svakodnevni rad naših korisnika, a odabir vlastitih interesnih područja prava omogućuje personalizaciju sustava obavijesti i jamči pravovremenu informiranost o izmjenama propisa, objavama novih sentenci, stručnih članaka i mišljenja iz odabranih područja.' => 'Logging into the LING Legal Portal provides unlimited access to all collections and practical tools, while the selection of legal areas of interest personalizes notifications about regulatory changes, new legal headnotes, expert articles and opinions.',
+		'Sadržaj pravnog portala' => 'Legal portal content',
+		'Kolekcije pravnog portala LING' => 'LING Legal Portal collections',
+		'pročišćeni tekstovi propisa' => 'consolidated texts of regulations',
+		'objave Narodnih novina' => 'Official Gazette publications',
+		'sudska praksa svih sudova RH, Suda Europske unije i Europskog suda za ljudska prava' => 'case law of Croatian courts, the Court of Justice of the EU and the European Court of Human Rights',
+		'sentencije sudskih odluka' => 'legal headnotes of court decisions',
+		'stručni članci eminentnih autora' => 'expert articles by eminent authors',
+		'odluke DKOM-a' => 'decisions of the State Commission for Supervision of Public Procurement Procedures',
+		'međunarodni ugovori' => 'international treaties',
+		'mišljenja i odluke javnopravnih tijela' => 'opinions and decisions of public-law bodies',
+		'primjeri i obrasci' => 'templates and forms',
+		'Pomoćni alati' => 'Supporting tools',
+		'Za potrebe jednostavnog rješavanja pravnih, administrativnih i računovodstvenih zadataka u svakodnevnoj praksi, pravni portal LING sadržava i pomoćne alate:' => 'For everyday legal, administrative and accounting tasks, the LING Legal Portal also includes practical supporting tools:',
+		'odgovori iz kolekcija sudske prakse' => 'answers based on case-law collections',
+		'evidencije predmeta i izračun radnji' => 'case tracking and calculation of legal actions',
+		'zakonske zatezne kamate i sudske pristojbe' => 'statutory default interest and court fees',
+		'Sav sadržaj portala LING je međusobno povezan, što znatno utječe na uštedu vremena naših korisnika.' => 'All content on the LING Legal Portal is interconnected, saving users significant time.',
+		'Pretplatite se na pravni portal LING' => 'Subscribe to the LING Legal Portal',
+		'Saznajte više' => 'Learn more',
+
+		'Savjetovanja i edukacije' => 'Conferences and training',
+		'Imamo dugu tradiciju izvođenja i organiziranja savjetovanja i edukacija za pravnike i ekonomiste.<br><br>Pogledajte što je u najavi.' => 'We have a long-standing tradition of organizing and delivering conferences and training programs for legal and business professionals.',
+		'Savjetovanja' => 'Conferences',
+		'Redovito organiziramo savjetovanja koja okupljaju vodeće stručnjake i znanstvenike iz raznih područja prava, javne uprave i gospodarstva, a koja je moguće pratiti uživo ili online.' => 'We regularly organize conferences that bring together leading experts and scholars in law, public administration and economics. Participants can attend in person or online.',
+		'Izvršni smo organizator tradicionalnog godišnjeg savjetovanja Hrvatskog društva ekonomista kojem je moguće prisustvovati isključivo uživo.' => 'We are the executive organizer of the Croatian Economic Association’s traditional annual conference, which is an exclusively in-person event.',
+		'Edukacije' => 'Training programs',
+		'INŽENJERSKI BIRO d.o.o. ovlašteni je nositelj Programa izobrazbe u području javne nabave prema Rješenju o ovlaštenju Ministarstva gospodarstva, od 1. ožujka 2024. godine, izdanom na rok od tri godine.' => 'INŽENJERSKI BIRO d.o.o. is an authorized provider of the Public Procurement Training Program under the Ministry of Economy’s authorization dated 1 March 2024 and issued for a three-year period.',
+		'Naš tim predavača čine certificirani i renomirani stručnjaci te redovni predavači na specijalističkim programima izobrazbe, seminarima, radionicama i stručnim programima usavršavanja.' => 'Our teaching team consists of certified and renowned experts and regular lecturers in specialist programs, seminars, workshops and professional development.',
+		'Ujedno smo ovlašteni pružatelj edukacije radi kontinuiranog ispunjavanja uvjeta stručnosti distributera osiguranja i reosiguranja.' => 'We are also an authorized provider of continuing professional training for insurance and reinsurance distributors.',
+		'Javna nabava' => 'Public procurement',
+		'Inženjerski biro d.o.o., Zagreb ovlašteni je nositelj Programa izobrazbe u području javne nabave prema rješenju Ministarstva gospodarstva izdanom u 2024. godini na rok od tri godine.' => 'Inženjerski biro d.o.o., Zagreb is an authorized provider of the Public Procurement Training Program under a Ministry of Economy decision issued in 2024 for a three-year period.',
+		'Osiguranje' => 'Insurance',
+		'Inženjerski biro d.o.o. ovlašteni je pružatelj edukacije radi kontinuiranog ispunjavanja uvjeta stručnosti iz članka 422. Zakona o osiguranju i u skladu s Pravilnikom o stručnosti i primjerenosti distributera osiguranja i reosiguranja.' => 'Inženjerski biro d.o.o. is an authorized training provider for continuous professional competence under Article 422 of the Insurance Act and the rules governing insurance and reinsurance distributors.',
+
+		'Kontaktirajte nas' => 'Contact us',
+		'Ime i prezime' => 'Full name',
+		'Broj telefona' => 'Phone number',
+		'Predmet' => 'Subject',
+		'Poruka' => 'Message',
+		'Pošaljite' => 'Send',
+		'Pošaljite upit' => 'Send enquiry',
+	);
+}
+
+function ingbiro_get_english_consulting_services() {
+	$services = array(
+		array(
+			'Business consulting',
+			'<p><strong>Mergers and acquisitions (M&amp;A)</strong> – information memorandums, financial, commercial and tax due diligence, business analysis and valuation, investor search and transaction support.</p><p><strong>Strategy and finance</strong> – restructuring, development studies, new financing, investment studies, economic feasibility studies and preparation of projects for EU and other funding sources.</p>',
+		),
+		array(
+			'Legal consulting',
+			'<p><strong>Legal due diligence</strong> – in-depth analysis of business operations.</p><p><strong>Advisory services</strong> – support in applying civil, commercial, employment and other regulations.</p><p><strong>Training and conferences</strong> – general, thematic and specialist programs on management, business functions and practical implementation of legislation.</p><p><strong>Professional publishing</strong> – conference proceedings, authored books and practical manuals.</p>',
+		),
+		array(
+			'Management consulting',
+			'<p><strong>Organizational assessment and diagnostics</strong> – analysis of the current system and alignment with new solutions.</p><p><strong>Organization design</strong> – projects and implementation programs for advanced organizational solutions.</p><p><strong>Corporate acts</strong> – organization and job-classification rules and operating procedures.</p><p><strong>Technical segment</strong> – technical due diligence and valuation of tangible assets, equipment and real estate.</p>',
+		),
+	);
+
+	return array_map(
+		static function ( $service ) {
+			$item               = new stdClass();
+			$item->post_title   = $service[0];
+			$item->post_content = $service[1];
+			return $item;
+		},
+		$services
+	);
+}
+
 function ingbiro_english_root_url() {
 	$page = get_page_by_path( 'en' );
 	return $page ? get_permalink( $page ) : home_url( '/en/' );

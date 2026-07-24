@@ -2536,6 +2536,403 @@ select {
 	max-width: none;
 }
 
+/* 1.3 — exact Figma controls and exported gear artwork. */
+.pill-button {
+	min-height: 56px;
+	padding: 8px 8px 8px 24px;
+	line-height: 1;
+}
+
+.pill-button__icon {
+	box-sizing: border-box;
+	width: 40px;
+	min-width: 40px;
+	max-width: 40px;
+	height: 40px;
+	min-height: 40px;
+	max-height: 40px;
+	flex: 0 0 40px;
+	overflow: hidden;
+	padding: 8px;
+	border-radius: 50%;
+	line-height: 0;
+}
+
+.pill-button__icon img {
+	display: block;
+	width: 15.5px;
+	height: 15.5px;
+	max-width: none;
+	flex: none;
+}
+
+.pill-button--small {
+	min-height: 48px;
+	padding: 8px 8px 8px 16px;
+}
+
+.pill-button--small .pill-button__icon {
+	box-sizing: border-box;
+	width: 32px;
+	min-width: 32px;
+	max-width: 32px;
+	height: 32px;
+	min-height: 32px;
+	max-height: 32px;
+	flex: 0 0 32px;
+	padding: 4px;
+}
+
+.gear-art::before,
+.gear-art::after,
+.education-gears span {
+	display: none;
+}
+
+.gear-art {
+	position: relative;
+	min-height: 390px;
+	overflow: visible;
+}
+
+.gear-art img,
+.education-gears img {
+	position: absolute;
+	display: block;
+	max-width: none;
+	pointer-events: none;
+}
+
+.gear-art__large {
+	top: 0;
+	left: -166px;
+	width: 214px;
+	height: 380px;
+}
+
+.gear-art__small {
+	top: -105px;
+	left: 170px;
+	width: 211px;
+	height: 211px;
+}
+
+.education-overview .container {
+	position: relative;
+}
+
+.education-gears {
+	position: absolute;
+	top: 480px;
+	left: 0;
+	z-index: 1;
+	width: 280px;
+	height: 217px;
+	pointer-events: none;
+}
+
+.education-gears__large {
+	top: 0;
+	left: -62px;
+	width: 195px;
+	height: 217px;
+}
+
+.education-gears__small {
+	top: 122px;
+	left: 175px;
+	width: 95px;
+	height: 95px;
+}
+
+.ing-forminator .forminator-ui .forminator-button-submit::after {
+	box-sizing: border-box;
+	width: 32px;
+	min-width: 32px;
+	max-width: 32px;
+	height: 32px;
+	min-height: 32px;
+	max-height: 32px;
+	flex: 0 0 32px;
+	overflow: hidden;
+	content: "";
+	border-radius: 50%;
+	background-color: var(--ing-blue);
+	background-image: url("assets/icons/arrow-right.svg");
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 15.5px 15.5px;
+}
+
+.event-content {
+	padding: 0;
+}
+
+.event-content > .container {
+	display: block;
+}
+
+.event-content__body {
+	width: 100%;
+	max-width: none;
+}
+
+.event-block {
+	position: relative;
+	padding-block: 72px;
+	margin: 0;
+}
+
+.event-block > * {
+	width: 100%;
+	max-width: none !important;
+}
+
+.event-block::before {
+	position: absolute;
+	z-index: -1;
+	inset: 0 calc(50% - 50vw);
+	content: "";
+	background: var(--ing-cream);
+}
+
+.event-block--why::before,
+.event-block--fee::before {
+	background: var(--ing-cream);
+}
+
+.event-block--program::before,
+.event-block--instructions::before {
+	background: var(--ing-paper);
+}
+
+.event-block > h2 {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	margin: 0 0 44px;
+	font-size: 18px;
+	line-height: 1.4;
+	letter-spacing: 0;
+	text-transform: uppercase;
+}
+
+.event-block > h2::before {
+	width: 21px;
+	height: 21px;
+	flex: 0 0 21px;
+	content: "";
+	background: url("assets/icons/section-gear.svg") center / contain no-repeat;
+}
+
+.event-why-layout {
+	gap: clamp(48px, 8vw, 125px);
+	align-items: start !important;
+}
+
+.event-why-layout p,
+.event-block--instructions > p,
+.event-block--instructions > ul,
+.event-fee-columns {
+	font-size: 20px;
+	line-height: 1.38;
+}
+
+.event-image-stack {
+	display: grid;
+	gap: 34px;
+}
+
+.event-image-stack figure {
+	height: 250px;
+	margin: 0;
+	overflow: hidden;
+	border-radius: 10px;
+}
+
+.event-image-stack figure:first-child {
+	height: 239px;
+}
+
+.event-image-stack figure:last-child {
+	height: 413px;
+}
+
+.event-image-stack img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.event-block--program {
+	min-height: 1180px;
+	overflow: hidden;
+}
+
+.event-program {
+	position: relative;
+	z-index: 1;
+	max-width: 900px;
+}
+
+.event-program h3 {
+	margin: 30px 0 18px;
+	color: var(--ing-blue);
+	font-size: 20px;
+	line-height: 1.2;
+}
+
+.event-program p,
+.event-program ul {
+	margin-bottom: 18px;
+	font-size: 20px;
+	line-height: 1.25;
+}
+
+.event-program-gears {
+	position: absolute;
+	right: -68px;
+	bottom: 40px;
+	width: 390px;
+	height: 610px;
+	pointer-events: none;
+}
+
+.event-program-gears img {
+	position: absolute;
+	display: block;
+	max-width: none;
+}
+
+.event-program-gears img:first-child {
+	top: 0;
+	right: 95px;
+	width: 217px;
+	height: 217px;
+}
+
+.event-program-gears img:last-child {
+	right: 0;
+	bottom: 0;
+	width: 296px;
+	height: 392px;
+}
+
+.event-fee-columns {
+	gap: clamp(50px, 9vw, 120px);
+}
+
+.event-fee-columns h3 {
+	margin: 0 0 24px;
+	font-size: 20px;
+}
+
+.event-fee-columns strong {
+	color: var(--ing-blue);
+}
+
+.event-block--instructions {
+	padding-bottom: 90px;
+}
+
+.event-block--instructions > p,
+.event-block--instructions > ul {
+	max-width: none;
+}
+
+.event-block--instructions li {
+	margin-bottom: 8px;
+}
+
+@media (max-width: 760px) {
+	.pill-button {
+		max-width: 100%;
+		padding-left: 18px;
+	}
+
+	.pill-button__label {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.gear-art {
+		min-height: 250px;
+	}
+
+	.gear-art__large {
+		left: -150px;
+		width: 190px;
+		height: auto;
+	}
+
+	.gear-art__small {
+		top: -45px;
+		left: 82px;
+		width: 130px;
+		height: 130px;
+	}
+
+	.education-gears {
+		position: relative;
+		top: auto;
+		left: auto;
+		height: 155px;
+		margin-top: -8px;
+	}
+
+	.education-gears__large {
+		left: -56px;
+		width: 156px;
+		height: auto;
+	}
+
+	.education-gears__small {
+		top: 72px;
+		left: 118px;
+		width: 70px;
+		height: 70px;
+	}
+
+	.event-block {
+		padding-block: 52px;
+	}
+
+	.event-block > h2 {
+		margin-bottom: 32px;
+	}
+
+	.event-why-layout p,
+	.event-block--instructions > p,
+	.event-block--instructions > ul,
+	.event-fee-columns,
+	.event-program p,
+	.event-program ul {
+		font-size: 17px;
+	}
+
+	.event-image-stack {
+		margin-top: 25px;
+	}
+
+	.event-image-stack figure,
+	.event-image-stack figure:first-child,
+	.event-image-stack figure:last-child {
+		height: 220px;
+	}
+
+	.event-block--program {
+		min-height: 0;
+		padding-bottom: 280px;
+	}
+
+	.event-program-gears {
+		right: -120px;
+		bottom: 0;
+		transform: scale(0.62);
+		transform-origin: bottom right;
+	}
+}
+
 .modular-hero__copy {
 	gap: clamp(40px, 9vw, 150px);
 	align-items: end !important;

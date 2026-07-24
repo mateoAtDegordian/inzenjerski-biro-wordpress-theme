@@ -11,6 +11,7 @@ while ( have_posts() ) :
 	the_post();
 	$event_id            = get_the_ID();
 	$registration_active = (bool) get_post_meta( $event_id, 'ing_event_registration_enabled', true );
+	$format_parts        = preg_split( '/\s*[·|]\s*/', (string) get_post_meta( $event_id, 'ing_event_format', true ) );
 	$related_events      = new WP_Query(
 		array(
 			'post_type'      => 'ing_event',
@@ -31,7 +32,9 @@ while ( have_posts() ) :
 					<h1><?php the_title(); ?></h1>
 					<div class="event-single__meta-row">
 						<div class="tag-list">
-							<span><?php echo esc_html( get_post_meta( $event_id, 'ing_event_format', true ) ?: 'WEBINAR UŽIVO' ); ?></span>
+							<?php foreach ( array_filter( $format_parts ) as $format_part ) : ?>
+								<span><?php echo esc_html( $format_part ); ?></span>
+							<?php endforeach; ?>
 							<span><?php echo esc_html( get_post_meta( $event_id, 'ing_event_date', true ) ); ?></span>
 						</div>
 						<?php if ( $registration_active ) : ?>
@@ -73,19 +76,6 @@ while ( have_posts() ) :
 					<div class="event-content__body prose gutenberg-content">
 						<?php the_content(); ?>
 					</div>
-					<aside class="event-content__aside">
-						<div class="event-facts">
-							<?php ingbiro_section_label( 'Brze informacije' ); ?>
-							<dl>
-								<div><dt>Format</dt><dd><?php echo esc_html( get_post_meta( $event_id, 'ing_event_format', true ) ); ?></dd></div>
-								<div><dt>Trajanje</dt><dd><?php echo esc_html( get_post_meta( $event_id, 'ing_event_hours', true ) ); ?></dd></div>
-								<div><dt>Kotizacija</dt><dd><?php echo esc_html( get_post_meta( $event_id, 'ing_event_fee', true ) ); ?></dd></div>
-							</dl>
-							<?php if ( $registration_active ) : ?>
-								<?php ingbiro_button( 'Prijavite se', '#prijava', 'pill-button--blue' ); ?>
-							<?php endif; ?>
-						</div>
-					</aside>
 				</div>
 			</section>
 

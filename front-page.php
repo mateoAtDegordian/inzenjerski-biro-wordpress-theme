@@ -5,7 +5,10 @@
  * @package Ingbiro
  */
 
-get_header();
+$ingbiro_embedded_template = ! empty( $GLOBALS['ingbiro_embedded_template'] );
+if ( ! $ingbiro_embedded_template ) {
+	get_header();
+}
 
 $events = get_posts(
 	array(
@@ -89,6 +92,7 @@ $event = $events ? $events[0] : null;
 		</div>
 	</section>
 
+	<?php if ( ! ingbiro_is_english() ) : ?>
 	<section class="section">
 		<div class="container">
 			<?php ingbiro_section_label( 'Aktualna događanja' ); ?>
@@ -110,6 +114,7 @@ $event = $events ? $events[0] : null;
 			<?php endif; ?>
 		</div>
 	</section>
+	<?php endif; ?>
 
 	<?php ingbiro_building_banner(); ?>
 
@@ -126,4 +131,6 @@ $event = $events ? $events[0] : null;
 	</section>
 </main>
 <?php
-get_footer();
+if ( ! $ingbiro_embedded_template ) {
+	get_footer();
+}

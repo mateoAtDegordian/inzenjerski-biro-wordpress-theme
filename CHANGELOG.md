@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0 — 2026-07-24
+
+- CTA komponente usklađene s Figma dimenzijama: 40 × 40 px standardni i 32 × 32 px mali krug, bez rastezanja u flex/grid prikazima.
+- Zamijenjene aproksimacije stvarnim Figma zupčanicima, strelicom i faviconom izdvojenim iz izvornog logotipa.
+- Detalj edukacije proširen potpunim modularnim Gutenberg sekcijama za opis, slike, program, kotizaciju i upute.
+- Hrvatski i engleski prikaz koriste zajedničke page predloške kako bi buduće dizajnerske promjene ostale sinkronizirane; engleska događanja su izostavljena.
+- PDF događanja sada linearizira Gutenberg sekcije u čitljiv višestranični A4 dokument s istom glavnom slikom kao detalj događanja.
+- LING cjenik otvara službenu stranicu `ling.hr/price-list` u novoj kartici.
+
 ## 1.2.0 — 2026-07-24
 
 - Sve javne forme prebačene na Forminator, uključujući CV upload, analytics event i serverski integration hook.

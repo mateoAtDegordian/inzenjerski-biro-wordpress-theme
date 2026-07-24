@@ -5,7 +5,10 @@
  * @package Ingbiro
  */
 
-get_header();
+$ingbiro_embedded_template = ! empty( $GLOBALS['ingbiro_embedded_template'] );
+if ( ! $ingbiro_embedded_template ) {
+	get_header();
+}
 ?>
 <main id="main" class="page-main">
 	<section class="page-hero">
@@ -28,7 +31,10 @@ get_header();
 
 	<section class="section">
 		<div class="container portal-use">
-			<div class="gear-art" aria-hidden="true"></div>
+			<div class="gear-art" aria-hidden="true">
+				<img class="gear-art__large" src="<?php echo esc_url( ingbiro_asset( 'icons/figma-gear-blue-large.svg' ) ); ?>" alt="">
+				<img class="gear-art__small" src="<?php echo esc_url( ingbiro_asset( 'icons/figma-gear-soft-medium.svg' ) ); ?>" alt="">
+			</div>
 			<div class="editorial-copy">
 				<?php ingbiro_section_label( 'Korištenje portala' ); ?>
 				<p>Prijava na pravni portal LING omogućuje neograničen pristup svim kolekcijama unutar portala i korištenje alatima koji olakšavaju svakodnevni rad naših korisnika, a odabir vlastitih interesnih područja prava omogućuje personalizaciju sustava obavijesti i jamči pravovremenu informiranost o izmjenama propisa, objavama novih sentenci, stručnih članaka i mišljenja iz odabranih područja.</p>
@@ -74,7 +80,7 @@ get_header();
 				<div>
 					<h2>Pretplatite se na pravni portal LING</h2>
 					<p>Budite u tijeku s najnovijim zakonskim promjenama i poslovnim propisima.</p>
-					<?php ingbiro_button( 'Saznajte više', 'https://ling.hr/', 'pill-button--small' ); ?>
+					<?php ingbiro_button( 'Saznajte više', 'https://ling.hr/price-list', '', array( 'target' => '_blank', 'rel' => 'noopener noreferrer' ) ); ?>
 				</div>
 				<img class="ling-cta__logo" src="<?php echo esc_url( ingbiro_asset( 'images/ling.png' ) ); ?>" alt="LING legal engineering">
 			</div>
@@ -82,4 +88,6 @@ get_header();
 	</section>
 </main>
 <?php
-get_footer();
+if ( ! $ingbiro_embedded_template ) {
+	get_footer();
+}

@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.2.0' );
+define( 'INGBIRO_VERSION', '1.3.0' );
 
 function ingbiro_setup() {
 	load_theme_textdomain( 'ingbiro', get_template_directory() . '/languages' );
@@ -72,15 +72,30 @@ require_once get_template_directory() . '/inc/patterns.php';
 
 function ingbiro_favicons() {
 	printf(
-		'<link rel="icon" href="%1$s" type="image/svg+xml"><link rel="icon" href="%2$s" sizes="32x32"><link rel="apple-touch-icon" href="%3$s">',
-		esc_url( ingbiro_asset( 'images/favicon.svg' ) ),
+		'<link rel="icon" href="%1$s" sizes="32x32" type="image/png"><link rel="icon" href="%2$s" sizes="512x512" type="image/png"><link rel="apple-touch-icon" href="%3$s">',
 		esc_url( ingbiro_asset( 'images/favicon-32.png' ) ),
+		esc_url( ingbiro_asset( 'images/favicon-512.png' ) ),
 		esc_url( ingbiro_asset( 'images/favicon-180.png' ) )
 	);
 }
 add_action( 'wp_head', 'ingbiro_favicons', 2 );
 
 function ingbiro_page_url( $slug ) {
+	if ( function_exists( 'ingbiro_is_english' ) && ingbiro_is_english() ) {
+		$english_slugs = array(
+			'naslovnica'               => '',
+			'o-nama'                   => 'about-us',
+			'konzalting'               => 'consulting',
+			'pravni-portal'            => 'legal-portal',
+			'savjetovanja-i-edukacije' => 'conferences-and-training',
+			'kontakt'                  => 'contact',
+		);
+
+		if ( array_key_exists( $slug, $english_slugs ) ) {
+			return ingbiro_english_page_url( $english_slugs[ $slug ] );
+		}
+	}
+
 	$page = get_page_by_path( $slug );
 	return $page ? get_permalink( $page ) : home_url( '/' . trim( $slug, '/' ) . '/' );
 }
@@ -115,11 +130,17 @@ function ingbiro_section_label( $label, $light = false ) {
 	);
 }
 
-function ingbiro_button( $label, $url, $class = '' ) {
+function ingbiro_button( $label, $url, $class = '', $attributes = array() ) {
+	$attribute_html = '';
+	foreach ( $attributes as $name => $value ) {
+		$attribute_html .= sprintf( ' %s="%s"', esc_attr( $name ), esc_attr( $value ) );
+	}
+
 	printf(
-		'<a class="pill-button %s" href="%s"><span class="pill-button__label">%s</span><span class="pill-button__icon" aria-hidden="true"><img src="%s" alt=""></span></a>',
+		'<a class="pill-button %s" href="%s"%s><span class="pill-button__label">%s</span><span class="pill-button__icon" aria-hidden="true"><img src="%s" alt=""></span></a>',
 		esc_attr( $class ),
 		esc_url( $url ),
+		$attribute_html, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		esc_html( $label ),
 		esc_url( ingbiro_asset( 'icons/arrow-right.svg' ) )
 	);
@@ -150,6 +171,92 @@ function ingbiro_event_image_path( $event_id ) {
 	}
 
 	return get_template_directory() . '/assets/images/education-event-figma.png';
+}
+
+/**
+ * Figma event page content, expressed only with core Gutenberg blocks.
+ *
+ * Each top-level group is deliberately independent so editors can move,
+ * duplicate or remove complete sections in the block editor.
+ */
+function ingbiro_event_blueprint_content() {
+	$image_one   = esc_url( ingbiro_asset( 'images/event-detail-1.jpg' ) );
+	$image_two   = esc_url( ingbiro_asset( 'images/event-detail-2.jpg' ) );
+	$image_three = esc_url( ingbiro_asset( 'images/event-detail-3.jpg' ) );
+
+	return '
+<!-- wp:group {"className":"event-block event-block--why","layout":{"type":"constrained"}} -->
+<div class="wp-block-group event-block event-block--why">
+<!-- wp:heading --><h2 class="wp-block-heading">Zašto sudjelovati na webinaru?</h2><!-- /wp:heading -->
+<!-- wp:columns {"className":"event-why-layout"} --><div class="wp-block-columns event-why-layout">
+<!-- wp:column {"width":"58%"} --><div class="wp-block-column" style="flex-basis:58%">
+<!-- wp:paragraph --><p>Izmjene i dopune ZJN 2016 u području jednostavne nabave donose niz novina koje zahtijevaju ne samo razumijevanje zakonodavnog okvira već i sigurnost u njihovoj praktičnoj primjeni kroz sve faze postupka. Ovo stručno usavršavanje pruža cjelovit pregled ključnih promjena, s posebnim naglaskom na pitanja sukoba interesa, pravne zaštite te izmjena u planiranju nabave i vođenju registra ugovora.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p>Kroz detaljno vođene prikaze rada u EOJN RH, sudionici će steći konkretna znanja o provedbi jednostavne nabave – od pripreme postupka i slanja poziva gospodarskim subjektima do pregleda i ocjene ponuda te donošenja odluke o odabiru i objave ugovora. Praktični primjeri i „ekranski prikazi“ rada u sustavu omogućit će lakše snalaženje u svakodnevnim situacijama i sigurniju primjenu propisa.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p>Poseban naglasak stavlja se na izradu i usklađivanje općeg akta o provedbi jednostavne nabave s novim pravilima, uključujući definiranje pragova, sadržaja akta te pravilno uređenje pitanja sukoba interesa i pravne zaštite. Kombinacija teorijskih pojašnjenja i konkretnih primjera iz prakse pruža jasne smjernice za pravilno postupanje u svim fazama jednostavne nabave i učinkovitu primjenu novih zakonskih odredbi.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p>Program usavršavanja provodi se kao jednodnevni program (8 nastavnih sati). Svakom polazniku izdaje se potvrda o pohađanju programa usavršavanja sukladno Pravilniku o izobrazbi u području javne nabave (NN 154/2023 i 94/2025).</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p>Maksimalan broj polaznika po pojedinačnom programu je 50, a termin se popunjava redoslijedom primljenih uplata. Svi polaznici moraju imati uključene kamere u realnom vremenu, a mikrofone prema potrebi.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p>INŽENJERSKI BIRO d.o.o., Ulica Vjekoslava Heinzela 4A, Zagreb, ovlašteni je nositelj Programa izobrazbe u području javne nabave (Evidencijski broj 19 u Registru nositelja programa). Program je odobren od Ministarstva gospodarstva (Evidencijski broj programa 2026-0192).</p><!-- /wp:paragraph -->
+</div><!-- /wp:column -->
+<!-- wp:column {"width":"42%","className":"event-image-stack"} --><div class="wp-block-column event-image-stack" style="flex-basis:42%">
+<!-- wp:image {"sizeSlug":"large"} --><figure class="wp-block-image size-large"><img src="' . $image_one . '" alt="Sudionici stručnog programa"/></figure><!-- /wp:image -->
+<!-- wp:image {"sizeSlug":"large"} --><figure class="wp-block-image size-large"><img src="' . $image_two . '" alt="Predavanje i rasprava"/></figure><!-- /wp:image -->
+<!-- wp:image {"sizeSlug":"large"} --><figure class="wp-block-image size-large"><img src="' . $image_three . '" alt="Rad na stručnom programu"/></figure><!-- /wp:image -->
+</div><!-- /wp:column -->
+</div><!-- /wp:columns -->
+</div><!-- /wp:group -->
+
+<!-- wp:group {"className":"event-block event-block--program","layout":{"type":"constrained"}} -->
+<div class="wp-block-group event-block event-block--program">
+<!-- wp:heading --><h2 class="wp-block-heading">Program webinara</h2><!-- /wp:heading -->
+<!-- wp:group {"className":"event-program","layout":{"type":"constrained"}} --><div class="wp-block-group event-program">
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">9.00 – 10.30</h3><!-- /wp:heading -->
+<!-- wp:paragraph --><p><strong>JEDNOSTAVNA NABAVA – IZMJENE I DOPUNE ZJN 2016</strong><br>(2 nastavna sata)</p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>Novine koje donose izmjene i dopune ZJN 2016</li><li>Sukob interesa i pravna zaštita u jednostavnoj nabavi – novine ZJN 2016</li><li>Izmjene u odnosu na plan nabave i registar ugovora</li></ul><!-- /wp:list -->
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">10.30 – 10.45</h3><!-- /wp:heading --><!-- wp:paragraph --><p>STANKA</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">10.45 – 12.15</h3><!-- /wp:heading -->
+<!-- wp:paragraph --><p><strong>PROVEDBA JEDNOSTAVNE NABAVE U MODULU EOJN RH</strong><br>(2 nastavna sata)</p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>Provedba jednostavne nabave na platformi EOJN RH kroz sve faze od pripreme do objave ugovora</li><li>e-Dostava s pozivom odabranim gospodarskim subjektima – prikaz u EOJN RH</li><li>e-Dostava s javnom objavom poziva – prikaz u EOJN RH</li></ul><!-- /wp:list -->
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">12.15 – 12.45</h3><!-- /wp:heading --><!-- wp:paragraph --><p>STANKA</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">12.45 – 14.15</h3><!-- /wp:heading -->
+<!-- wp:paragraph --><p><strong>OPĆI AKT O PROVEDBI JEDNOSTAVNE NABAVE</strong><br>(2 nastavna sata)</p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>Ogledni primjer kako izmijeniti opći akt sukladno izmjenama i dopunama ZJN 2016</li><li>Novi pragovi i preporuke što opći akt treba sadržavati</li><li>Sukob interesa i pravna zaštita – kako propisati u općem aktu</li></ul><!-- /wp:list -->
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">14.15 – 14.30</h3><!-- /wp:heading --><!-- wp:paragraph --><p>STANKA</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">14.30 – 16.00</h3><!-- /wp:heading -->
+<!-- wp:paragraph --><p><strong>OBJAVA JEDNOSTAVNE NABAVE U MODULU EOJN RH</strong><br>(2 nastavna sata)</p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>Otvaranje ponuda – ekranski prikaz u EOJN RH</li><li>Pregled i ocjena ponuda te donošenje Odluke o odabiru – ekranski prikaz u EOJN RH</li><li>Priprema i objava ugovora – ekranski prikaz u EOJN RH</li></ul><!-- /wp:list -->
+<!-- wp:paragraph --><p><strong>PITANJA I ODGOVORI</strong></p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->
+<div class="event-program-gears" aria-hidden="true"><img src="' . esc_url( ingbiro_asset( 'icons/figma-gear-soft-event.svg' ) ) . '" alt=""><img src="' . esc_url( ingbiro_asset( 'icons/figma-gear-blue-event.svg' ) ) . '" alt=""></div>
+</div><!-- /wp:group -->
+
+<!-- wp:group {"className":"event-block event-block--fee","layout":{"type":"constrained"}} -->
+<div class="wp-block-group event-block event-block--fee">
+<!-- wp:heading --><h2 class="wp-block-heading">Kotizacija</h2><!-- /wp:heading -->
+<!-- wp:columns {"className":"event-fee-columns"} --><div class="wp-block-columns event-fee-columns">
+<!-- wp:column --><div class="wp-block-column"><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Naknada</h3><!-- /wp:heading -->
+<!-- wp:paragraph --><p>Naknada za sudjelovanje po sudioniku iznosi <strong>180,00 eura</strong>, a uplaćuje se unaprijed na žiro-račun organizatora:</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p>INŽENJERSKI BIRO d.o.o., Heinzelova 4a, Zagreb<br><strong>IBAN: HR2323400091100205049<br>SWIFT: PBZGHR2X<br>OIB: 84170114747<br>poziv na broj: 02-312608<br>naznaka: „za program usavršavanja”</strong></p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><strong>Na temelju čl. 39. st. 1. toč. i) Zakona o PDV-u, kotizacija je oslobođena od PDV-a.</strong></p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><strong>Naknada uključuje:</strong></p><!-- /wp:paragraph --><!-- wp:list --><ul class="wp-block-list"><li>sudjelovanje u Programu usavršavanja</li><li>prezentaciju predavača u elektroničkom formatu</li></ul><!-- /wp:list -->
+</div><!-- /wp:column -->
+<!-- wp:column --><div class="wp-block-column"><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Prijave</h3><!-- /wp:heading -->
+<!-- wp:paragraph --><p>Prijave za Program usavršavanja molimo poslati:</p><!-- /wp:paragraph --><!-- wp:list --><ul class="wp-block-list"><li>online prijavom na ovoj stranici</li><li>e-mailom na <a href="mailto:prodaja@ingbiro.hr">prodaja@ingbiro.hr</a></li><li>poštom na INŽENJERSKI BIRO d.o.o., Heinzelova 4a, 10 000 Zagreb</li></ul><!-- /wp:list -->
+<!-- wp:paragraph --><p><strong>Posebne pogodnosti:</strong></p><!-- /wp:paragraph --><!-- wp:list --><ul class="wp-block-list"><li>svi pretplatnici na pravni portal LING ostvaruju popust na radionice i webinare</li><li>paket LING – 10 % popusta</li><li>paket LING PLUS – 25 % popusta</li></ul><!-- /wp:list -->
+</div><!-- /wp:column -->
+</div><!-- /wp:columns -->
+</div><!-- /wp:group -->
+
+<!-- wp:group {"className":"event-block event-block--instructions","layout":{"type":"constrained"}} -->
+<div class="wp-block-group event-block event-block--instructions">
+<!-- wp:heading --><h2 class="wp-block-heading">Upute</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>Prijavnicu za webinar treba popuniti točnim i obveznim podacima putem internetske stranice ingbiro.hr. Traženi podaci prikupljaju se radi evidencije prisutnosti polaznika i izdavanja potvrde o pohađanju programa.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p>Kotizaciju treba uplatiti u cijelosti. Potvrdu o uplati potrebno je dostaviti najkasnije jedan dan prije održavanja. Poveznica za webinar dostavlja se na dan održavanja na adresu elektroničke pošte navedenu u prijavnici.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><strong>Registraciju je potrebno napraviti najkasnije 15 minuta prije početka:</strong></p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>svakom sudioniku e-mailom dostavljamo podsjetnik, poveznicu i prezentaciju</li><li>putem poveznice sudionik ulazi u čekaonicu, a administrator dopušta ulazak</li><li>administratori prije početka provjeravaju prijavu i uvjete održavanja</li><li>webinar počinje u najavljeno vrijeme prema rasporedu predavanja</li></ul><!-- /wp:list -->
+<!-- wp:paragraph --><p><strong>Osnovne pretpostavke za sudjelovanje:</strong></p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>na računalo nije potrebno instalirati dodatni program; dovoljno je otvoriti primljenu poveznicu</li><li>za praćenje na pametnom telefonu potrebno je instalirati Microsoft Teams</li><li>potrebna je stabilna širokopojasna internetska veza i zvučnik</li><li>mikrofon nije obvezan, ali web kamera mora biti uključena u realnom vremenu</li></ul><!-- /wp:list -->
+<!-- wp:paragraph --><p>Za tehničku pomoć i dodatne informacije nazovite 01 / 4600 888 ili pišite na <a href="mailto:abatinic@ingbiro.hr">abatinic@ingbiro.hr</a>. Pitanja za predavača možete poslati i unaprijed na istu adresu.</p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->';
 }
 
 function ingbiro_register_content_types() {
@@ -740,6 +847,10 @@ function ingbiro_handle_event_pdf() {
 	$logo    = ingbiro_pdf_image_data_uri( $logo_path );
 	$hero    = ingbiro_pdf_image_data_uri( $hero_path );
 	$content = apply_filters( 'the_content', $event->post_content );
+	$content = preg_replace( '/<figure\b.*?<\/figure>/s', '', $content );
+	$content = preg_replace( '/<img\b[^>]*>/s', '', $content );
+	$content = preg_replace( '/<div class="event-program-gears".*?<\/div>/s', '', $content );
+	$content = strip_tags( $content, '<h2><h3><p><ul><ol><li><strong><b><em><br><a><img><figure>' );
 
 	$meta_cards = array(
 		__( 'Predavač', 'ingbiro' ) => get_post_meta( $event_id, 'ing_event_speaker', true ),
@@ -756,21 +867,29 @@ function ingbiro_handle_event_pdf() {
 	<head>
 		<meta charset="utf-8">
 		<style>
-			@page { margin: 34px 42px 44px; }
-			body { margin: 0; color: #1b1b1b; font-family: "DejaVu Sans", sans-serif; font-size: 10.5px; line-height: 1.45; }
+			@page { margin: 34px 42px 58px; }
+			body { margin: 0; color: #1b1b1b; font-family: "DejaVu Sans", sans-serif; font-size: 10px; line-height: 1.42; }
 			.header { padding-bottom: 18px; border-bottom: 2px solid #244e9c; }
 			.logo { width: 175px; }
 			.kicker { margin: 20px 0 8px; color: #244e9c; font-size: 10px; font-weight: bold; text-transform: uppercase; }
 			h1 { margin: 0 0 12px; font-size: 25px; line-height: 1.12; }
-			h2 { margin: 24px 0 8px; color: #244e9c; font-size: 16px; line-height: 1.2; }
-			h3 { margin: 16px 0 6px; font-size: 12px; }
+			h2 { margin: 24px 0 8px; color: #244e9c; font-size: 16px; line-height: 1.2; page-break-after: avoid; }
+			h3 { margin: 16px 0 6px; font-size: 12px; page-break-after: avoid; }
 			p { margin: 0 0 9px; }
 			.hero { width: 100%; height: 230px; margin: 18px 0; object-fit: cover; border-radius: 12px; }
 			.meta { width: 100%; margin: 4px 0 20px; border-collapse: separate; border-spacing: 6px; }
 			.meta td { width: 33.33%; padding: 12px; vertical-align: top; border-radius: 8px; background: #244e9c; color: white; }
 			.meta strong { display: block; margin-bottom: 4px; color: #fff4e5; font-size: 8px; text-transform: uppercase; }
 			.content ul, .content ol { padding-left: 20px; }
-			.content img { max-width: 100%; height: auto; }
+			.content img { display: block; width: 100%; max-width: 100%; height: auto; margin: 8px 0 14px; border-radius: 8px; }
+			.event-block { padding: 8px 0 14px; page-break-inside: auto; }
+			.event-block > h2 { padding-bottom: 5px; border-bottom: 1px solid #dae0e1; text-transform: uppercase; }
+			.event-why-layout, .event-fee-columns { width: 100%; }
+			.event-why-layout .wp-block-column, .event-fee-columns .wp-block-column { width: 100% !important; }
+			.event-image-stack figure { margin: 0 0 14px; page-break-inside: avoid; }
+			.event-program h3 { color: #244e9c; page-break-after: avoid; }
+			.event-program p, .event-program ul { page-break-inside: avoid; }
+			.event-fee-columns .wp-block-column { padding: 10px 12px; margin-bottom: 12px; background: #fff4e5; }
 			.footer { position: fixed; right: 42px; bottom: 14px; left: 42px; padding-top: 6px; border-top: 1px solid #dae0e1; color: #61707d; font-size: 8px; }
 			a { color: #244e9c; }
 		</style>
@@ -796,7 +915,7 @@ function ingbiro_handle_event_pdf() {
 				</tr>
 			<?php endforeach; ?>
 		</table>
-		<div class="content"><?php echo wp_kses_post( $content ); ?></div>
+		<div class="content"><?php echo wp_kses( $content, wp_kses_allowed_html( 'post' ), array( 'http', 'https', 'mailto', 'data' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
 		<div class="footer">Inženjerski biro d.o.o. · Heinzelova 4A, Zagreb · ingbiro@ingbiro.hr · (+385) 1 46 00 888</div>
 	</body>
 	</html>
@@ -1035,3 +1154,56 @@ function ingbiro_upgrade_content_model() {
 	update_option( 'ingbiro_content_model_version', '1.1.0' );
 }
 add_action( 'init', 'ingbiro_upgrade_content_model', 30 );
+
+/**
+ * Upgrade the original demo webinar to the complete modular Figma blueprint.
+ *
+ * The marker is stored on the event so subsequent editor changes are preserved.
+ */
+function ingbiro_upgrade_event_blueprint() {
+	$events = get_posts(
+		array(
+			'post_type'      => 'ing_event',
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+		)
+	);
+
+	if ( ! $events ) {
+		return;
+	}
+
+	$event_id = $events[0]->ID;
+	if ( version_compare( (string) get_post_meta( $event_id, '_ingbiro_event_blueprint_version', true ), '1.3.0', '>=' ) ) {
+		return;
+	}
+
+	wp_update_post(
+		array(
+			'ID'           => $event_id,
+			'post_excerpt' => 'Ovo usavršavanje donosi 8 sati za obnovu certifikata. Oslonite se na jasne smjernice i praktične prikaze svih faza jednostavne nabave u EOJN RH.',
+			'post_content' => ingbiro_event_blueprint_content(),
+		)
+	);
+
+	$meta = array(
+		'ing_event_format'               => 'UŽIVO · WEBINAR',
+		'ing_event_date'                 => '11. lipnja 2026.',
+		'ing_event_start_date'           => '2026-06-11',
+		'ing_event_hours'                => '8 nastavnih sati',
+		'ing_event_start'                => '9:00 sati',
+		'ing_event_location'             => 'Webinar uživo',
+		'ing_event_speaker'              => 'Ančica Jonjić, dipl. iur.',
+		'ing_event_speaker_role'         => 'Savjetnica u Službi za pravne poslove, Središnji državni ured za središnju javnu nabavu',
+		'ing_event_fee'                  => '180,00 eura',
+		'ing_event_registration_enabled' => 1,
+	);
+
+	foreach ( $meta as $key => $value ) {
+		update_post_meta( $event_id, $key, $value );
+	}
+	update_post_meta( $event_id, '_ingbiro_event_blueprint_version', '1.3.0' );
+}
+add_action( 'init', 'ingbiro_upgrade_event_blueprint', 35 );

@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Inženjerski biro">
-	<g fill="#1657a5">
-		<path fill-rule="evenodd" d="M32 8a24 24 0 1 1 0 48 24 24 0 0 1 0-48Zm0 13a11 11 0 1 0 0 22 11 11 0 0 0 0-22Z"/>
-		<path d="M28 1h8v12h-8zM28 51h8v12h-8zM51 28h12v8H51zM1 28h12v8H1z"/>
-		<path d="m48.3 10.1 5.6 5.6-8.5 8.5-5.6-5.6zM18.6 39.8l5.6 5.6-8.5 8.5-5.6-5.6zM48.3 53.9l-8.5-8.5 5.6-5.6 8.5 8.5zM18.6 24.2l-8.5-8.5 5.6-5.6 8.5 8.5z"/>
-	</g>
-</svg>

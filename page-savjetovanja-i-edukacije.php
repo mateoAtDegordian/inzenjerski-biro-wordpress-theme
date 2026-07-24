@@ -5,7 +5,10 @@
  * @package Ingbiro
  */
 
-get_header();
+$ingbiro_embedded_template = ! empty( $GLOBALS['ingbiro_embedded_template'] );
+if ( ! $ingbiro_embedded_template ) {
+	get_header();
+}
 
 $events = new WP_Query(
 	array(
@@ -43,7 +46,9 @@ $events = new WP_Query(
 						<p>Redovito organiziramo savjetovanja koja okupljaju vodeće stručnjake i znanstvenike iz raznih područja prava, javne uprave i gospodarstva, a koja je moguće pratiti uživo ili online.</p>
 						<p>Izvršni smo organizator tradicionalnog godišnjeg savjetovanja Hrvatskog društva ekonomista kojem je moguće prisustvovati isključivo uživo.</p>
 					</div>
-					<?php ingbiro_button( 'Pogledajte arhivu savjetovanja', ingbiro_page_url( 'arhiva' ), 'pill-button--cream pill-button--small' ); ?>
+					<?php if ( ! ingbiro_is_english() ) : ?>
+						<?php ingbiro_button( 'Pogledajte arhivu savjetovanja', ingbiro_page_url( 'arhiva' ), 'pill-button--cream pill-button--small' ); ?>
+					<?php endif; ?>
 				</article>
 				<article class="content-card">
 					<h2>Edukacije</h2>
@@ -54,7 +59,10 @@ $events = new WP_Query(
 					</div>
 				</article>
 			</div>
-			<div class="education-gears" aria-hidden="true"><span></span><span></span></div>
+			<div class="education-gears" aria-hidden="true">
+				<img class="education-gears__large" src="<?php echo esc_url( ingbiro_asset( 'icons/figma-gear-soft-education.svg' ) ); ?>" alt="">
+				<img class="education-gears__small" src="<?php echo esc_url( ingbiro_asset( 'icons/figma-gear-blue-education.svg' ) ); ?>" alt="">
+			</div>
 		</div>
 	</section>
 
@@ -79,32 +87,36 @@ $events = new WP_Query(
 		</article>
 	</section>
 
-	<section class="section event-section">
-		<div class="container">
-			<?php ingbiro_section_label( 'Aktualna događanja' ); ?>
-			<div class="event-list">
-				<?php
-				while ( $events->have_posts() ) :
-					$events->the_post();
-					?>
-					<article class="event-card">
-						<a class="event-card__image" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr( get_the_title() ); ?>">
-							<img src="<?php echo esc_url( ingbiro_event_image_url( get_the_ID(), 'large' ) ); ?>" alt="">
-						</a>
-						<div class="event-card__content">
-							<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
-							<div class="tag-list">
-								<span><?php echo esc_html( get_post_meta( get_the_ID(), 'ing_event_format', true ) ?: 'UŽIVO · WEBINAR' ); ?></span>
-								<span><?php echo esc_html( get_post_meta( get_the_ID(), 'ing_event_date', true ) ); ?></span>
+	<?php if ( ! ingbiro_is_english() ) : ?>
+		<section class="section event-section">
+			<div class="container">
+				<?php ingbiro_section_label( 'Aktualna događanja' ); ?>
+				<div class="event-list">
+					<?php
+					while ( $events->have_posts() ) :
+						$events->the_post();
+						?>
+						<article class="event-card">
+							<a class="event-card__image" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr( get_the_title() ); ?>">
+								<img src="<?php echo esc_url( ingbiro_event_image_url( get_the_ID(), 'large' ) ); ?>" alt="">
+							</a>
+							<div class="event-card__content">
+								<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+								<div class="tag-list">
+									<span><?php echo esc_html( get_post_meta( get_the_ID(), 'ing_event_format', true ) ?: 'UŽIVO · WEBINAR' ); ?></span>
+									<span><?php echo esc_html( get_post_meta( get_the_ID(), 'ing_event_date', true ) ); ?></span>
+								</div>
+								<p><?php echo esc_html( get_the_excerpt() ); ?></p>
+								<?php ingbiro_button( 'Pročitajte više', get_permalink(), 'pill-button--small' ); ?>
 							</div>
-							<p><?php echo esc_html( get_the_excerpt() ); ?></p>
-							<?php ingbiro_button( 'Pročitajte više', get_permalink(), 'pill-button--small' ); ?>
-						</div>
-					</article>
-				<?php endwhile; wp_reset_postdata(); ?>
+						</article>
+					<?php endwhile; wp_reset_postdata(); ?>
+				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+	<?php endif; ?>
 </main>
 <?php
-get_footer();
+if ( ! $ingbiro_embedded_template ) {
+	get_footer();
+}
