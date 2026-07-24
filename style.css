@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.4.1
+Version: 1.4.2
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -3221,7 +3221,7 @@ select {
 }
 
 .section--gears {
-	padding-block: 100px;
+	padding-block: 29px;
 }
 
 .section--gears .editorial-grid,
@@ -3234,22 +3234,22 @@ select {
 }
 
 .gear-art__large {
-	top: 72px;
+	top: 116px;
 	left: calc(0px - var(--ing-container-edge) - 166px);
 	width: 380px;
 	height: 380px;
 	transform-origin: center;
-	animation: ingbiro-gear-clockwise 32s linear infinite;
+	animation: ingbiro-gear-clockwise 7s linear infinite;
 	will-change: transform;
 }
 
 .gear-art__small {
-	top: 0;
-	left: calc(clamp(260px, 31vw, 450px) - var(--ing-container-edge));
+	top: 11px;
+	left: calc(170px - var(--ing-container-edge));
 	width: 211px;
 	height: 211px;
 	transform-origin: center;
-	animation: ingbiro-gear-counterclockwise 24s linear infinite;
+	animation: ingbiro-gear-counterclockwise 5.5s linear infinite;
 	will-change: transform;
 }
 
@@ -3258,8 +3258,8 @@ select {
 	top: auto;
 	left: auto;
 	width: 100%;
-	height: 280px;
-	margin-top: 72px;
+	height: 220px;
+	margin-top: 40px;
 }
 
 .education-gears__large {
@@ -3268,22 +3268,22 @@ select {
 	width: 217px;
 	height: 217px;
 	transform-origin: center;
-	animation: ingbiro-gear-counterclockwise 25s linear infinite;
+	animation: ingbiro-gear-counterclockwise 7s linear infinite;
 	will-change: transform;
 }
 
 .education-gears__small {
-	top: 122px;
-	left: calc(250px - var(--ing-container-edge));
+	top: 108px;
+	left: calc(210px - var(--ing-container-edge));
 	width: 95px;
 	height: 95px;
 	transform-origin: center;
-	animation: ingbiro-gear-clockwise 17s linear infinite;
+	animation: ingbiro-gear-clockwise 5.5s linear infinite;
 	will-change: transform;
 }
 
 .content-list--education {
-	padding-top: 80px;
+	padding-top: 28px;
 }
 
 .event-program-gears {
@@ -3299,7 +3299,7 @@ select {
 	width: 217px;
 	height: 217px;
 	transform-origin: center;
-	animation: ingbiro-gear-counterclockwise 25s linear infinite;
+	animation: ingbiro-gear-counterclockwise 7s linear infinite;
 	will-change: transform;
 }
 
@@ -3309,7 +3309,7 @@ select {
 	width: 392px;
 	height: 392px;
 	transform-origin: center;
-	animation: ingbiro-gear-clockwise 34s linear infinite;
+	animation: ingbiro-gear-clockwise 9s linear infinite;
 	will-change: transform;
 }
 
@@ -3332,15 +3332,30 @@ select {
 	background: var(--ing-cream);
 }
 
-.about-motion__wordmark {
+.about-motion__wordmark-track {
 	position: absolute;
 	top: 168px;
-	left: 50%;
+	left: 0;
+	display: flex;
+	width: max-content;
+	max-width: none;
+	height: 404px;
+	animation: ingbiro-wordmark-marquee 18s linear infinite;
+	pointer-events: none;
+	will-change: transform;
+}
+
+.about-motion__wordmark {
 	width: 1880px;
 	max-width: none;
 	height: 404px;
-	transform: translateX(-60.1%);
-	pointer-events: none;
+	flex: 0 0 1880px;
+}
+
+@keyframes ingbiro-wordmark-marquee {
+	to {
+		transform: translateX(-50%);
+	}
 }
 
 .about-motion__stack {
@@ -3372,8 +3387,9 @@ select {
 	border: 0.5px solid rgb(0 0 0 / 20%);
 	border-radius: 16px;
 	background: var(--ing-paper);
-	opacity: 0;
-	transform: translate3d(34px, 20px, 0) rotate(4deg) scale(0.97);
+	z-index: 1;
+	opacity: 0.72;
+	transform: translate3d(30px, 20px, 0) rotate(5deg) scale(0.965);
 	transition:
 		opacity 760ms ease,
 		transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -3389,7 +3405,7 @@ select {
 .about-motion__card.is-leaving {
 	z-index: 3;
 	opacity: 0;
-	transform: translate3d(-34px, -18px, 0) rotate(-4deg) scale(0.98);
+	transform: translate3d(-72px, -24px, 0) rotate(-7deg) scale(0.97);
 }
 
 .about-motion__card img {
@@ -3403,9 +3419,36 @@ select {
 	object-position: 48% center;
 }
 
+@media (min-width: 901px) {
+	.about-intro {
+		padding-block: 93px 110px;
+	}
+
+	.about-intro .editorial-grid {
+		grid-template-columns: minmax(0, 425px) minmax(0, 813px);
+		column-gap: 66px;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.about-intro .image-collage {
+		grid-template-columns: minmax(0, 450px) minmax(0, 339px);
+		grid-template-rows: 180px 150px;
+		column-gap: 24px;
+		row-gap: 22px;
+	}
+
+	.section--gears .editorial-grid--reverse {
+		grid-template-columns: minmax(0, 494px) minmax(0, 683px);
+		column-gap: 100px;
+		align-items: center;
+		justify-content: start;
+	}
+}
+
 @media (max-width: 760px) {
 	.section--gears {
-		padding-block: 70px;
+		padding-block: 44px;
 	}
 
 	.gear-art {
@@ -3413,7 +3456,7 @@ select {
 	}
 
 	.gear-art__large {
-		top: 58px;
+		top: 60px;
 		left: calc(0px - var(--ing-container-edge) - 110px);
 		width: 260px;
 		height: 260px;
@@ -3427,8 +3470,8 @@ select {
 	}
 
 	.education-gears {
-		height: 190px;
-		margin-top: 50px;
+		height: 165px;
+		margin-top: 32px;
 	}
 
 	.education-gears__large {
@@ -3438,14 +3481,14 @@ select {
 	}
 
 	.education-gears__small {
-		top: 98px;
-		left: calc(165px - var(--ing-container-edge));
+		top: 86px;
+		left: calc(145px - var(--ing-container-edge));
 		width: 70px;
 		height: 70px;
 	}
 
 	.content-list--education {
-		padding-top: 60px;
+		padding-top: 28px;
 	}
 
 	.event-program-gears {
@@ -3472,11 +3515,15 @@ select {
 		height: 500px;
 	}
 
-	.about-motion__wordmark {
+	.about-motion__wordmark-track {
 		top: 155px;
+		height: auto;
+	}
+
+	.about-motion__wordmark {
 		width: 930px;
 		height: auto;
-		transform: translateX(-58%);
+		flex-basis: 930px;
 	}
 
 	.about-motion__stack {
@@ -3499,7 +3546,8 @@ select {
 
 	.gear-art img,
 	.education-gears img,
-	.event-program-gears img {
+	.event-program-gears img,
+	.about-motion__wordmark-track {
 		animation: none;
 		will-change: auto;
 	}

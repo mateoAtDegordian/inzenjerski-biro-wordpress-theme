@@ -25,16 +25,16 @@ if ( ! $ingbiro_embedded_template ) {
 		</div>
 	</section>
 
-	<section class="section section--paper">
+	<section class="section section--paper about-intro">
 		<div class="container editorial-grid">
 			<div class="editorial-copy">
 				<?php ingbiro_section_label( 'Upoznajte nas' ); ?>
 				<p>INŽENJERSKI BIRO d.o.o. jedna je od vodećih konzultantskih kuća u Republici Hrvatskoj sa 75 godina iskustva na izradi studija, elaborata, strategija i pravilnika za klijente iz poduzetničkog i javnog sektora, kao i jedan od vodećih poduzetnika u području LegalTecha i digitalnog izdavaštva pravnih publikacija.</p>
 			</div>
 			<div class="image-collage">
-				<img class="image-collage__large" src="<?php echo esc_url( ingbiro_asset( 'images/about-team.jpg' ) ); ?>" alt="Tim na poslovnom sastanku">
-				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-history.jpg' ) ); ?>" alt="Arhivska građa">
-				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-team.jpg' ) ); ?>" alt="Stručno savjetovanje">
+				<img class="image-collage__large" src="<?php echo esc_url( ingbiro_asset( 'images/about-collage-main.jpg' ) ); ?>" alt="Povijesni upravljački centar Inženjerskog biroa">
+				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-collage-top.jpg' ) ); ?>" alt="Povijesni prikaz rada u Inženjerskom birou">
+				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-collage-bottom.jpg' ) ); ?>" alt="Stručno savjetovanje Inženjerskog biroa">
 			</div>
 		</div>
 	</section>
@@ -93,8 +93,11 @@ if ( ! $ingbiro_embedded_template ) {
 	</section>
 
 	<section class="about-motion" aria-hidden="true">
-		<img class="about-motion__wordmark" src="<?php echo esc_url( ingbiro_asset( 'icons/about-motion-wordmark.svg' ) ); ?>" alt="">
-		<div class="about-motion__stack" data-image-stack data-interval="3600">
+		<div class="about-motion__wordmark-track">
+			<img class="about-motion__wordmark" src="<?php echo esc_url( ingbiro_asset( 'icons/about-motion-wordmark.svg' ) ); ?>" alt="">
+			<img class="about-motion__wordmark" src="<?php echo esc_url( ingbiro_asset( 'icons/about-motion-wordmark.svg' ) ); ?>" alt="">
+		</div>
+		<div class="about-motion__stack" data-image-stack data-interval="2800">
 			<figure class="about-motion__card is-active">
 				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-motion-1.jpg' ) ); ?>" alt="">
 			</figure>

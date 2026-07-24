@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.2 — 2026-07-24
+
+- O nama uvod sada koristi tri izvorne Figma fotografije i njihove točne omjere, cropove i poravnanja.
+- Parovi zupčanika imaju ujednačen razmak i jasno vidljivu rotaciju u suprotnim smjerovima.
+- Foto-stack vidljivo izmjenjuje slike, a natpis Inženjerski biro kontinuirano prolazi iza njega preko cijelog viewporta.
+- Smanjen je višak praznog prostora između kartica savjetovanja, zupčanika i popisa edukacija.
+
 ## 1.4.1 — 2026-07-24
 
 - Footer sada koristi izvorne Figma SVG ikone za lokaciju, e-mail, telefon i LinkedIn.
