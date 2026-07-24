@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.5.3' );
+define( 'INGBIRO_VERSION', '1.5.4' );
 
 function ingbiro_setup() {
 	load_theme_textdomain( 'ingbiro', get_template_directory() . '/languages' );
@@ -149,7 +149,7 @@ function ingbiro_button( $label, $url, $class = '', $attributes = array() ) {
 function ingbiro_building_banner() {
 	printf(
 		'<div class="building-banner" aria-hidden="true"><img class="building-banner__image" src="%s" alt="" width="1470" height="630"></div>',
-		esc_url( ingbiro_asset( 'images/building-animation.svg' ) )
+		esc_url( add_query_arg( 'ver', INGBIRO_VERSION, ingbiro_asset( 'images/building-animation.svg' ) ) )
 	);
 }
 

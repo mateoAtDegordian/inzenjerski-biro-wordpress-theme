@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.4 — 2026-07-24
+
+- Building banner zamijenjen je novom SVG animacijom s blagim zoom efektom i njihanjem grana.
+- URL asseta sada uključuje verziju teme kako bi se nakon budućih zamjena izbjegao zastarjeli browser cache.
+
 ## 1.5.3 — 2026-07-24
 
 - Video banner zamijenjen je izvornim animiranim SVG-om od 1470 × 630 px.
