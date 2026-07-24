@@ -83,6 +83,7 @@ function ingbiro_english_output_translations() {
 		'IBAN kod Privredne banke:' => 'IBAN at Privredna banka Zagreb:',
 		'Uprava društva:' => 'Management:',
 
+		'Konzalting' => 'Consulting',
 		'Usmjereni smo ka iznalaženju sigurnih, visokokvalitetnih i dugoročnih rješenja i rezultata koji našim klijentima donose konkurentnu prednost i jačanje tržišne pozicije.' => 'We deliver secure, high-quality and long-term solutions that give our clients a competitive advantage and strengthen their market position.',
 		'Naše usluge' => 'Our services',
 		'Ekonomski konzalting' => 'Business consulting',

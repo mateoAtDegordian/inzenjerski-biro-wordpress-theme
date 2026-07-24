@@ -61,18 +61,29 @@
 
 	const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-	document.querySelectorAll("[data-typewriter]").forEach((title) => {
-		const text = title.textContent.trim();
-		if (!text || reducedMotion.matches) {
+	const typewriterTitles = new Set(document.querySelectorAll("[data-typewriter]"));
+	const primaryTitle = document.querySelector("main h1");
+	if (primaryTitle) {
+		typewriterTitles.add(primaryTitle);
+	}
+
+	typewriterTitles.forEach((title) => {
+		const text = title.innerText.trim();
+		if (!text) {
 			return;
 		}
 
 		const visibleText = document.createElement("span");
+		const titleHeight = title.getBoundingClientRect().height;
 		visibleText.setAttribute("aria-hidden", "true");
-		title.setAttribute("aria-label", text);
+		title.setAttribute("aria-label", text.replace(/\s+/g, " "));
+		if (titleHeight > 0) {
+			title.style.minHeight = `${Math.ceil(titleHeight)}px`;
+		}
 		title.textContent = "";
 		title.append(visibleText);
 		title.classList.add("is-typing");
+		title.classList.add("typewriter-title");
 
 		let characterIndex = 0;
 		const typeNextCharacter = () => {
@@ -81,7 +92,8 @@
 
 			if (characterIndex < text.length) {
 				const character = text.charAt(characterIndex - 1);
-				const delay = /[.:,!?]/.test(character) ? 105 : 34;
+				const baseDelay = reducedMotion.matches ? 28 : 58;
+				const delay = /[.:,!?]/.test(character) ? baseDelay * 2.6 : baseDelay;
 				window.setTimeout(typeNextCharacter, delay);
 				return;
 			}
@@ -90,19 +102,23 @@
 			title.classList.add("is-typed");
 		};
 
-		window.setTimeout(typeNextCharacter, 240);
+		window.setTimeout(typeNextCharacter, reducedMotion.matches ? 180 : 420);
 	});
 
 	document.querySelectorAll("[data-image-stack]").forEach((stack) => {
 		const cards = Array.from(stack.querySelectorAll(".about-motion__card"));
-		if (cards.length < 2 || reducedMotion.matches) {
+		if (cards.length < 2) {
 			cards.forEach((card, index) => card.classList.toggle("is-active", index === 0));
 			return;
 		}
 
-		const interval = Math.max(2400, Number.parseInt(stack.dataset.interval || "3600", 10));
+		stack.classList.toggle("is-reduced-motion", reducedMotion.matches);
+		const requestedInterval = Number.parseInt(stack.dataset.interval || "3600", 10);
+		const interval = reducedMotion.matches ? Math.max(4200, requestedInterval) : Math.max(2400, requestedInterval);
 		let activeIndex = Math.max(0, cards.findIndex((card) => card.classList.contains("is-active")));
 		let timer = null;
+		let previewTimer = null;
+		let hasPreviewed = false;
 
 		const showNext = () => {
 			const current = cards[activeIndex];
@@ -121,9 +137,17 @@
 				window.clearInterval(timer);
 				timer = null;
 			}
+			if (previewTimer) {
+				window.clearTimeout(previewTimer);
+				previewTimer = null;
+			}
 		};
 		const start = () => {
 			if (!timer && !document.hidden) {
+				if (!hasPreviewed) {
+					hasPreviewed = true;
+					previewTimer = window.setTimeout(showNext, reducedMotion.matches ? 900 : 520);
+				}
 				timer = window.setInterval(showNext, interval);
 			}
 		};

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.3 — 2026-07-24
+
+- Typewriter se sada automatski primjenjuje na prvi H1 svakog glavnog predloška, uključujući HR i EN stranice.
+- Svi dekorativni zupčanici, uključujući male oznake sekcija i modularne Gutenberg zupčanike, sada se rotiraju.
+- `Reduce Motion` više ne gasi sve efekte: koristi sporiju rotaciju, kraći typewriter i fade izmjenu fotografija.
+- Zupčanici na stranici Savjetovanja i edukacije pomaknuti su u slobodan prostor ispod kraće lijeve kartice.
+
 ## 1.4.2 — 2026-07-24
 
 - O nama uvod sada koristi tri izvorne Figma fotografije i njihove točne omjere, cropove i poravnanja.

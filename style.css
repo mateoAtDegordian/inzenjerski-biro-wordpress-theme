@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.4.2
+Version: 1.4.3
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -3203,6 +3203,10 @@ select {
 	position: relative;
 }
 
+.typewriter-title > [aria-hidden="true"] {
+	white-space: pre-line;
+}
+
 .typewriter-title.is-typing::after {
 	display: inline-block;
 	width: 0.08em;
@@ -3259,7 +3263,7 @@ select {
 	left: auto;
 	width: 100%;
 	height: 220px;
-	margin-top: 40px;
+	margin-top: -155px;
 }
 
 .education-gears__large {
@@ -3323,6 +3327,24 @@ select {
 	to {
 		transform: rotate(-360deg);
 	}
+}
+
+.section-label__gear {
+	transform-origin: center;
+	animation: ingbiro-gear-clockwise 8s linear infinite;
+	will-change: transform;
+}
+
+.modular-section--gears::before {
+	transform-origin: center;
+	animation: ingbiro-gear-clockwise 7s linear infinite;
+	will-change: transform;
+}
+
+.modular-section--gears::after {
+	transform-origin: center;
+	animation: ingbiro-gear-counterclockwise 5.5s linear infinite;
+	will-change: transform;
 }
 
 .about-motion {
@@ -3540,20 +3562,39 @@ select {
 
 @media (prefers-reduced-motion: reduce) {
 	.typewriter-title.is-typing::after {
-		display: none;
-		animation: none;
+		animation-duration: 1.2s;
 	}
 
-	.gear-art img,
-	.education-gears img,
-	.event-program-gears img,
+	.gear-art__large,
+	.education-gears__large,
+	.event-program-gears img:last-child,
+	.modular-section--gears::before {
+		animation-duration: 14s;
+	}
+
+	.gear-art__small,
+	.education-gears__small,
+	.event-program-gears img:first-child,
+	.modular-section--gears::after {
+		animation-duration: 11s;
+	}
+
+	.section-label__gear {
+		animation-duration: 16s;
+	}
+
 	.about-motion__wordmark-track {
-		animation: none;
-		will-change: auto;
+		animation-duration: 36s;
 	}
 
 	.about-motion__card {
-		transition: none;
+		transform: none;
+		transition: opacity 360ms ease;
 		will-change: auto;
+	}
+
+	.about-motion__card.is-active,
+	.about-motion__card.is-leaving {
+		transform: none;
 	}
 }
