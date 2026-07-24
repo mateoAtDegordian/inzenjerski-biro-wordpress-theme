@@ -52,6 +52,14 @@ Brza PHP provjera:
 find . -name '*.php' -print0 | xargs -0 -n1 php -l
 ```
 
+## GitHub sync i produkcija
+
+GitHub je jedini izvor istine za kod teme. Pull requestovi automatski provjeravaju PHP i JavaScript te izrađuju instalacijski ZIP, a svaki novi `main` commit s povećanom verzijom automatski objavljuje GitHub Release.
+
+Na produkciji je preporučen plugin **Git Updater**. Tema već sadrži potrebne GitHub headere pa WordPress može ponuditi novu verziju kroz standardni ekran **Nadzorna ploča → Ažuriranja**. Baza, uploadi, Forminator prijave i sadržaj stranica nisu dio Git repozitorija i ostaju odvojeni po okruženju.
+
+Detaljan postupak prvog prijenosa, budućih izmjena i povrata verzije nalazi se u [DEPLOYMENT.md](DEPLOYMENT.md).
+
 ## Figma izvori
 
 - [Inženjerski biro Copy — UI Design Version 2](https://www.figma.com/design/kKEePHOBf5vMKPNUX0Tt5s/Inzenjerski-biro--Copy-?node-id=16249-301&p=f&m=dev)

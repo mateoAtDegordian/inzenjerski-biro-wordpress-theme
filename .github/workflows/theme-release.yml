@@ -1,0 +1,96 @@
+name: Publish theme release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: theme-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build and publish release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out theme
+        uses: actions/checkout@v4
+
+      - name: Read and verify version
+        id: version
+        shell: bash
+        run: |
+          version="$(sed -n 's/^Version:[[:space:]]*//p' style.css | head -n 1 | tr -d '\r')"
+          code_version="$(sed -n "s/.*INGBIRO_VERSION', '\\([^']*\\)'.*/\\1/p" functions.php | head -n 1)"
+
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Invalid or missing Version header in style.css"
+            exit 1
+          fi
+
+          if [[ "$version" != "$code_version" ]]; then
+            echo "::error::style.css Version ($version) and INGBIRO_VERSION ($code_version) must match"
+            exit 1
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+      - name: Validate PHP and JavaScript
+        run: |
+          docker run --rm \
+            --volume "$PWD:/theme" \
+            --workdir /theme \
+            php:8.0-cli \
+            sh -c "find . -type f -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l"
+          node --check assets/js/theme.js
+
+      - name: Build release ZIP
+        id: package
+        shell: bash
+        run: |
+          package_path="$(scripts/package-theme.sh dist)"
+          echo "path=$package_path" >> "$GITHUB_OUTPUT"
+
+      - name: Refuse to overwrite a released version
+        id: existing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+        shell: bash
+        run: |
+          if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          target="$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json targetCommitish --jq '.targetCommitish')"
+          if [[ "$target" == "$GITHUB_SHA" ]]; then
+            echo "Release $RELEASE_TAG already points to this commit."
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "::error::Release $RELEASE_TAG already exists for another commit. Increase Version in style.css and INGBIRO_VERSION in functions.php."
+          exit 1
+
+      - name: Publish GitHub Release
+        if: steps.existing.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+          PACKAGE_PATH: ${{ steps.package.outputs.path }}
+        run: |
+          gh release create "$RELEASE_TAG" "$PACKAGE_PATH" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Inženjerski biro $RELEASE_VERSION" \
+            --generate-notes

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.0 — 2026-07-24
+
+- Tema je povezana s GitHub Release distribucijom i Git Updater ažuriranjima iz WordPress administracije.
+- Dodani su automatski CI, provjera PHP/JavaScript sintakse i instalacijski ZIP artefakt za svaki pull request.
+- Svaki novi `main` commit s povećanom verzijom automatski objavljuje verzionirani GitHub Release ZIP.
+- Dokumentiran je preporučeni local → GitHub → server workflow i jasna granica između koda teme i WordPress sadržaja.
+
 ## 1.4.3 — 2026-07-24
 
 - Typewriter se sada automatski primjenjuje na prvi H1 svakog glavnog predloška, uključujući HR i EN stranice.
