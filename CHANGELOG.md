@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.2 — 2026-07-24
+
+- Uklonjen je poster i svako cropanje videa; banner se prikazuje u izvornom omjeru 1470 × 630.
+- Autoplay se više ne zaustavlja zbog sistemske `Reduce Motion` postavke.
+- Video se proaktivno pokreće nakon učitavanja i pri povratku na karticu preglednika.
+
 ## 1.5.1 — 2026-07-24
 
 - Donji banner zgrade zamijenjen je optimiziranim autoplay/loop videom bez kontrola.

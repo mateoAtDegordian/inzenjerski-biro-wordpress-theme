@@ -63,14 +63,13 @@
 
 	document.querySelectorAll("[data-ambient-video]").forEach((video) => {
 		const syncPlayback = () => {
-			if (reducedMotion.matches || document.hidden) {
+			if (document.hidden) {
 				video.pause();
-				if (reducedMotion.matches) {
-					video.currentTime = 0;
-				}
 				return;
 			}
 
+			video.muted = true;
+			video.defaultMuted = true;
 			const playback = video.play();
 			if (playback && typeof playback.catch === "function") {
 				playback.catch(() => {});
@@ -78,10 +77,8 @@
 		};
 
 		syncPlayback();
+		video.addEventListener("canplay", syncPlayback, { once: true });
 		document.addEventListener("visibilitychange", syncPlayback);
-		if (typeof reducedMotion.addEventListener === "function") {
-			reducedMotion.addEventListener("change", syncPlayback);
-		}
 	});
 
 	const typewriterTitles = new Set(document.querySelectorAll("[data-typewriter]"));
