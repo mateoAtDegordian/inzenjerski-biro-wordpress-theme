@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.1 — 2026-07-24
+
+- Donji banner zgrade zamijenjen je optimiziranim autoplay/loop videom bez kontrola.
+- Video zadržava full-bleed prikaz i responzivni crop, uz postojeću sliku kao poster i fallback.
+- Posjetitelji s uključenim `Reduce Motion` postavkama vide mirni poster umjesto animacije.
+
 ## 1.5.0 — 2026-07-24
 
 - Tema je povezana s GitHub Release distribucijom i Git Updater ažuriranjima iz WordPress administracije.
