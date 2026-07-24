@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.0 — 2026-07-24
+
+- Dodane typewriter animacije na naslovnici i O nama prema komentarima dizajnerice.
+- Dodan animirani foto-stack iz dostavljenih Figma slika, spreman za ukupno četiri fotografije.
+- Zupčanici se kontinuirano rotiraju u suprotnim smjerovima, uz `prefers-reduced-motion` alternativu.
+- Figma SVG asseti očišćeni su od pozadinskih pravokutnika i internih clipova; sada se režu samo na stvarnom rubu viewporta.
+- Povećani su razmaci između zupčanika, sadržaja i sljedećih sekcija na desktopu i mobitelu.
+
 ## 1.3.0 — 2026-07-24
 
 - CTA komponente usklađene s Figma dimenzijama: 40 × 40 px standardni i 32 × 32 px mali krug, bez rastezanja u flex/grid prikazima.

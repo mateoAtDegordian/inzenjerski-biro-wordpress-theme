@@ -15,6 +15,7 @@ Prijenosna custom WordPress tema izrađena prema Figma dokumentu **UI Design Ver
 - zajednički HR/EN predlošci: engleske stranice prate istu strukturu i dizajnerske ispravke kao hrvatske, uz vlastiti prevedeni sadržaj
 - biblioteka Gutenberg patterns za kartice, tekst, sliku s tekstom i CTA sekcije
 - desktop i mobilna navigacija te pristupačni accordion elementi
+- typewriter naslovi, animirani povijesni foto-stack i rotirajući Figma zupčanici uz podršku za smanjeno kretanje
 - lokalno spremljeni originalni Figma asseti; tema ne ovisi o privremenim Figma URL-ovima
 
 ## Instalacija

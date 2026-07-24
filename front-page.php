@@ -23,7 +23,7 @@ $event = $events ? $events[0] : null;
 	<section class="home-hero">
 		<div class="container">
 			<div class="home-hero__copy">
-				<h1>Upoznajte najdugovječniju konzultantsku kuću u Republici Hrvatskoj</h1>
+				<h1 class="typewriter-title" data-typewriter>Upoznajte najdugovječniju konzultantsku kuću u Republici Hrvatskoj</h1>
 				<div class="home-hero__aside">
 					<p>75 godina iskustva na izradi studija, elaborata, strategija i pravilnika za klijente iz poduzetničkog i javnog sektora.</p>
 					<?php ingbiro_button( 'Pročitajte više', ingbiro_page_url( 'o-nama' ) ); ?>

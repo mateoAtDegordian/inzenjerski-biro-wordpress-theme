@@ -14,7 +14,7 @@ if ( ! $ingbiro_embedded_template ) {
 	<section class="page-hero">
 		<div class="container">
 			<div class="page-hero__copy">
-				<h1>Evolucija uspjeha: Tradicija u službi modernog poslovanja.</h1>
+				<h1 class="typewriter-title" data-typewriter>Evolucija uspjeha: Tradicija u službi modernog poslovanja.</h1>
 				<div class="page-hero__aside">
 					<p>Upoznajte nas<br>Naša ekspertiza<br>Povezanost s korijenima<br>Mjesto susreta znanstvene i stručne zajednice<br>Suradnja s vodećim institucijama</p>
 				</div>
@@ -39,7 +39,7 @@ if ( ! $ingbiro_embedded_template ) {
 		</div>
 	</section>
 
-	<section class="section">
+	<section class="section section--gears">
 		<div class="container editorial-grid editorial-grid--reverse">
 			<div class="gear-art" aria-hidden="true">
 				<img class="gear-art__large" src="<?php echo esc_url( ingbiro_asset( 'icons/figma-gear-blue-large.svg' ) ); ?>" alt="">
@@ -66,7 +66,7 @@ if ( ! $ingbiro_embedded_template ) {
 		</div>
 	</section>
 
-	<section class="section">
+	<section class="section section--gears">
 		<div class="container editorial-grid editorial-grid--reverse">
 			<div class="gear-art" aria-hidden="true">
 				<img class="gear-art__large" src="<?php echo esc_url( ingbiro_asset( 'icons/figma-gear-blue-large.svg' ) ); ?>" alt="">
@@ -89,6 +89,18 @@ if ( ! $ingbiro_embedded_template ) {
 				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-history.jpg' ) ); ?>" alt="">
 				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-team.jpg' ) ); ?>" alt="">
 			</div>
+		</div>
+	</section>
+
+	<section class="about-motion" aria-hidden="true">
+		<img class="about-motion__wordmark" src="<?php echo esc_url( ingbiro_asset( 'icons/about-motion-wordmark.svg' ) ); ?>" alt="">
+		<div class="about-motion__stack" data-image-stack data-interval="3600">
+			<figure class="about-motion__card is-active">
+				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-motion-1.jpg' ) ); ?>" alt="">
+			</figure>
+			<figure class="about-motion__card">
+				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-motion-2.jpg' ) ); ?>" alt="">
+			</figure>
 		</div>
 	</section>
 

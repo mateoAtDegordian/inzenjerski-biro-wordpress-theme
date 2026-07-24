@@ -29,7 +29,7 @@ if ( ! $ingbiro_embedded_template ) {
 		</div>
 	</section>
 
-	<section class="section">
+	<section class="section section--gears">
 		<div class="container portal-use">
 			<div class="gear-art" aria-hidden="true">
 				<img class="gear-art__large" src="<?php echo esc_url( ingbiro_asset( 'icons/figma-gear-blue-large.svg' ) ); ?>" alt="">
