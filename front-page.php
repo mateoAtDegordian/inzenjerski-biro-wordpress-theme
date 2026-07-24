@@ -95,7 +95,7 @@ $event = $events ? $events[0] : null;
 			<?php if ( $event ) : ?>
 				<article class="event-feature">
 					<div class="event-feature__image">
-						<img src="<?php echo esc_url( get_the_post_thumbnail_url( $event, 'large' ) ?: ingbiro_asset( 'images/event.png' ) ); ?>" alt="">
+						<img src="<?php echo esc_url( ingbiro_event_image_url( $event->ID, 'large' ) ); ?>" alt="">
 					</div>
 					<div>
 						<h2><?php echo esc_html( get_the_title( $event ) ); ?></h2>
@@ -120,14 +120,7 @@ $event = $events ? $events[0] : null;
 					<h2>Newsletter pretplata</h2>
 					<p>Budite u tijeku s najnovijim zakonskim promjenama i poslovnim propisima.</p>
 				</div>
-				<form class="inline-form" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
-					<input type="hidden" name="action" value="ingbiro_submit">
-					<input type="hidden" name="submission_type" value="newsletter">
-					<?php wp_nonce_field( 'ingbiro_submit', 'ingbiro_nonce' ); ?>
-					<label class="screen-reader-text" for="home-newsletter-email">Vaš e-mail</label>
-					<input id="home-newsletter-email" name="email" type="email" placeholder="Vaš e-mail" required>
-					<button class="pill-button" type="submit"><span class="pill-button__label">Pretplatite se</span><span class="pill-button__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/arrow-right.svg' ) ); ?>" alt=""></span></button>
-				</form>
+				<?php ingbiro_render_form( 'quick', 'ing-forminator--inline' ); ?>
 			</div>
 		</div>
 	</section>

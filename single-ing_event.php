@@ -39,7 +39,7 @@ while ( have_posts() ) :
 						<?php endif; ?>
 					</div>
 					<div class="event-single__image">
-						<img src="<?php echo esc_url( get_the_post_thumbnail_url( $event_id, 'ingbiro-event-hero' ) ?: ingbiro_asset( 'images/education-event-figma.png' ) ); ?>" alt="">
+						<img src="<?php echo esc_url( ingbiro_event_image_url( $event_id ) ); ?>" alt="">
 					</div>
 				</div>
 			</header>
@@ -121,7 +121,7 @@ while ( have_posts() ) :
 							<?php while ( $related_events->have_posts() ) : $related_events->the_post(); ?>
 								<article class="event-card">
 									<a class="event-card__image" href="<?php the_permalink(); ?>">
-										<img src="<?php echo esc_url( get_the_post_thumbnail_url( get_the_ID(), 'large' ) ?: ingbiro_asset( 'images/education-event-figma.png' ) ); ?>" alt="">
+										<img src="<?php echo esc_url( ingbiro_event_image_url( get_the_ID(), 'large' ) ); ?>" alt="">
 									</a>
 									<div class="event-card__content">
 										<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>

@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.1.0
+Version: 1.2.0
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -852,6 +852,12 @@ select {
 	overflow: hidden;
 	border-radius: var(--ing-radius);
 	background: var(--ing-blue);
+}
+
+.portal-video video {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 .portal-video__play {
@@ -2213,5 +2219,525 @@ select {
 	* {
 		scroll-behavior: auto !important;
 		transition-duration: 0.01ms !important;
+	}
+}
+
+/* 1.2 — reusable media, Gutenberg and Forminator refinements. */
+.building-banner img {
+	position: static;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.pill-button__icon,
+.pill-button--small .pill-button__icon {
+	aspect-ratio: 1;
+	min-width: 32px;
+	padding: 0;
+	border-radius: 999px;
+}
+
+.gear-art::before,
+.gear-art::after,
+.education-gears span {
+	border: 0;
+	border-radius: 0;
+	background: currentColor;
+	-webkit-mask: url("assets/icons/gear-ring.svg") center / contain no-repeat;
+	mask: url("assets/icons/gear-ring.svg") center / contain no-repeat;
+}
+
+.gear-art::before {
+	top: 36px;
+	left: -165px;
+	width: 380px;
+	height: 380px;
+	color: var(--ing-blue);
+}
+
+.gear-art::after {
+	top: -10px;
+	left: 165px;
+	width: 211px;
+	height: 211px;
+	color: var(--ing-blue-soft);
+}
+
+.portal-card,
+.portal-card--primary {
+	background: var(--ing-paper);
+	color: var(--ing-ink);
+	transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.portal-card:hover,
+.portal-card:focus-within {
+	background: var(--ing-blue);
+	color: #fff;
+	transform: translateY(-3px);
+}
+
+.portal-card:hover h3,
+.portal-card:focus-within h3 {
+	color: #fff;
+}
+
+.content-cards--education {
+	align-items: start;
+}
+
+.content-cards--education .content-card {
+	min-height: 605px;
+	padding: 32px;
+}
+
+.content-cards--education .content-card:first-child {
+	min-height: 422px;
+}
+
+.content-cards--education .content-card h2 {
+	margin-bottom: 72px;
+}
+
+.content-cards--education .pill-button {
+	margin-top: 12px;
+}
+
+.education-gears span:first-child {
+	top: 8px;
+	left: -108px;
+	width: 217px;
+	height: 217px;
+	color: var(--ing-blue-soft);
+}
+
+.education-gears span:last-child {
+	top: 116px;
+	left: 146px;
+	width: 95px;
+	height: 95px;
+	color: var(--ing-blue);
+}
+
+.form-page__context {
+	max-width: 920px;
+	margin: -40px auto 48px;
+	color: var(--ing-blue);
+	font-size: 20px;
+	text-align: center;
+}
+
+.ing-forminator--page {
+	max-width: 1220px;
+	margin-inline: auto;
+}
+
+.ing-forminator .forminator-ui.forminator-custom-form {
+	margin: 0 !important;
+}
+
+.ing-forminator .forminator-ui .forminator-row {
+	display: grid !important;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 42px !important;
+	margin-bottom: 42px !important;
+}
+
+.ing-forminator .forminator-ui .forminator-col {
+	width: auto !important;
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+.ing-forminator .forminator-ui .forminator-col-12 {
+	grid-column: 1 / -1;
+}
+
+.ing-forminator .forminator-ui .forminator-label {
+	margin: 0 0 9px !important;
+	color: var(--ing-ink) !important;
+	font-family: var(--ing-font-sans) !important;
+	font-size: 15px !important;
+	font-weight: 500 !important;
+}
+
+.ing-forminator .forminator-ui input.forminator-input,
+.ing-forminator .forminator-ui textarea.forminator-textarea,
+.ing-forminator .forminator-ui select.forminator-select2,
+.ing-forminator .forminator-ui .forminator-file-upload {
+	width: 100% !important;
+	min-height: 72px !important;
+	padding: 18px 34px !important;
+	border: 1px solid rgb(0 0 0 / 20%) !important;
+	border-radius: 999px !important;
+	background: transparent !important;
+	color: var(--ing-ink) !important;
+	font-family: var(--ing-font-sans) !important;
+	font-size: 18px !important;
+	box-shadow: none !important;
+}
+
+.ing-forminator .forminator-ui textarea.forminator-textarea {
+	min-height: 150px !important;
+	border-radius: 44px !important;
+	resize: vertical !important;
+}
+
+.ing-forminator .forminator-ui input.forminator-input:focus,
+.ing-forminator .forminator-ui textarea.forminator-textarea:focus {
+	border-color: var(--ing-blue) !important;
+	box-shadow: 0 0 0 3px rgb(36 78 156 / 12%) !important;
+}
+
+.ing-forminator .forminator-ui .forminator-row-last {
+	display: flex !important;
+	justify-content: center;
+	margin-bottom: 0 !important;
+}
+
+.ing-forminator .forminator-ui .forminator-button-submit {
+	display: inline-flex !important;
+	align-items: center;
+	gap: 8px;
+	min-height: 48px !important;
+	padding: 8px 8px 8px 20px !important;
+	border: 0 !important;
+	border-radius: 999px !important;
+	background: var(--ing-ink) !important;
+	color: #fff !important;
+	font-family: var(--ing-font-mono) !important;
+	font-size: 16px !important;
+	line-height: 1 !important;
+	white-space: nowrap !important;
+	box-shadow: none !important;
+}
+
+.ing-forminator .forminator-ui .forminator-button-submit::after {
+	display: grid;
+	width: 32px;
+	height: 32px;
+	flex: 0 0 32px;
+	content: "→";
+	place-items: center;
+	border-radius: 50%;
+	background: var(--ing-blue);
+	color: #fff;
+	font-family: var(--ing-font-sans);
+	font-size: 20px;
+	line-height: 1;
+}
+
+.ing-forminator .forminator-ui .forminator-row-last .forminator-col {
+	display: flex !important;
+	justify-content: center;
+}
+
+.ing-forminator .forminator-ui .forminator-button-submit:hover,
+.ing-forminator .forminator-ui .forminator-button-submit:focus-visible {
+	background: var(--ing-blue) !important;
+}
+
+.ing-forminator .forminator-ui .forminator-response-message {
+	margin-bottom: 24px !important;
+	border-radius: 12px !important;
+}
+
+.ing-forminator--inline {
+	min-width: 0;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-row {
+	display: block !important;
+	margin: 0 !important;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-label {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	overflow: hidden !important;
+	clip: rect(0, 0, 0, 0) !important;
+}
+
+.ing-forminator--inline .forminator-ui.forminator-custom-form {
+	display: grid !important;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 8px !important;
+	align-items: center;
+	padding: 7px 7px 7px 26px !important;
+	border: 1px solid rgb(0 0 0 / 20%) !important;
+	border-radius: 999px !important;
+}
+
+.ing-forminator--inline .forminator-ui input.forminator-input {
+	min-height: 44px !important;
+	padding: 8px 4px !important;
+	border: 0 !important;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-row-last {
+	grid-column: 2;
+	grid-row: 1;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-button-submit {
+	min-width: 210px;
+	min-height: 48px !important;
+}
+
+@media (max-width: 760px) {
+	.ing-forminator .forminator-ui .forminator-row {
+		grid-template-columns: 1fr;
+		gap: 20px !important;
+		margin-bottom: 20px !important;
+	}
+
+	.ing-forminator .forminator-ui .forminator-col-12 {
+		grid-column: auto;
+	}
+
+	.ing-forminator--inline .forminator-ui.forminator-custom-form {
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
+
+	.ing-forminator--inline .forminator-ui .forminator-button-submit {
+		min-width: 0;
+		padding-inline: 14px !important;
+		font-size: 12px !important;
+	}
+
+	.building-banner {
+		height: 300px;
+	}
+
+	.content-cards--education .content-card,
+	.content-cards--education .content-card:first-child {
+		min-height: 0;
+	}
+}
+
+.modular-page > .wp-block-group,
+.modular-page > .wp-block-columns,
+.modular-page > .wp-block-shortcode {
+	width: min(calc(100% - (var(--ing-gutter) * 2)), var(--ing-container));
+	margin-inline: auto;
+}
+
+.modular-hero {
+	padding-bottom: 70px;
+}
+
+.modular-page .modular-hero > *,
+.modular-page .modular-section > *,
+.modular-page .modular-callout > * {
+	width: 100%;
+	max-width: none;
+}
+
+.modular-hero__copy {
+	gap: clamp(40px, 9vw, 150px);
+	align-items: end !important;
+	padding: 38px 0 70px;
+}
+
+.modular-hero__copy > .wp-block-column:first-child {
+	flex-basis: 60%;
+}
+
+.modular-hero__copy > .wp-block-column:last-child {
+	flex-basis: 40%;
+}
+
+.modular-hero__copy h1 {
+	max-width: 790px;
+	margin: 0;
+	font-size: clamp(52px, 6.2vw, 88px);
+	line-height: 0.96;
+	letter-spacing: -0.045em;
+}
+
+.modular-hero__copy p {
+	max-width: 520px;
+	margin: 0;
+	font-size: 20px;
+	line-height: 1.25;
+}
+
+.modular-hero__image {
+	height: 490px;
+	margin: 0;
+	overflow: hidden;
+	border-radius: var(--ing-radius);
+}
+
+.modular-hero__image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.modular-section {
+	padding-block: 72px;
+}
+
+.modular-section > h2 {
+	max-width: 900px;
+	margin-bottom: 54px;
+	color: var(--ing-blue);
+	font-size: clamp(38px, 4vw, 55px);
+	line-height: 1.06;
+}
+
+.modular-section > p,
+.modular-section > ul {
+	width: min(100%, 980px) !important;
+	max-width: 980px;
+	font-size: 19px;
+	line-height: 1.48;
+}
+
+.modular-section > ul li {
+	margin-bottom: 10px;
+}
+
+.modular-cards {
+	gap: 20px;
+}
+
+.modular-card {
+	padding: 32px;
+	border-radius: var(--ing-radius);
+	background: var(--ing-paper);
+	font-size: 18px;
+	line-height: 1.3;
+	transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.modular-card h3 {
+	margin-bottom: 55px;
+	color: var(--ing-blue);
+	font-size: 30px;
+	line-height: 1.05;
+}
+
+.modular-cards--three .modular-card {
+	min-height: 390px;
+}
+
+.modular-cards--portal .modular-card {
+	min-height: 430px;
+}
+
+.modular-cards--portal .modular-card:hover,
+.modular-cards--portal .modular-card:focus-within {
+	background: var(--ing-blue);
+	color: #fff;
+	transform: translateY(-3px);
+}
+
+.modular-cards--portal .modular-card:hover h3,
+.modular-cards--portal .modular-card:focus-within h3 {
+	color: #fff;
+}
+
+.modular-section--gears {
+	position: relative;
+	padding-left: min(48vw, 650px);
+}
+
+.modular-section--gears::before,
+.modular-section--gears::after {
+	position: absolute;
+	content: "";
+	background: var(--ing-blue);
+	-webkit-mask: url("assets/icons/gear-ring.svg") center / contain no-repeat;
+	mask: url("assets/icons/gear-ring.svg") center / contain no-repeat;
+}
+
+.modular-section--gears::before {
+	top: 35px;
+	left: -165px;
+	width: 380px;
+	height: 380px;
+}
+
+.modular-section--gears::after {
+	top: 15px;
+	left: 180px;
+	width: 210px;
+	height: 210px;
+	background: var(--ing-blue-soft);
+}
+
+.modular-section--ribbon {
+	padding-block: 30px 80px;
+	text-align: center;
+}
+
+.modular-section--ribbon > h2 {
+	max-width: none;
+	margin-bottom: 24px;
+	color: var(--ing-blue-soft);
+	font-size: 18px;
+	line-height: 1.25;
+	text-transform: uppercase;
+}
+
+.modular-callout {
+	padding: 58px 36px;
+	margin-block: 70px;
+	border-radius: var(--ing-radius);
+	background: var(--ing-paper);
+}
+
+.modular-callout h2 {
+	font-size: 44px;
+}
+
+.modular-media {
+	gap: 48px;
+	align-items: center !important;
+}
+
+.modular-media img {
+	border-radius: 10px;
+}
+
+.modular-page > .wp-block-shortcode {
+	padding-block: 40px 90px;
+}
+
+@media (max-width: 800px) {
+	.modular-hero__copy {
+		padding-bottom: 40px;
+	}
+
+	.modular-hero__image {
+		height: 300px;
+	}
+
+	.modular-section--gears {
+		padding-top: 260px;
+		padding-left: 0;
+	}
+
+	.modular-section--gears::before {
+		left: -80px;
+		width: 260px;
+		height: 260px;
+	}
+
+	.modular-section--gears::after {
+		left: 135px;
+		width: 130px;
+		height: 130px;
+	}
+
+	.modular-card,
+	.modular-cards--three .modular-card,
+	.modular-cards--portal .modular-card {
+		min-height: 0;
 	}
 }

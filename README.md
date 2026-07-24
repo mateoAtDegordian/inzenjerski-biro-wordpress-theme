@@ -6,12 +6,14 @@ Prijenosna custom WordPress tema izrađena prema Figma dokumentu **UI Design Ver
 
 - responsive naslovnica, O nama, Konzalting, Pravni portal LING, Savjetovanja i edukacije, Arhiva, Kontakt, Newsletter i Karijera
 - detalj događanja i detalj radne pozicije
-- prijava na edukaciju i prijava za posao
+- Forminator obrasci za kontakt, newsletter, brzu newsletter prijavu, edukacije i posao
 - WordPress administracija za događanja, savjetovanja u arhivi, konzultantske usluge, pozicije i zaprimljene web prijave
 - Gutenberg sadržaj za edukacije i karijere, uz dodatna strukturirana polja za datum, format, predavača, lokaciju i kotizaciju
-- inline prijava na događanje preko Forminatora, s formom koja se može mijenjati bez izmjene koda
+- svi obrasci preko Forminatora, s poljima, obavijestima, webhooks i integracijama koje se mogu mijenjati bez izmjene koda
 - pravi PDF dokument događanja generiran iz aktualnih CMS podataka i Gutenberg sadržaja
-- kontakt i newsletter obrasci koji spremaju prijave u WordPress i šalju obavijest administratoru
+- isti izvor slike za karticu događanja, detalj i PDF dokument
+- uređive engleske Gutenberg stranice importirane iz dostavljenih DOCX dokumenata
+- biblioteka Gutenberg patterns za kartice, tekst, sliku s tekstom i CTA sekcije
 - desktop i mobilna navigacija te pristupačni accordion elementi
 - lokalno spremljeni originalni Figma asseti; tema ne ovisi o privremenim Figma URL-ovima
 
@@ -22,7 +24,7 @@ Prijenosna custom WordPress tema izrađena prema Figma dokumentu **UI Design Ver
 3. Pri prvoj aktivaciji tema kreira potrebne stranice i početni primjer događanja/pozicije.
 4. U **Postavke → Čitanje** provjerite da je “Naslovnica” odabrana kao statična početna stranica.
 5. U **Izgled → Izbornici** po želji kreirajte i dodijelite glavni meni.
-6. Instalirajte i aktivirajte besplatni plugin **Forminator** za prijave na događanja. Tema će automatski pripremiti početnu formu, a na svakom događanju moguće je odabrati drugi Forminator form ID.
+6. Instalirajte i aktivirajte besplatni plugin **Forminator**. Tema automatski priprema obrasce za kontakt, newsletter, edukacije i karijere; svaki se dalje uređuje u **Forminator → Forms**.
 
 Postojeći sadržaj se pri ponovnoj aktivaciji ne briše niti prepisuje.
 
@@ -32,14 +34,16 @@ Postojeći sadržaj se pri ponovnoj aktivaciji ne briše niti prepisuje.
 - **Arhiva savjetovanja**: naziv, datum i link na preneseni HTML ili vanjski zapis. Prikaz se automatski grupira po godinama.
 - **Konzultantske usluge**: naslov, redoslijed i puni Gutenberg sadržaj svakog accordion panela.
 - **Pozicije**: naslov, Gutenberg sadržaj, istaknuta slika, lokacija/način rada i opcionalni Forminator obrazac.
-- **Web prijave**: privatni zapisi kontaktnih upita, newsletter pretplata, prijava na događanja i prijava za posao.
+- **Forminator → Submissions**: kontaktni upiti, newsletter pretplate, prijave na događanja i prijave za posao.
+- **Stranice → English**: uređive engleske stranice složene od standardnih Gutenberg blokova.
+- **Umetanje blokova → Patterns → Inženjerski biro sekcije**: gotove modularne sekcije za nove stranice.
 - Opći WordPress sadržaj i politika privatnosti uređuju se kroz **Stranice**.
 
-E-mail obavijesti koriste standardni WordPress `wp_mail()`. Na produkciji je preporučena konfiguracija SMTP plugina ili transakcijskog mail servisa.
+E-mail obavijesti koristi Forminator preko standardnog WordPress `wp_mail()`. Na produkciji je preporučena konfiguracija SMTP plugina ili transakcijskog mail servisa. Analytics/API priključci dokumentirani su u [FORM-INTEGRATIONS.md](FORM-INTEGRATIONS.md).
 
 ## Razvoj
 
-Tema nema build korak ni JavaScript/CSS framework. Potrebni su WordPress 6.4+ i PHP 8.0+. Paketirani Dompdf 3.1.5 nalazi se u `vendor/dompdf/dompdf` kako bi PDF radio odmah nakon instalacije teme.
+Tema namjerno nema Node/Tailwind build korak: koristi Gutenberg, `theme.json` i centralizirane CSS komponente, pa je instalacija prenosiva kao obična WordPress tema. Potrebni su WordPress 6.4+ i PHP 8.0+. Paketirani Dompdf 3.1.5 nalazi se u `vendor/dompdf/dompdf` kako bi PDF radio odmah nakon instalacije teme.
 
 Brza PHP provjera:
 

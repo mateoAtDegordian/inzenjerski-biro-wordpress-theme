@@ -89,7 +89,7 @@ $events = new WP_Query(
 					?>
 					<article class="event-card">
 						<a class="event-card__image" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr( get_the_title() ); ?>">
-							<img src="<?php echo esc_url( get_the_post_thumbnail_url( get_the_ID(), 'large' ) ?: ingbiro_asset( 'images/education-event-figma.png' ) ); ?>" alt="">
+							<img src="<?php echo esc_url( ingbiro_event_image_url( get_the_ID(), 'large' ) ); ?>" alt="">
 						</a>
 						<div class="event-card__content">
 							<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>

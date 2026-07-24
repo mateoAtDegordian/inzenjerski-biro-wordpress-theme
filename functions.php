@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.1.0' );
+define( 'INGBIRO_VERSION', '1.2.0' );
 
 function ingbiro_setup() {
 	load_theme_textdomain( 'ingbiro', get_template_directory() . '/languages' );
@@ -44,12 +44,41 @@ function ingbiro_enqueue_assets() {
 		INGBIRO_VERSION,
 		true
 	);
+	wp_localize_script(
+		'ingbiro-theme',
+		'ingbiroForms',
+		array(
+			'formKeys' => array_filter(
+				array(
+					(string) ingbiro_get_form_id( 'contact' )    => 'contact',
+					(string) ingbiro_get_form_id( 'newsletter' ) => 'newsletter',
+					(string) ingbiro_get_form_id( 'quick' )      => 'quick',
+					(string) ingbiro_get_form_id( 'career' )     => 'career',
+					(string) ingbiro_get_form_id( 'event' )      => 'event',
+				)
+			),
+		)
+	);
 }
 add_action( 'wp_enqueue_scripts', 'ingbiro_enqueue_assets' );
 
 function ingbiro_asset( $path ) {
 	return get_template_directory_uri() . '/assets/' . ltrim( $path, '/' );
 }
+
+require_once get_template_directory() . '/inc/forms.php';
+require_once get_template_directory() . '/inc/language.php';
+require_once get_template_directory() . '/inc/patterns.php';
+
+function ingbiro_favicons() {
+	printf(
+		'<link rel="icon" href="%1$s" type="image/svg+xml"><link rel="icon" href="%2$s" sizes="32x32"><link rel="apple-touch-icon" href="%3$s">',
+		esc_url( ingbiro_asset( 'images/favicon.svg' ) ),
+		esc_url( ingbiro_asset( 'images/favicon-32.png' ) ),
+		esc_url( ingbiro_asset( 'images/favicon-180.png' ) )
+	);
+}
+add_action( 'wp_head', 'ingbiro_favicons', 2 );
 
 function ingbiro_page_url( $slug ) {
 	$page = get_page_by_path( $slug );
@@ -99,8 +128,28 @@ function ingbiro_button( $label, $url, $class = '' ) {
 function ingbiro_building_banner() {
 	printf(
 		'<div class="building-banner" aria-hidden="true"><img src="%s" alt=""></div>',
-		esc_url( ingbiro_asset( 'images/building.png' ) )
+		esc_url( ingbiro_asset( 'images/building-banner.png' ) )
 	);
+}
+
+/**
+ * A single source of truth for event imagery keeps cards, the event page and
+ * generated PDFs visually identical.
+ */
+function ingbiro_event_image_url( $event_id, $size = 'ingbiro-event-hero' ) {
+	$image = get_the_post_thumbnail_url( $event_id, $size );
+	return $image ?: ingbiro_asset( 'images/education-event-figma.png' );
+}
+
+function ingbiro_event_image_path( $event_id ) {
+	$thumbnail_id = get_post_thumbnail_id( $event_id );
+	$path         = $thumbnail_id ? get_attached_file( $thumbnail_id ) : '';
+
+	if ( $path && file_exists( $path ) ) {
+		return $path;
+	}
+
+	return get_template_directory() . '/assets/images/education-event-figma.png';
 }
 
 function ingbiro_register_content_types() {
@@ -408,7 +457,7 @@ function ingbiro_get_event_form_id( $event_id ) {
 function ingbiro_render_event_form( $event_id ) {
 	$form_id = ingbiro_get_event_form_id( $event_id );
 	if ( $form_id && shortcode_exists( 'forminator_form' ) ) {
-		echo '<div class="event-registration__form forminator-theme-wrap">';
+		echo '<div class="event-registration__form forminator-theme-wrap ing-forminator" data-form-key="event">';
 		echo do_shortcode( sprintf( '[forminator_form id="%d"]', $form_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo '</div>';
 		return;
@@ -686,10 +735,7 @@ function ingbiro_handle_event_pdf() {
 	require_once $autoload;
 
 	$logo_path = get_template_directory() . '/assets/images/logo.png';
-	$hero_path = get_attached_file( get_post_thumbnail_id( $event_id ) );
-	if ( ! $hero_path ) {
-		$hero_path = get_template_directory() . '/assets/images/education-event.jpg';
-	}
+	$hero_path = ingbiro_event_image_path( $event_id );
 
 	$logo    = ingbiro_pdf_image_data_uri( $logo_path );
 	$hero    = ingbiro_pdf_image_data_uri( $hero_path );

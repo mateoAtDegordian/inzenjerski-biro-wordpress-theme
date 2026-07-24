@@ -58,4 +58,27 @@
 			}
 		});
 	});
+
+	/*
+	 * Forminator emits this event only after a successful AJAX submission.
+	 * It gives analytics and future integrations one stable, form-agnostic
+	 * event without coupling the theme to a specific analytics vendor.
+	 */
+	if (window.jQuery) {
+		window.jQuery(document).on("forminator:form:submit:success", (event) => {
+			const form = event.target?.closest?.(".forminator-custom-form") || event.target;
+			const wrapper = form?.closest?.("[data-form-key]");
+			const formId = form?.dataset?.formId || form?.dataset?.id || "";
+			const detail = {
+				event: "ingbiro_form_submit",
+				form_id: formId,
+				form_key: wrapper?.dataset?.formKey || window.ingbiroForms?.formKeys?.[formId] || "",
+				page_path: window.location.pathname,
+			};
+
+			window.dataLayer = window.dataLayer || [];
+			window.dataLayer.push(detail);
+			window.dispatchEvent(new CustomEvent("ingbiro:form:submitted", { detail }));
+		});
+	}
 })();

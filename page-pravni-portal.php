@@ -18,8 +18,10 @@ get_header();
 				</div>
 			</div>
 			<div class="portal-video">
-				<button class="portal-video__play" type="button" data-video-placeholder aria-label="Pokreni video"><span>▶</span></button>
-				<p class="video-message screen-reader-text" hidden>Video će biti povezan kada se unese konačni video URL.</p>
+				<video controls playsinline preload="metadata" poster="<?php echo esc_url( ingbiro_asset( 'images/ling-video-poster.jpg' ) ); ?>">
+					<source src="<?php echo esc_url( ingbiro_asset( 'video/ling-promo.mp4' ) ); ?>" type="video/mp4">
+					Vaš preglednik ne podržava HTML5 video.
+				</video>
 			</div>
 		</div>
 	</section>
@@ -81,4 +83,3 @@ get_header();
 </main>
 <?php
 get_footer();
-

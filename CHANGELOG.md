@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.0 — 2026-07-24
+
+- Sve javne forme prebačene na Forminator, uključujući CV upload, analytics event i serverski integration hook.
+- Dodane uređive engleske Gutenberg stranice iz dostavljenih DOCX dokumenata i povezani HR/EN jezični linkovi.
+- Optimiziran i ugrađen dostavljeni LING promo video na hrvatsku i englesku stranicu portala.
+- Dodana Gutenberg pattern biblioteka za modularno proširivanje stranica bez code changes.
+- Ispravljeni hover kartica, segmentirani gear asseti, kružni gumbi i full-bleed crop zgrade.
+- Dodan favicon iz kotača logotipa.
+- Ujednačena slika događanja u karticama, detalju i generiranom PDF-u.
+
 ## 1.1.0 — 2026-07-23
 
 - Ispravljeni Figma asseti, hover stanja, accordion sadržaj, newsletter gumb i crop zgrade.
