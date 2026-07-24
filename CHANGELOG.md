@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.1 — 2026-07-24
+
+- Footer sada koristi izvorne Figma SVG ikone za lokaciju, e-mail, telefon i LinkedIn.
+- Dodani su hover/focus stateovi te se aktivni jezik ispravno mijenja između HR i EN stranica.
+- Adresa, e-mail adrese, telefon i faks sada su stvarne poveznice.
+- Gutenberg sekcije na detalju edukacije renderiraju boju preko pune širine viewporta, uz sadržaj poravnan na glavni grid.
+- Programski zupčanici pozicionirani su uz stvarni rub ekrana, a prijavna forma proširena je i centrirana.
+
 ## 1.4.0 — 2026-07-24
 
 - Dodane typewriter animacije na naslovnici i O nama prema komentarima dizajnerice.

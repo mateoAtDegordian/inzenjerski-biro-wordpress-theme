@@ -5,6 +5,7 @@
  * @package Ingbiro
  */
 $is_english = ingbiro_is_english();
+$language   = $is_english ? 'en' : 'hr';
 ?>
 	<footer class="site-footer">
 		<div class="container">
@@ -15,9 +16,18 @@ $is_english = ingbiro_is_english();
 					</a>
 					<p class="site-footer__tagline"><?php echo esc_html( $is_english ? 'Consultants since 1952.' : 'Savjetnici od 1952.' ); ?></p>
 					<ul class="contact-list">
-						<li><span class="contact-list__icon" aria-hidden="true">●</span><span>Heinzelova 4A, 10000 Zagreb, <?php echo esc_html( $is_english ? 'Croatia' : 'Hrvatska' ); ?></span></li>
-						<li><span class="contact-list__icon" aria-hidden="true">✉</span><span><a href="mailto:ingbiro@ingbiro.hr">ingbiro@ingbiro.hr</a> &nbsp; | &nbsp; <a href="mailto:prodaja@ingbiro.hr">prodaja@ingbiro.hr</a></span></li>
-						<li><span class="contact-list__icon" aria-hidden="true">●</span><span><strong>Tel.</strong> (+385) 1 46 00 888; &nbsp; <strong>Fax.</strong> (+385) 1 46 50 366</span></li>
+						<li>
+							<span class="contact-list__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/footer-location.svg' ) ); ?>" alt=""></span>
+							<a href="https://www.google.com/maps/search/?api=1&amp;query=Heinzelova+4A%2C+10000+Zagreb" target="_blank" rel="noopener noreferrer">Heinzelova 4A, 10000 Zagreb, <?php echo esc_html( $is_english ? 'Croatia' : 'Hrvatska' ); ?></a>
+						</li>
+						<li>
+							<span class="contact-list__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/footer-email.svg' ) ); ?>" alt=""></span>
+							<span><a href="mailto:ingbiro@ingbiro.hr">ingbiro@ingbiro.hr</a> &nbsp; | &nbsp; <a href="mailto:prodaja@ingbiro.hr">prodaja@ingbiro.hr</a></span>
+						</li>
+						<li>
+							<span class="contact-list__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/footer-phone.svg' ) ); ?>" alt=""></span>
+							<span><strong>Tel.</strong> <a href="tel:+38514600888">(+385) 1 46 00 888</a>; &nbsp; <strong>Fax.</strong> <a href="tel:+38514650366">(+385) 1 46 50 366</a></span>
+						</li>
 					</ul>
 				</div>
 
@@ -39,12 +49,14 @@ $is_english = ingbiro_is_english();
 				<div class="site-footer__social">
 					<strong><?php echo esc_html( $is_english ? 'Language:' : 'Jezik:' ); ?></strong>
 					<div class="language-links">
-						<a href="<?php echo esc_url( ingbiro_translation_url( 'hr' ) ); ?>">Hrvatski</a>
+						<a class="<?php echo esc_attr( 'hr' === $language ? 'is-active' : '' ); ?>" href="<?php echo esc_url( ingbiro_translation_url( 'hr' ) ); ?>"<?php if ( 'hr' === $language ) : ?> aria-current="page"<?php endif; ?>>Hrvatski</a>
 						<span aria-hidden="true">|</span>
-						<a href="<?php echo esc_url( ingbiro_translation_url( 'en' ) ); ?>" lang="en">English</a>
+						<a class="<?php echo esc_attr( 'en' === $language ? 'is-active' : '' ); ?>" href="<?php echo esc_url( ingbiro_translation_url( 'en' ) ); ?>" lang="en"<?php if ( 'en' === $language ) : ?> aria-current="page"<?php endif; ?>>English</a>
 					</div>
 					<strong><?php echo esc_html( $is_english ? 'Follow us:' : 'Zapratite nas:' ); ?></strong>
-					<a class="social-link" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">in</a>
+					<a class="social-link" href="https://hr.linkedin.com/company/inzenjerskibiro" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+						<img src="<?php echo esc_url( ingbiro_asset( 'icons/footer-linkedin.svg' ) ); ?>" alt="">
+					</a>
 				</div>
 			</div>
 
