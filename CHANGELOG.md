@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.11 — 2026-07-27
+
+- Scroll reveal sada čeka dva animation framea prije promatranja, čime je uklonjen instantni pop bez tranzicije.
+- Sekcije naizmjenično klize slijeva, zdesna i odozdo kroz eksplicitnu 1,28 s keyframe animaciju s izraženim blur/glide međustanjem.
+- Web Animations API osigurava da reveal ne bude skraćen globalnim `Reduce Motion` transition pravilom, uz CSS keyframe fallback.
+- Horizontalni pomak automatski je manji na mobitelu, a animacija ostaje vidljiva neovisno o sistemskoj motion postavci.
+
 ## 1.5.7 — 2026-07-27
 
 - Typewriter koristi adaptivnu brzinu: kratki naslovi tipkaju sporije, a dugi ostaju vremenski kontrolirani.

@@ -136,6 +136,55 @@
 	});
 
 	if ("IntersectionObserver" in window) {
+		const playReveal = (target) => {
+			if (typeof target.animate !== "function") {
+				target.classList.add("is-visible");
+				return;
+			}
+
+			const revealX = target.style.getPropertyValue("--reveal-x") || "0px";
+			const revealY = target.style.getPropertyValue("--reveal-y") || "28px";
+			const revealDelay = Number.parseInt(target.style.getPropertyValue("--reveal-delay"), 10) || 0;
+
+			target.classList.add("is-waapi-reveal", "is-visible");
+			const animation = target.animate(
+				[
+					{
+						offset: 0,
+						opacity: 0.02,
+						filter: "blur(10px)",
+						transform: `translate3d(${revealX}, ${revealY}, 0) scale(0.97)`,
+					},
+					{
+						offset: 0.48,
+						opacity: 0.76,
+						filter: "blur(3px)",
+					},
+					{
+						offset: 1,
+						opacity: 1,
+						filter: "blur(0)",
+						transform: "translate3d(0, 0, 0) scale(1)",
+					},
+				],
+				{
+					duration: 1280,
+					delay: revealDelay,
+					easing: "cubic-bezier(0.22, 0.55, 0.2, 1)",
+					fill: "both",
+				}
+			);
+
+			animation.finished
+				.then(() => {
+					target.style.opacity = "1";
+					target.style.filter = "blur(0)";
+					target.style.transform = "translate3d(0, 0, 0) scale(1)";
+					animation.cancel();
+				})
+				.catch(() => {});
+		};
+
 		const revealObserver = new IntersectionObserver(
 			(entries) => {
 				entries.forEach((entry) => {
@@ -143,7 +192,7 @@
 						return;
 					}
 
-					entry.target.classList.add("is-visible");
+					playReveal(entry.target);
 					revealObserver.unobserve(entry.target);
 				});
 			},
@@ -153,9 +202,17 @@
 			}
 		);
 
+		const preparedTargets = [];
+		const horizontalDistance = window.matchMedia("(max-width: 760px)").matches ? 34 : 56;
 		revealTargets.forEach((target, index) => {
 			const targetTop = target.getBoundingClientRect().top;
-			target.style.setProperty("--reveal-delay", `${Math.min(index % 3, 2) * 70}ms`);
+			const direction = index % 3;
+			const revealX = direction === 0 ? -horizontalDistance : direction === 1 ? horizontalDistance : 0;
+			const revealY = direction === 2 ? 34 : 18;
+
+			target.style.setProperty("--reveal-x", `${revealX}px`);
+			target.style.setProperty("--reveal-y", `${revealY}px`);
+			target.style.setProperty("--reveal-delay", `${Math.min(direction, 2) * 85}ms`);
 			target.classList.add("scroll-reveal");
 
 			if (targetTop < window.innerHeight * 0.92) {
@@ -163,7 +220,18 @@
 				return;
 			}
 
-			revealObserver.observe(target);
+			preparedTargets.push(target);
+		});
+
+		/*
+		 * Two frames guarantee that the hidden/offset state is painted before
+		 * IntersectionObserver can add is-visible. Without this, fast browsers
+		 * may collapse both states into one frame and make sections simply pop in.
+		 */
+		window.requestAnimationFrame(() => {
+			window.requestAnimationFrame(() => {
+				preparedTargets.forEach((target) => revealObserver.observe(target));
+			});
 		});
 	} else {
 		revealTargets.forEach((target) => target.classList.add("is-visible"));

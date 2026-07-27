@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.5.7
+Version: 1.5.11
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -3626,20 +3626,34 @@ select {
 
 /* 1.5.5 — smoother page flow, event rhythm and mobile navigation. */
 .scroll-reveal {
-	opacity: 0;
-	filter: blur(3px);
-	transform: translate3d(0, 36px, 0) scale(0.985);
-	transition:
-		opacity 760ms cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
-		filter 780ms ease-out var(--reveal-delay, 0ms),
-		transform 920ms cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms);
+	opacity: 0.02;
+	filter: blur(8px);
+	transform: translate3d(var(--reveal-x, 0), var(--reveal-y, 28px), 0) scale(0.975);
+	backface-visibility: hidden;
 	will-change: opacity, filter, transform;
 }
 
-.scroll-reveal.is-visible {
-	opacity: 1;
-	filter: blur(0);
-	transform: translate3d(0, 0, 0) scale(1);
+.scroll-reveal.is-visible:not(.is-waapi-reveal) {
+	animation: ingbiro-scroll-glide 1280ms cubic-bezier(0.22, 0.55, 0.2, 1) var(--reveal-delay, 0ms) both;
+}
+
+@keyframes ingbiro-scroll-glide {
+	0% {
+		opacity: 0.02;
+		filter: blur(10px);
+		transform: translate3d(var(--reveal-x, 0), var(--reveal-y, 28px), 0) scale(0.97);
+	}
+
+	48% {
+		opacity: 0.76;
+		filter: blur(3px);
+	}
+
+	100% {
+		opacity: 1;
+		filter: blur(0);
+		transform: translate3d(0, 0, 0) scale(1);
+	}
 }
 
 .accordion-item__panel {
@@ -3834,13 +3848,5 @@ select {
 
 	.archive-accordion .accordion-item.is-open .accordion-item__panel {
 		padding-bottom: 30px;
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.scroll-reveal {
-		filter: blur(1px);
-		transform: translate3d(0, 14px, 0);
-		transition-duration: 480ms, 500ms, 560ms;
 	}
 }
