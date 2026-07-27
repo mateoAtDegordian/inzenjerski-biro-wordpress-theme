@@ -205,7 +205,17 @@
 		const preparedTargets = [];
 		const horizontalDistance = window.matchMedia("(max-width: 760px)").matches ? 34 : 56;
 		revealTargets.forEach((target, index) => {
-			const targetTop = target.getBoundingClientRect().top;
+			const targetRect = target.getBoundingClientRect();
+			const isInitiallyVisible = targetRect.top < window.innerHeight * 0.92 && targetRect.bottom > 0;
+
+			/*
+			 * Content in the initial viewport must remain fully visible on first
+			 * paint. Reveal motion is reserved for sections reached by scrolling.
+			 */
+			if (isInitiallyVisible) {
+				return;
+			}
+
 			const direction = index % 3;
 			const revealX = direction === 0 ? -horizontalDistance : direction === 1 ? horizontalDistance : 0;
 			const revealY = direction === 2 ? 34 : 18;
@@ -214,11 +224,6 @@
 			target.style.setProperty("--reveal-y", `${revealY}px`);
 			target.style.setProperty("--reveal-delay", `${Math.min(direction, 2) * 85}ms`);
 			target.classList.add("scroll-reveal");
-
-			if (targetTop < window.innerHeight * 0.92) {
-				target.classList.add("is-visible");
-				return;
-			}
 
 			preparedTargets.push(target);
 		});

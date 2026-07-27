@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.12 — 2026-07-27
+
+- Elementi vidljivi u početnom viewportu izuzeti su iz scroll reveal sustava kako bi prvi paint ostao potpuno vidljiv.
+- Glide i blur sada se primjenjuju samo na sekcije do kojih korisnik stvarno dolazi skrolanjem.
+
 ## 1.5.11 — 2026-07-27
 
 - Scroll reveal sada čeka dva animation framea prije promatranja, čime je uklonjen instantni pop bez tranzicije.
