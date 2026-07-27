@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.5.15
+Version: 1.5.17
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -214,7 +214,7 @@ select {
 	color: var(--ing-blue);
 }
 
-.menu-toggle span,
+.menu-toggle__line,
 .menu-toggle::before,
 .menu-toggle::after {
 	display: block;
@@ -222,10 +222,13 @@ select {
 	height: 1px;
 	content: "";
 	background: currentColor;
-	transition: transform 180ms ease, opacity 180ms ease;
+	transform-origin: center;
+	transition:
+		transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+		opacity 180ms ease;
 }
 
-.menu-toggle span {
+.menu-toggle__line {
 	margin-block: 5px;
 }
 
@@ -2278,6 +2281,12 @@ select {
 		scroll-behavior: auto !important;
 		transition-duration: 0.01ms !important;
 	}
+
+	.menu-toggle::before,
+	.menu-toggle::after,
+	.menu-toggle__line {
+		transition: none !important;
+	}
 }
 
 /* 1.2 — reusable media, Gutenberg and Forminator refinements. */
@@ -3800,6 +3809,19 @@ select {
 	.menu-toggle {
 		position: relative;
 		z-index: 2;
+	}
+
+	.menu-toggle[aria-expanded="true"]::before {
+		transform: translateY(6px) rotate(45deg);
+	}
+
+	.menu-toggle[aria-expanded="true"] .menu-toggle__line {
+		opacity: 0;
+		transform: scaleX(0.35);
+	}
+
+	.menu-toggle[aria-expanded="true"]::after {
+		transform: translateY(-6px) rotate(-45deg);
 	}
 
 	.site-nav {

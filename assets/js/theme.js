@@ -5,17 +5,33 @@
 	const navigation = document.querySelector(".site-nav");
 
 	if (toggle && navigation) {
-		toggle.addEventListener("click", () => {
-			const isOpen = navigation.classList.toggle("is-open");
+		const toggleLabel = toggle.querySelector(".screen-reader-text");
+		const setMenuState = (isOpen) => {
+			navigation.classList.toggle("is-open", isOpen);
 			toggle.setAttribute("aria-expanded", String(isOpen));
 			document.body.classList.toggle("menu-open", isOpen);
+
+			if (toggleLabel) {
+				toggleLabel.textContent = isOpen
+					? toggle.dataset.closeLabel || "Close menu"
+					: toggle.dataset.openLabel || "Open menu";
+			}
+		};
+
+		toggle.addEventListener("click", () => {
+			setMenuState(!navigation.classList.contains("is-open"));
 		});
 
 		navigation.addEventListener("click", (event) => {
 			if (event.target.closest("a")) {
-				navigation.classList.remove("is-open");
-				toggle.setAttribute("aria-expanded", "false");
-				document.body.classList.remove("menu-open");
+				setMenuState(false);
+			}
+		});
+
+		document.addEventListener("keydown", (event) => {
+			if (event.key === "Escape" && navigation.classList.contains("is-open")) {
+				setMenuState(false);
+				toggle.focus();
 			}
 		});
 	}
