@@ -7,8 +7,7 @@
 
 get_header();
 
-$job_id = isset( $_GET['job_id'] ) ? absint( $_GET['job_id'] ) : 0;
-$job    = $job_id ? get_post( $job_id ) : null;
+$job = ingbiro_get_career_application_job();
 ?>
 <main id="main" class="page-main">
 	<section class="form-page">

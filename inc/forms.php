@@ -39,11 +39,16 @@ function ingbiro_render_form( $key, $class = '' ) {
 	$form_id = ingbiro_get_form_id( $key );
 
 	if ( $form_id && shortcode_exists( 'forminator_form' ) ) {
+		$previous_form_key                  = isset( $GLOBALS['ingbiro_form_render_key'] ) ? $GLOBALS['ingbiro_form_render_key'] : '';
+		$GLOBALS['ingbiro_form_render_key'] = $key;
+		$form_markup                       = do_shortcode( sprintf( '[forminator_form id="%d"]', $form_id ) );
+		$GLOBALS['ingbiro_form_render_key'] = $previous_form_key;
+
 		printf(
 			'<div class="ing-forminator ing-forminator--%1$s %2$s" data-form-key="%1$s">%3$s</div>',
 			esc_attr( $key ),
 			esc_attr( $class ),
-			do_shortcode( sprintf( '[forminator_form id="%d"]', $form_id ) ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$form_markup // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 		return;
 	}
@@ -52,6 +57,135 @@ function ingbiro_render_form( $key, $class = '' ) {
 	echo esc_html__( 'Obrazac trenutačno nije dostupan. Administrator ga može aktivirati u Forminatoru.', 'ingbiro' );
 	echo '</div>';
 }
+
+/**
+ * Return the published job selected for the career application.
+ */
+function ingbiro_get_career_application_job( $job_id = null ) {
+	if ( null === $job_id ) {
+		$job_id = isset( $_GET['job_id'] ) ? absint( wp_unslash( $_GET['job_id'] ) ) : 0;
+	}
+
+	$job = $job_id ? get_post( absint( $job_id ) ) : null;
+	if (
+		! $job instanceof WP_Post ||
+		'ing_job' !== $job->post_type ||
+		'publish' !== $job->post_status
+	) {
+		return null;
+	}
+
+	return $job;
+}
+
+/**
+ * Adapt the shared career form to its current application context.
+ *
+ * A specific job stores its title in the existing position field without
+ * asking the applicant to repeat it. The open application keeps the same
+ * field visible and labels it "Željena pozicija".
+ */
+function ingbiro_render_career_position_field( $wrappers, $form_id ) {
+	if (
+		'career' !== ( isset( $GLOBALS['ingbiro_form_render_key'] ) ? $GLOBALS['ingbiro_form_render_key'] : '' ) ||
+		ingbiro_get_form_id( 'career' ) !== absint( $form_id )
+	) {
+		return $wrappers;
+	}
+
+	$job          = ingbiro_get_career_application_job();
+	$position     = __( 'Željena pozicija', 'ingbiro' );
+	$job_id_added = false;
+
+	foreach ( $wrappers as &$wrapper ) {
+		if ( empty( $wrapper['fields'] ) || ! is_array( $wrapper['fields'] ) ) {
+			continue;
+		}
+
+		foreach ( $wrapper['fields'] as &$field ) {
+			$element_id = isset( $field['element_id'] ) ? $field['element_id'] : '';
+
+			if ( $job && 'url-1' === $element_id ) {
+				$field['cols'] = '12';
+			}
+
+			if ( 'text-3' !== $element_id ) {
+				continue;
+			}
+
+			if ( $job ) {
+				$field = array(
+					'element_id'   => 'text-3',
+					'type'         => 'hidden',
+					'cols'         => '12',
+					'required'     => 'false',
+					'field_label'  => __( 'Pozicija', 'ingbiro' ),
+					'default_value' => 'custom_value',
+					'custom_value' => $job->post_title,
+				);
+
+				$wrapper['fields'][] = array(
+					'element_id'    => 'ingbiro_job_id',
+					'type'          => 'hidden',
+					'cols'          => '12',
+					'required'      => 'false',
+					'field_label'   => __( 'ID pozicije', 'ingbiro' ),
+					'default_value' => 'custom_value',
+					'custom_value'  => (string) $job->ID,
+				);
+				$job_id_added = true;
+			} else {
+				$field['field_label'] = $position;
+				$field['placeholder'] = $position;
+			}
+		}
+		unset( $field );
+
+		if ( $job_id_added ) {
+			break;
+		}
+	}
+	unset( $wrapper );
+
+	return $wrappers;
+}
+add_filter( 'forminator_cform_render_fields', 'ingbiro_render_career_position_field', 20, 2 );
+
+/**
+ * Replace the submitted position with the authoritative title from WordPress.
+ */
+function ingbiro_store_career_position( $field_data, $form_id ) {
+	if ( ingbiro_get_form_id( 'career' ) !== absint( $form_id ) ) {
+		return $field_data;
+	}
+
+	$job_id = isset( $_POST['ingbiro_job_id'] ) ? absint( wp_unslash( $_POST['ingbiro_job_id'] ) ) : 0;
+	$job    = ingbiro_get_career_application_job( $job_id );
+
+	if ( ! $job ) {
+		return $field_data;
+	}
+
+	$position_found = false;
+	foreach ( $field_data as &$field ) {
+		if ( isset( $field['name'] ) && 'text-3' === $field['name'] ) {
+			$field['value']   = $job->post_title;
+			$position_found   = true;
+			break;
+		}
+	}
+	unset( $field );
+
+	if ( ! $position_found ) {
+		$field_data[] = array(
+			'name'  => 'text-3',
+			'value' => $job->post_title,
+		);
+	}
+
+	return $field_data;
+}
+add_filter( 'forminator_custom_form_submit_field_data', 'ingbiro_store_career_position', 20, 2 );
 
 /**
  * Small helpers keep the generated forms readable and editable in Forminator.
@@ -207,7 +341,7 @@ function ingbiro_create_managed_forms() {
 			) ),
 			ingbiro_form_wrapper( 'career-profile', array(
 				ingbiro_form_text_field( 'url-1', __( 'LinkedIn / portfolio', 'ingbiro' ), '6', false, 'url' ),
-				ingbiro_form_text_field( 'text-3', __( 'Pozicija', 'ingbiro' ), '6', false ),
+				ingbiro_form_text_field( 'text-3', __( 'Željena pozicija', 'ingbiro' ), '6', false ),
 			) ),
 			ingbiro_form_wrapper( 'career-company', array(
 				ingbiro_form_text_field( 'text-4', __( 'Tvrtka', 'ingbiro' ), '6', false ),
