@@ -86,14 +86,19 @@
 		title.classList.add("typewriter-title");
 
 		let characterIndex = 0;
+		const targetTypingDuration = reducedMotion.matches ? 1400 : 2500;
+		const minimumDelay = reducedMotion.matches ? 14 : 28;
+		const maximumDelay = reducedMotion.matches ? 30 : 58;
+		const baseDelay = Math.round(
+			Math.min(maximumDelay, Math.max(minimumDelay, targetTypingDuration / text.length))
+		);
 		const typeNextCharacter = () => {
 			characterIndex += 1;
 			visibleText.textContent = text.slice(0, characterIndex);
 
 			if (characterIndex < text.length) {
 				const character = text.charAt(characterIndex - 1);
-				const baseDelay = reducedMotion.matches ? 16 : 30;
-				const delay = /[.:,!?]/.test(character) ? baseDelay * 1.8 : baseDelay;
+				const delay = /[.:,!?]/.test(character) ? baseDelay * 2 : baseDelay;
 				window.setTimeout(typeNextCharacter, delay);
 				return;
 			}
@@ -102,7 +107,7 @@
 			title.classList.add("is-typed");
 		};
 
-		window.setTimeout(typeNextCharacter, reducedMotion.matches ? 100 : 180);
+		window.setTimeout(typeNextCharacter, reducedMotion.matches ? 80 : 160);
 	});
 
 	const revealTargets = new Set(
@@ -143,14 +148,14 @@
 				});
 			},
 			{
-				rootMargin: "0px 0px -10% 0px",
-				threshold: 0.08,
+				rootMargin: "0px 0px -6% 0px",
+				threshold: 0.05,
 			}
 		);
 
 		revealTargets.forEach((target, index) => {
 			const targetTop = target.getBoundingClientRect().top;
-			target.style.setProperty("--reveal-delay", `${Math.min(index % 3, 2) * 55}ms`);
+			target.style.setProperty("--reveal-delay", `${Math.min(index % 3, 2) * 70}ms`);
 			target.classList.add("scroll-reveal");
 
 			if (targetTop < window.innerHeight * 0.92) {

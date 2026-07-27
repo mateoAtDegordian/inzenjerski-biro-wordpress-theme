@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.7 — 2026-07-27
+
+- Typewriter koristi adaptivnu brzinu: kratki naslovi tipkaju sporije, a dugi ostaju vremenski kontrolirani.
+- Scroll ulazi dobili su izraženiji pomak, blagi scale i blur te mekši, dulji easing.
+- Elementi se aktiviraju nešto ranije u viewportu i koriste uočljiviji stagger.
+
 ## 1.5.5 — 2026-07-27
 
 - Ubrzano je početno tipkanje glavnih naslova i skraćene su stanke na interpunkciji.
