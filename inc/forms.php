@@ -195,7 +195,7 @@ function ingbiro_form_text_field( $id, $label, $cols = '6', $required = false, $
 		'element_id'  => $id,
 		'type'        => $type,
 		'cols'        => $cols,
-		'required'    => $required ? 'true' : 'false',
+		'required'    => (bool) $required,
 		'field_label' => $label,
 		'placeholder' => $label,
 	);
@@ -340,11 +340,11 @@ function ingbiro_create_managed_forms() {
 				ingbiro_form_text_field( 'phone-1', __( 'Broj telefona', 'ingbiro' ), '6', false, 'phone' ),
 			) ),
 			ingbiro_form_wrapper( 'career-profile', array(
-				ingbiro_form_text_field( 'url-1', __( 'LinkedIn / portfolio', 'ingbiro' ), '6', false, 'url' ),
-				ingbiro_form_text_field( 'text-3', __( 'Željena pozicija', 'ingbiro' ), '6', false ),
+				ingbiro_form_text_field( 'url-1', __( 'LinkedIn / portfolio', 'ingbiro' ), '6', true, 'url' ),
+				ingbiro_form_text_field( 'text-3', __( 'Željena pozicija', 'ingbiro' ), '6', true ),
 			) ),
 			ingbiro_form_wrapper( 'career-company', array(
-				ingbiro_form_text_field( 'text-4', __( 'Tvrtka', 'ingbiro' ), '6', false ),
+				ingbiro_form_text_field( 'text-4', __( 'Tvrtka', 'ingbiro' ), '6', true ),
 				array(
 					'element_id'  => 'upload-1',
 					'type'        => 'upload',
@@ -374,6 +374,132 @@ function ingbiro_create_managed_forms() {
 	update_option( 'ingbiro_managed_forms_version', '1.2.0' );
 }
 add_action( 'admin_init', 'ingbiro_create_managed_forms', 20 );
+
+/**
+ * Bring already provisioned career forms in line with their visible labels.
+ *
+ * This runs once and updates the real Forminator configuration, after which
+ * administrators can continue editing the fields normally in Forminator.
+ */
+function ingbiro_migrate_managed_form_validations() {
+	if (
+		'1.0.0' === get_option( 'ingbiro_managed_forms_validation_version' ) ||
+		! class_exists( 'Forminator_API' )
+	) {
+		return;
+	}
+
+	$form_id = ingbiro_get_form_id( 'career' );
+	if ( ! $form_id ) {
+		return;
+	}
+
+	$updates = array(
+		'url-1'      => array(
+			'required'           => 'true',
+			'required_message'   => __( 'Unesite LinkedIn ili portfolio poveznicu.', 'ingbiro' ),
+			'validation_message' => __( 'Unesite ispravnu poveznicu (npr. https://primjer.hr/).', 'ingbiro' ),
+		),
+		'text-3'     => array(
+			'required'         => 'true',
+			'field_label'      => __( 'Željena pozicija', 'ingbiro' ),
+			'placeholder'      => __( 'Željena pozicija', 'ingbiro' ),
+			'required_message' => __( 'Unesite željenu poziciju.', 'ingbiro' ),
+		),
+		'text-4'     => array(
+			'required'         => 'true',
+			'required_message' => __( 'Unesite naziv tvrtke.', 'ingbiro' ),
+		),
+		'upload-1'   => array(
+			'required_message' => __( 'Dodajte životopis.', 'ingbiro' ),
+		),
+		'textarea-1' => array(
+			'required_message' => __( 'Unesite kratko motivacijsko pismo.', 'ingbiro' ),
+		),
+	);
+
+	foreach ( $updates as $field_id => $settings ) {
+		$result = Forminator_API::update_form_field( $form_id, $field_id, $settings );
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
+	}
+
+	update_option( 'ingbiro_managed_forms_validation_version', '1.0.0' );
+}
+add_action( 'admin_init', 'ingbiro_migrate_managed_form_validations', 30 );
+
+/**
+ * Translate Forminator's public validation and upload messages.
+ *
+ * The managed forms deliberately keep Forminator's native validation so they
+ * remain editable and integration-friendly. These translations cover both
+ * inline browser validation and AJAX/server responses.
+ */
+function ingbiro_translate_forminator_message( $translated, $text, $domain ) {
+	if ( 'forminator' !== $domain || ( is_admin() && ! wp_doing_ajax() ) ) {
+		return $translated;
+	}
+
+	$translations = array(
+		'This field is required. Please enter text.'                              => 'Ovo polje je obavezno.',
+		'This field is required. Please input a valid email.'                     => 'Unesite e-mail adresu.',
+		'This is not a valid email.'                                               => 'Unesite ispravnu e-mail adresu.',
+		'This email is not allowed. Please use a different one.'                  => 'Ova e-mail adresa nije dopuštena. Upotrijebite drugu adresu.',
+		'You must confirm your email address'                                     => 'Potvrdite svoju e-mail adresu.',
+		'Your email addresses do not match'                                       => 'Unesene e-mail adrese se ne podudaraju.',
+		'This field is required. Please input a phone number.'                     => 'Unesite broj telefona.',
+		'Please input a valid phone number.'                                      => 'Unesite ispravan broj telefona.',
+		'Please enter a valid phone number.'                                      => 'Unesite ispravan broj telefona.',
+		'Please input a valid international phone number.'                        => 'Unesite ispravan međunarodni broj telefona.',
+		'Invalid phone number. %s'                                                 => 'Neispravan broj telefona. %s',
+		'You exceeded the allowed amount of numbers. Please check again.'          => 'Unijeli ste previše znamenki. Provjerite broj telefona.',
+		'This field is required. Please input a valid URL'                         => 'Unesite poveznicu.',
+		'Please enter a valid Website URL (e.g. https://wpmudev.com/).'             => 'Unesite ispravnu poveznicu (npr. https://primjer.hr/).',
+		'This field is required. Please upload a file.'                            => 'Dodajte traženu datoteku.',
+		'Error saving form. Uploaded file extension is not allowed.'               => 'Odabrana vrsta datoteke nije dopuštena.',
+		'Error saving form. Failed to read uploaded file.'                         => 'Datoteku nije moguće pročitati. Pokušajte ponovno.',
+		'Error saving form. Upload error.'                                         => 'Prijenos datoteke nije uspio. Pokušajte ponovno.',
+		'Sorry, you are not allowed to upload this file type.'                     => 'Ova vrsta datoteke nije dopuštena.',
+		'The attached file is empty and can\'t be uploaded.'                       => 'Odabrana datoteka je prazna i nije je moguće prenijeti.',
+		'file extension is not allowed.'                                           => 'vrsta datoteke nije dopuštena.',
+		'.%s file extension is not allowed.'                                       => 'Datoteke vrste .%s nisu dopuštene.',
+		'You can upload a maximum of %d files.'                                    => 'Možete prenijeti najviše %d datoteka.',
+		'Maximum file size allowed is %s. '                                        => 'Najveća dopuštena veličina datoteke je %s.',
+		'This field is required. Please input your name.'                          => 'Unesite ime i prezime.',
+		'This field is required. Please input your first name.'                    => 'Unesite ime.',
+		'This field is required. Please input your middle name.'                   => 'Unesite srednje ime.',
+		'This field is required. Please input your last name.'                     => 'Unesite prezime.',
+		'Prefix is required.'                                                      => 'Unesite titulu.',
+		'This field is required. Please select a value.'                           => 'Odaberite jednu od ponuđenih vrijednosti.',
+		'Please, enter a custom value'                                             => 'Unesite vlastitu vrijednost.',
+		'Selected value does not exist.'                                           => 'Odabrana vrijednost ne postoji.',
+		'This field is required. Please check it.'                                 => 'Ovo polje je obavezno.',
+		'This field is required. Please enter number.'                             => 'Unesite broj.',
+		'This is not valid number.'                                                => 'Unesite ispravan broj.',
+		'Please enter a value greater than or equal to {0}.'                       => 'Unesite vrijednost veću od ili jednaku {0}.',
+		'Please enter a value less than or equal to {0}.'                          => 'Unesite vrijednost manju od ili jednaku {0}.',
+		'You exceeded the allowed amount of characters. Please check again.'       => 'Unijeli ste previše znakova. Skratite unos.',
+		'You exceeded the allowed amount of words. Please check again.'            => 'Unijeli ste previše riječi. Skratite unos.',
+		'Please correct the errors before submission.'                             => 'Provjerite označena polja prije slanja.',
+		'Submitting form, please wait'                                             => 'Slanje obrasca je u tijeku, pričekajte.',
+		'Submitting...'                                                            => 'Slanje...',
+		'An error occurred while processing the form. Please try again'            => 'Došlo je do pogreške pri obradi obrasca. Pokušajte ponovno.',
+		'An upload error occurred while processing the form. Please try again'     => 'Došlo je do pogreške pri prijenosu datoteke. Pokušajte ponovno.',
+		'Please try again'                                                         => 'Pokušajte ponovno.',
+		'Invalid CAPTCHA'                                                          => 'CAPTCHA provjera nije uspjela.',
+		'Previous'                                                                 => 'Prethodno',
+		'Next'                                                                     => 'Sljedeće',
+		'Submit'                                                                   => 'Pošalji',
+		'Choose File'                                                              => 'Odaberite datoteku',
+		'No file chosen'                                                           => 'Datoteka nije odabrana',
+		'Delete uploaded file'                                                     => 'Ukloni odabranu datoteku',
+		'Edit form'                                                                => 'Uredi obrazac',
+	);
+
+	return isset( $translations[ $text ] ) ? $translations[ $text ] : $translated;
+}
+add_filter( 'gettext', 'ingbiro_translate_forminator_message', 20, 3 );
 
 /**
  * Stable server-side integration point for future CRM/API code.

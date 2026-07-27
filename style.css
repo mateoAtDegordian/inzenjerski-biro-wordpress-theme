@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.5.14
+Version: 1.5.15
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -2502,6 +2502,58 @@ select {
 	border-radius: 12px !important;
 }
 
+.ing-forminator .forminator-ui .forminator-response-message.forminator-error {
+	padding: 14px 18px !important;
+	border: 1px solid rgb(173 48 48 / 22%) !important;
+	background: #fff0ee !important;
+	color: #8f2727 !important;
+	font-family: var(--ing-font-sans) !important;
+	font-size: 14px !important;
+	line-height: 1.45 !important;
+}
+
+.ing-forminator .forminator-ui .forminator-error-message {
+	display: flex !important;
+	width: fit-content !important;
+	max-width: 100% !important;
+	align-items: center !important;
+	gap: 7px !important;
+	margin: 9px 0 0 !important;
+	padding: 7px 11px !important;
+	border: 1px solid rgb(173 48 48 / 20%) !important;
+	border-radius: 999px !important;
+	background: #fff0ee !important;
+	color: #8f2727 !important;
+	font-family: var(--ing-font-sans) !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+	line-height: 1.35 !important;
+	box-shadow: none !important;
+}
+
+.ing-forminator .forminator-ui .forminator-error-message::before {
+	display: grid;
+	width: 17px;
+	height: 17px;
+	flex: 0 0 17px;
+	content: "!";
+	place-items: center;
+	border-radius: 50%;
+	background: #a73535;
+	color: #fff;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.ing-forminator .forminator-ui .forminator-field.forminator-has_error input.forminator-input,
+.ing-forminator .forminator-ui .forminator-field.forminator-has_error textarea.forminator-textarea,
+.ing-forminator .forminator-ui .forminator-field.forminator-is_error input.forminator-input,
+.ing-forminator .forminator-ui .forminator-field.forminator-is_error textarea.forminator-textarea {
+	border-color: rgb(173 48 48 / 62%) !important;
+	box-shadow: 0 0 0 3px rgb(173 48 48 / 8%) !important;
+}
+
 .ing-forminator--inline {
 	min-width: 0;
 }
@@ -2524,6 +2576,8 @@ select {
 	grid-template-columns: minmax(0, 1fr) auto;
 	gap: 8px !important;
 	align-items: center;
+	position: relative;
+	overflow: visible !important;
 	padding: 7px 7px 7px 26px !important;
 	border: 1px solid rgb(0 0 0 / 20%) !important;
 	border-radius: 999px !important;
@@ -2538,6 +2592,24 @@ select {
 .ing-forminator--inline .forminator-ui .forminator-row-last {
 	grid-column: 2;
 	grid-row: 1;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-field {
+	position: static !important;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-error-message {
+	position: absolute !important;
+	z-index: 2;
+	top: calc(100% + 8px);
+	left: 24px;
+	margin: 0 !important;
+	white-space: nowrap;
+}
+
+.ing-forminator--inline .forminator-ui.forminator-custom-form:has(.forminator-error-message) {
+	margin-bottom: 42px !important;
+	border-color: rgb(173 48 48 / 45%) !important;
 }
 
 .ing-forminator--inline .forminator-ui .forminator-button-submit {
@@ -2564,6 +2636,13 @@ select {
 		min-width: 0;
 		padding-inline: 14px !important;
 		font-size: 12px !important;
+	}
+
+	.ing-forminator--inline .forminator-ui .forminator-error-message {
+		right: 12px;
+		left: 12px;
+		width: auto !important;
+		white-space: normal;
 	}
 
 	.building-banner {
