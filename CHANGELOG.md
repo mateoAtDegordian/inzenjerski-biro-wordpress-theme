@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.5 — 2026-07-27
+
+- Ubrzano je početno tipkanje glavnih naslova i skraćene su stanke na interpunkciji.
+- Dodani su suptilni jednokratni ease-in prijelazi sadržaja pri skrolanju.
+- Ujednačen je vertikalni ritam edukacija na desktopu i mobitelu, posebno razmak ispod informacijskih kartica.
+- Mobilni meni sada se otvara glatko, zauzima dostupan ekran i može se skrolati bez rezanja sadržaja.
+- Arhiva po defaultu otvara najnoviju, prvu prikazanu godinu.
+
 ## 1.5.4 — 2026-07-24
 
 - Building banner zamijenjen je novom SVG animacijom s blagim zoom efektom i njihanjem grana.

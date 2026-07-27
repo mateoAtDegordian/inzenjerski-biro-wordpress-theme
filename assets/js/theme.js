@@ -92,8 +92,8 @@
 
 			if (characterIndex < text.length) {
 				const character = text.charAt(characterIndex - 1);
-				const baseDelay = reducedMotion.matches ? 28 : 58;
-				const delay = /[.:,!?]/.test(character) ? baseDelay * 2.6 : baseDelay;
+				const baseDelay = reducedMotion.matches ? 16 : 30;
+				const delay = /[.:,!?]/.test(character) ? baseDelay * 1.8 : baseDelay;
 				window.setTimeout(typeNextCharacter, delay);
 				return;
 			}
@@ -102,8 +102,67 @@
 			title.classList.add("is-typed");
 		};
 
-		window.setTimeout(typeNextCharacter, reducedMotion.matches ? 180 : 420);
+		window.setTimeout(typeNextCharacter, reducedMotion.matches ? 100 : 180);
 	});
+
+	const revealTargets = new Set(
+		document.querySelectorAll(
+			[
+				".page-main > section > .container",
+				".page-main > section.container",
+				".event-single__hero > .container",
+				".event-single > section:not(.event-content) > .container",
+			].join(",")
+		)
+	);
+
+	document.querySelectorAll(".event-content__body").forEach((body) => {
+		const eventBlocks = body.querySelectorAll(":scope > .event-block");
+		if (!eventBlocks.length) {
+			revealTargets.add(body);
+			return;
+		}
+
+		eventBlocks.forEach((block) => {
+			Array.from(block.children)
+				.filter((child) => !child.classList.contains("event-program-gears"))
+				.forEach((child) => revealTargets.add(child));
+		});
+	});
+
+	if ("IntersectionObserver" in window) {
+		const revealObserver = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) {
+						return;
+					}
+
+					entry.target.classList.add("is-visible");
+					revealObserver.unobserve(entry.target);
+				});
+			},
+			{
+				rootMargin: "0px 0px -10% 0px",
+				threshold: 0.08,
+			}
+		);
+
+		revealTargets.forEach((target, index) => {
+			const targetTop = target.getBoundingClientRect().top;
+			target.style.setProperty("--reveal-delay", `${Math.min(index % 3, 2) * 55}ms`);
+			target.classList.add("scroll-reveal");
+
+			if (targetTop < window.innerHeight * 0.92) {
+				target.classList.add("is-visible");
+				return;
+			}
+
+			revealObserver.observe(target);
+		});
+	} else {
+		revealTargets.forEach((target) => target.classList.add("is-visible"));
+	}
 
 	document.querySelectorAll("[data-image-stack]").forEach((stack) => {
 		const cards = Array.from(stack.querySelectorAll(".about-motion__card"));

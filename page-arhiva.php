@@ -27,7 +27,7 @@ foreach ( $archive_posts as $archive_post ) {
 
 $years = array_unique( array_merge( array( gmdate( 'Y' ), '2025', '2024', '2023' ), array_keys( $archive_by_year ) ) );
 rsort( $years, SORT_NUMERIC );
-$default_open_year = array_key_first( array_filter( $archive_by_year ) );
+$default_open_year = reset( $years );
 ?>
 <main id="main" class="page-main">
 	<section class="archive-hero">

@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.5.4
+Version: 1.5.5
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -3622,4 +3622,221 @@ select {
 	object-fit: cover;
 	object-position: center;
 	transform: none;
+}
+
+/* 1.5.5 — smoother page flow, event rhythm and mobile navigation. */
+.scroll-reveal {
+	opacity: 0;
+	transform: translateY(20px);
+	transition:
+		opacity 560ms ease-out var(--reveal-delay, 0ms),
+		transform 640ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+	will-change: opacity, transform;
+}
+
+.scroll-reveal.is-visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.accordion-item__panel {
+	display: block;
+	max-height: 0;
+	padding-bottom: 0;
+	overflow: hidden;
+	visibility: hidden;
+	opacity: 0;
+	transition:
+		max-height 420ms cubic-bezier(0.22, 1, 0.36, 1),
+		padding-bottom 420ms cubic-bezier(0.22, 1, 0.36, 1),
+		opacity 220ms ease,
+		visibility 0s linear 420ms;
+}
+
+.accordion-item.is-open .accordion-item__panel {
+	max-height: 1200px;
+	padding-bottom: 30px;
+	visibility: visible;
+	opacity: 1;
+	transition-delay: 0s;
+}
+
+.archive-accordion .accordion-item.is-open .accordion-item__panel {
+	padding-bottom: 42px;
+}
+
+@media (min-width: 761px) {
+	.event-single__hero {
+		padding: 32px 0 64px;
+	}
+
+	.event-intro.section {
+		padding-block: 64px 56px;
+	}
+
+	.event-info-grid {
+		margin: 34px 0 0;
+	}
+
+	.event-block {
+		padding-block: 64px;
+	}
+
+	.event-block > h2 {
+		margin-bottom: 36px;
+	}
+
+	.event-block--instructions {
+		padding-bottom: 72px;
+	}
+
+	.event-download {
+		padding-block: 52px;
+	}
+
+	.event-registration.section,
+	.related-events.section {
+		padding-block: 64px;
+	}
+}
+
+@media (max-width: 900px) {
+	.menu-toggle {
+		position: relative;
+		z-index: 2;
+	}
+
+	.site-nav {
+		inset: 106px 0 auto;
+		display: block;
+		width: 100%;
+		height: calc(100dvh - 106px);
+		max-height: calc(100dvh - 106px);
+		padding:
+			clamp(28px, 6vh, 48px)
+			max(24px, env(safe-area-inset-right))
+			max(32px, env(safe-area-inset-bottom))
+			max(24px, env(safe-area-inset-left));
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		visibility: hidden;
+		opacity: 0;
+		transform: translateY(-10px);
+		pointer-events: none;
+		transition:
+			opacity 240ms ease,
+			transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+			visibility 0s linear 320ms;
+	}
+
+	.site-nav.is-open {
+		visibility: visible;
+		opacity: 1;
+		transform: translateY(0);
+		pointer-events: auto;
+		transition-delay: 0s;
+	}
+
+	.site-nav__list,
+	.site-nav .menu {
+		width: 100%;
+		gap: 0;
+		padding-bottom: 24px;
+	}
+
+	.site-nav li {
+		width: 100%;
+		border-bottom: 1px solid rgb(36 78 156 / 15%);
+	}
+
+	.site-nav a {
+		display: block;
+		width: 100%;
+		padding: 15px 0;
+		font-size: clamp(24px, 7vw, 30px);
+		line-height: 1.12;
+		white-space: normal;
+		overflow-wrap: anywhere;
+	}
+}
+
+@media (max-width: 760px) {
+	.event-single__hero {
+		padding: 24px 0 44px;
+	}
+
+	.event-single__image {
+		height: clamp(240px, 72vw, 300px);
+	}
+
+	.event-intro.section {
+		padding-block: 44px 40px;
+	}
+
+	.event-intro__lead {
+		margin-bottom: 28px;
+	}
+
+	.event-info-grid {
+		gap: 14px;
+		margin: 28px 0 0;
+	}
+
+	.event-info {
+		min-height: 0;
+		padding: 28px 20px;
+	}
+
+	.event-info strong {
+		margin-bottom: 18px;
+	}
+
+	.event-info b {
+		margin-bottom: 12px;
+	}
+
+	.event-block {
+		padding-block: 44px;
+	}
+
+	.event-block > h2 {
+		margin-bottom: 28px;
+	}
+
+	.event-block--program {
+		padding-bottom: 240px;
+	}
+
+	.event-block--instructions {
+		padding-bottom: 48px;
+	}
+
+	.event-download {
+		padding-block: 44px;
+	}
+
+	.event-download__inner {
+		gap: 26px;
+	}
+
+	.event-registration.section,
+	.related-events.section {
+		padding-block: 48px;
+	}
+
+	.event-registration__heading {
+		margin-bottom: 32px;
+	}
+
+	.archive-accordion .accordion-item.is-open .accordion-item__panel {
+		padding-bottom: 30px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.scroll-reveal {
+		transform: none;
+		transition-duration: 180ms;
+	}
 }
