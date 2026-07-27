@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.5.12' );
+define( 'INGBIRO_VERSION', '1.5.13' );
 
 function ingbiro_setup() {
 	load_theme_textdomain( 'ingbiro', get_template_directory() . '/languages' );
@@ -226,7 +226,9 @@ function ingbiro_event_blueprint_content() {
 <!-- wp:list --><ul class="wp-block-list"><li>Otvaranje ponuda – ekranski prikaz u EOJN RH</li><li>Pregled i ocjena ponuda te donošenje Odluke o odabiru – ekranski prikaz u EOJN RH</li><li>Priprema i objava ugovora – ekranski prikaz u EOJN RH</li></ul><!-- /wp:list -->
 <!-- wp:paragraph --><p><strong>PITANJA I ODGOVORI</strong></p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->
+<!-- wp:html -->
 <div class="event-program-gears" aria-hidden="true"><img src="' . esc_url( ingbiro_asset( 'icons/figma-gear-soft-event.svg' ) ) . '" alt=""><img src="' . esc_url( ingbiro_asset( 'icons/figma-gear-blue-event.svg' ) ) . '" alt=""></div>
+<!-- /wp:html -->
 </div><!-- /wp:group -->
 
 <!-- wp:group {"className":"event-block event-block--fee","layout":{"type":"constrained"}} -->
@@ -256,6 +258,85 @@ function ingbiro_event_blueprint_content() {
 <!-- wp:paragraph --><p><strong>Osnovne pretpostavke za sudjelovanje:</strong></p><!-- /wp:paragraph -->
 <!-- wp:list --><ul class="wp-block-list"><li>na računalo nije potrebno instalirati dodatni program; dovoljno je otvoriti primljenu poveznicu</li><li>za praćenje na pametnom telefonu potrebno je instalirati Microsoft Teams</li><li>potrebna je stabilna širokopojasna internetska veza i zvučnik</li><li>mikrofon nije obvezan, ali web kamera mora biti uključena u realnom vremenu</li></ul><!-- /wp:list -->
 <!-- wp:paragraph --><p>Za tehničku pomoć i dodatne informacije nazovite 01 / 4600 888 ili pišite na <a href="mailto:abatinic@ingbiro.hr">abatinic@ingbiro.hr</a>. Pitanja za predavača možete poslati i unaprijed na istu adresu.</p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->';
+}
+
+/**
+ * Starter content for a new event.
+ *
+ * The structure mirrors the complete event page while the bracketed copy makes
+ * it obvious which content should be replaced before publishing.
+ */
+function ingbiro_event_editor_template_content() {
+	$image_one   = esc_url( ingbiro_asset( 'images/event-detail-1.jpg' ) );
+	$image_two   = esc_url( ingbiro_asset( 'images/event-detail-2.jpg' ) );
+	$image_three = esc_url( ingbiro_asset( 'images/event-detail-3.jpg' ) );
+
+	return '
+<!-- wp:group {"className":"event-block event-block--why","layout":{"type":"constrained"}} -->
+<div class="wp-block-group event-block event-block--why">
+<!-- wp:heading --><h2 class="wp-block-heading">[Zašto sudjelovati na edukaciji?]</h2><!-- /wp:heading -->
+<!-- wp:columns {"className":"event-why-layout"} --><div class="wp-block-columns event-why-layout">
+<!-- wp:column {"width":"58%"} --><div class="wp-block-column" style="flex-basis:58%">
+<!-- wp:paragraph --><p>[Ukratko predstavite temu edukacije, problem koji rješava i kome je program namijenjen.]</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p>[Opišite praktična znanja, alate i primjere koje će polaznici dobiti tijekom edukacije.]</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p>[Dodajte važne informacije o programu, certifikatu, broju polaznika ili uvjetima sudjelovanja.]</p><!-- /wp:paragraph -->
+</div><!-- /wp:column -->
+<!-- wp:column {"width":"42%","className":"event-image-stack"} --><div class="wp-block-column event-image-stack" style="flex-basis:42%">
+<!-- wp:image {"sizeSlug":"large"} --><figure class="wp-block-image size-large"><img src="' . $image_one . '" alt="[Zamijenite prvom fotografijom edukacije]"/></figure><!-- /wp:image -->
+<!-- wp:image {"sizeSlug":"large"} --><figure class="wp-block-image size-large"><img src="' . $image_two . '" alt="[Zamijenite drugom fotografijom edukacije]"/></figure><!-- /wp:image -->
+<!-- wp:image {"sizeSlug":"large"} --><figure class="wp-block-image size-large"><img src="' . $image_three . '" alt="[Zamijenite trećom fotografijom edukacije]"/></figure><!-- /wp:image -->
+</div><!-- /wp:column -->
+</div><!-- /wp:columns -->
+</div><!-- /wp:group -->
+
+<!-- wp:group {"className":"event-block event-block--program","layout":{"type":"constrained"}} -->
+<div class="wp-block-group event-block event-block--program">
+<!-- wp:heading --><h2 class="wp-block-heading">[Program edukacije]</h2><!-- /wp:heading -->
+<!-- wp:group {"className":"event-program","layout":{"type":"constrained"}} --><div class="wp-block-group event-program">
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">[09.00 – 10.30]</h3><!-- /wp:heading -->
+<!-- wp:paragraph --><p><strong>[NAZIV PRVOG PROGRAMSKOG BLOKA]</strong><br>[Trajanje ili broj nastavnih sati]</p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>[Prva tema ili ishod]</li><li>[Druga tema ili ishod]</li><li>[Treća tema ili ishod]</li></ul><!-- /wp:list -->
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">[10.30 – 10.45]</h3><!-- /wp:heading -->
+<!-- wp:paragraph --><p>[STANKA]</p><!-- /wp:paragraph -->
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">[10.45 – 12.15]</h3><!-- /wp:heading -->
+<!-- wp:paragraph --><p><strong>[NAZIV DRUGOG PROGRAMSKOG BLOKA]</strong><br>[Trajanje ili broj nastavnih sati]</p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>[Prva tema ili ishod]</li><li>[Druga tema ili ishod]</li><li>[Treća tema ili ishod]</li></ul><!-- /wp:list -->
+<!-- wp:paragraph --><p><strong>[PITANJA I ODGOVORI]</strong></p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->
+<!-- wp:html -->
+<div class="event-program-gears" aria-hidden="true"><img src="' . esc_url( ingbiro_asset( 'icons/figma-gear-soft-event.svg' ) ) . '" alt=""><img src="' . esc_url( ingbiro_asset( 'icons/figma-gear-blue-event.svg' ) ) . '" alt=""></div>
+<!-- /wp:html -->
+</div><!-- /wp:group -->
+
+<!-- wp:group {"className":"event-block event-block--fee","layout":{"type":"constrained"}} -->
+<div class="wp-block-group event-block event-block--fee">
+<!-- wp:heading --><h2 class="wp-block-heading">[Kotizacija]</h2><!-- /wp:heading -->
+<!-- wp:columns {"className":"event-fee-columns"} --><div class="wp-block-columns event-fee-columns">
+<!-- wp:column --><div class="wp-block-column">
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">[Naknada]</h3><!-- /wp:heading -->
+<!-- wp:paragraph --><p>[Upišite cijenu, porezni status i rok plaćanja.]</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p>[Upišite IBAN, model, poziv na broj i opis plaćanja.]</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><strong>[Što je uključeno u kotizaciju:]</strong></p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>[Stavka uključena u cijenu]</li><li>[Materijali, potvrda ili dodatna pogodnost]</li></ul><!-- /wp:list -->
+</div><!-- /wp:column -->
+<!-- wp:column --><div class="wp-block-column">
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">[Prijave]</h3><!-- /wp:heading -->
+<!-- wp:paragraph --><p>[Objasnite način i rok prijave.]</p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>[Online prijava na ovoj stranici]</li><li>[Kontakt e-mail ili telefon]</li></ul><!-- /wp:list -->
+<!-- wp:paragraph --><p><strong>[Posebne pogodnosti:]</strong></p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>[Popust ili pogodnost za pretplatnike]</li><li>[Druga pogodnost, ako postoji]</li></ul><!-- /wp:list -->
+</div><!-- /wp:column -->
+</div><!-- /wp:columns -->
+</div><!-- /wp:group -->
+
+<!-- wp:group {"className":"event-block event-block--instructions","layout":{"type":"constrained"}} -->
+<div class="wp-block-group event-block event-block--instructions">
+<!-- wp:heading --><h2 class="wp-block-heading">[Upute za sudionike]</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>[Upišite što polaznik mora napraviti nakon prijave i prije početka edukacije.]</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><strong>[Tehničke i organizacijske upute:]</strong></p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>[Način pristupa edukaciji ili lokacija]</li><li>[Potrebna oprema ili dokumenti]</li><li>[Vrijeme registracije ili dolaska]</li></ul><!-- /wp:list -->
+<!-- wp:paragraph --><p>[Dodajte kontakt za pomoć i dodatne informacije.]</p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->';
 }
 
@@ -353,6 +434,84 @@ function ingbiro_register_content_types() {
 	);
 }
 add_action( 'init', 'ingbiro_register_content_types' );
+
+/**
+ * Pre-populate only brand-new events. Existing posts and saved drafts retain
+ * exactly the content entered by an editor.
+ *
+ * @param string  $content Default editor content.
+ * @param WP_Post $post    Post being created.
+ * @return string
+ */
+function ingbiro_default_event_content( $content, $post ) {
+	if (
+		$post instanceof WP_Post
+		&& 'ing_event' === $post->post_type
+		&& '' === trim( (string) $content )
+	) {
+		return ingbiro_event_editor_template_content();
+	}
+
+	return $content;
+}
+add_filter( 'default_content', 'ingbiro_default_event_content', 10, 2 );
+
+/**
+ * Persist the same template when WordPress creates an event auto-draft.
+ *
+ * This also covers reopening "Add event" after the editor has already created
+ * an otherwise empty auto-draft for the current user.
+ *
+ * @param array $data    Sanitized post data.
+ * @param array $postarr Raw post data.
+ * @return array
+ */
+function ingbiro_seed_event_auto_draft( $data, $postarr ) {
+	if (
+		'ing_event' === ( $data['post_type'] ?? '' )
+		&& 'auto-draft' === ( $data['post_status'] ?? '' )
+		&& '' === trim( (string) ( $data['post_content'] ?? '' ) )
+	) {
+		$data['post_content'] = ingbiro_event_editor_template_content();
+	}
+
+	return $data;
+}
+add_filter( 'wp_insert_post_data', 'ingbiro_seed_event_auto_draft', 10, 2 );
+
+/**
+ * Backfill empty event auto-drafts created before the editor template existed.
+ */
+function ingbiro_upgrade_empty_event_auto_drafts() {
+	if ( version_compare( (string) get_option( 'ingbiro_event_auto_draft_version', '0' ), '1.0.0', '>=' ) ) {
+		return;
+	}
+
+	$auto_draft_ids = get_posts(
+		array(
+			'post_type'      => 'ing_event',
+			'post_status'    => 'auto-draft',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+		)
+	);
+
+	foreach ( $auto_draft_ids as $post_id ) {
+		if ( '' !== trim( (string) get_post_field( 'post_content', $post_id ) ) ) {
+			continue;
+		}
+
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => ingbiro_event_editor_template_content(),
+			)
+		);
+	}
+
+	update_option( 'ingbiro_event_auto_draft_version', '1.0.0' );
+}
+add_action( 'init', 'ingbiro_upgrade_empty_event_auto_drafts', 37 );
 
 function ingbiro_register_meta() {
 	$event_meta = array(
@@ -1207,3 +1366,43 @@ function ingbiro_upgrade_event_blueprint() {
 	update_post_meta( $event_id, '_ingbiro_event_blueprint_version', '1.3.0' );
 }
 add_action( 'init', 'ingbiro_upgrade_event_blueprint', 35 );
+
+/**
+ * Repair the original gear decoration so Gutenberg treats it as a supported
+ * Custom HTML block instead of unexpected content inside the Program group.
+ */
+function ingbiro_repair_event_program_blocks() {
+	if ( version_compare( (string) get_option( 'ingbiro_event_block_repair_version', '0' ), '1.0.0', '>=' ) ) {
+		return;
+	}
+
+	$event_ids = get_posts(
+		array(
+			'post_type'      => 'ing_event',
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+		)
+	);
+
+	$gear_markup = '<div class="event-program-gears" aria-hidden="true"><img src="' . esc_url( ingbiro_asset( 'icons/figma-gear-soft-event.svg' ) ) . '" alt=""><img src="' . esc_url( ingbiro_asset( 'icons/figma-gear-blue-event.svg' ) ) . '" alt=""></div>';
+	$gear_block  = "<!-- wp:html -->\n" . $gear_markup . "\n<!-- /wp:html -->";
+
+	foreach ( $event_ids as $event_id ) {
+		$content = (string) get_post_field( 'post_content', $event_id );
+
+		if ( ! str_contains( $content, $gear_markup ) || str_contains( $content, $gear_block ) ) {
+			continue;
+		}
+
+		wp_update_post(
+			array(
+				'ID'           => $event_id,
+				'post_content' => str_replace( $gear_markup, $gear_block, $content ),
+			)
+		);
+	}
+
+	update_option( 'ingbiro_event_block_repair_version', '1.0.0' );
+}
+add_action( 'init', 'ingbiro_repair_event_program_blocks', 36 );
