@@ -152,6 +152,114 @@ function ingbiro_render_career_position_field( $wrappers, $form_id ) {
 add_filter( 'forminator_cform_render_fields', 'ingbiro_render_career_position_field', 20, 2 );
 
 /**
+ * Detect the language of the page that rendered or submitted a Forminator form.
+ *
+ * AJAX submissions do not have a queried WordPress page, so the English form
+ * adds a small language marker to its regular Forminator payload.
+ */
+function ingbiro_form_request_is_english() {
+	if ( isset( $_POST['ingbiro_form_language'] ) ) {
+		return 'en' === sanitize_key( wp_unslash( $_POST['ingbiro_form_language'] ) );
+	}
+
+	return function_exists( 'ingbiro_is_english' ) && ingbiro_is_english();
+}
+
+/**
+ * English equivalents for labels and custom messages stored in Forminator.
+ *
+ * The database remains Croatian and editable as one shared form. These values
+ * are applied only to the public English render.
+ */
+function ingbiro_form_english_strings() {
+	return array(
+		'Ime'                                           => 'First name',
+		'Prezime'                                       => 'Last name',
+		'Ime i prezime'                                 => 'Full name',
+		'Srednje ime'                                   => 'Middle name',
+		'Titula'                                        => 'Title',
+		'Broj telefona'                                 => 'Phone number',
+		'Tvrtka / organizacija'                         => 'Company / organization',
+		'Tvrtka / institucija'                          => 'Company / institution',
+		'Tvrtka'                                        => 'Company',
+		'Grad'                                          => 'City',
+		'Država'                                        => 'Country',
+		'Vaš e-mail'                                    => 'Your email',
+		'Vaša poruka'                                   => 'Your message',
+		'Napomena'                                      => 'Note',
+		'Željena pozicija'                              => 'Desired position',
+		'Pozicija'                                      => 'Position',
+		'ID pozicije'                                   => 'Position ID',
+		'Životopis (PDF, DOC ili DOCX)'                 => 'CV / résumé (PDF, DOC or DOCX)',
+		'Kratko motivacijsko pismo'                     => 'Short cover letter',
+		'Pošaljite upit'                                => 'Send enquiry',
+		'Pretplatite se'                                => 'Subscribe',
+		'Pošaljite prijavu'                             => 'Submit application',
+		'Provjerite označena polja i pokušajte ponovno.' => 'Please check the highlighted fields and try again.',
+		'Hvala! Vaš upit je poslan.'                    => 'Thank you! Your enquiry has been sent.',
+		'Hvala! Uspješno ste se prijavili na newsletter.' => 'Thank you! You have successfully subscribed to the newsletter.',
+		'Hvala! Vaša prijava je zaprimljena.'           => 'Thank you! Your application has been received.',
+		'Ovo polje je obavezno.'                        => 'This field is required.',
+		'Unesite e-mail adresu.'                        => 'Enter your email address.',
+		'Unesite ispravnu e-mail adresu.'               => 'Enter a valid email address.',
+		'Unesite broj telefona.'                        => 'Enter your phone number.',
+		'Unesite ispravan broj telefona.'               => 'Enter a valid phone number.',
+		'Unesite poveznicu.'                            => 'Enter a URL.',
+		'Unesite ispravnu poveznicu (npr. https://primjer.hr/).' => 'Enter a valid URL (e.g. https://example.com/).',
+		'Unesite LinkedIn ili portfolio poveznicu.'     => 'Enter your LinkedIn or portfolio URL.',
+		'Unesite željenu poziciju.'                     => 'Enter the desired position.',
+		'Unesite naziv tvrtke.'                         => 'Enter the company name.',
+		'Dodajte životopis.'                            => 'Upload your CV / résumé.',
+		'Unesite kratko motivacijsko pismo.'            => 'Enter a short cover letter.',
+		'Dodajte traženu datoteku.'                     => 'Upload the required file.',
+		'Provjerite označena polja prije slanja.'       => 'Please correct the highlighted fields before submitting.',
+		'Slanje obrasca je u tijeku, pričekajte.'       => 'Submitting form, please wait.',
+		'Slanje...'                                     => 'Submitting...',
+		'Pokušajte ponovno.'                            => 'Please try again.',
+		'Prethodno'                                     => 'Previous',
+		'Sljedeće'                                      => 'Next',
+		'Pošalji'                                       => 'Submit',
+		'Odaberite datoteku'                            => 'Choose File',
+		'Datoteka nije odabrana'                        => 'No file chosen',
+		'Ukloni odabranu datoteku'                      => 'Delete uploaded file',
+		'Uredi obrazac'                                 => 'Edit form',
+	);
+}
+
+/**
+ * Recursively translate Forminator field settings without changing the saved
+ * form configuration in the WordPress dashboard.
+ */
+function ingbiro_translate_forminator_field_values( $values ) {
+	$translations = ingbiro_form_english_strings();
+
+	foreach ( $values as $key => $value ) {
+		if ( is_array( $value ) ) {
+			$values[ $key ] = ingbiro_translate_forminator_field_values( $value );
+		} elseif ( is_string( $value ) && isset( $translations[ $value ] ) ) {
+			$values[ $key ] = $translations[ $value ];
+		}
+	}
+
+	return $values;
+}
+
+/**
+ * Localize all labels, placeholders and custom field validation messages on
+ * English pages.
+ */
+function ingbiro_translate_forminator_fields_to_english( $wrappers, $form_id ) {
+	unset( $form_id );
+
+	if ( ! ingbiro_form_request_is_english() ) {
+		return $wrappers;
+	}
+
+	return ingbiro_translate_forminator_field_values( $wrappers );
+}
+add_filter( 'forminator_cform_render_fields', 'ingbiro_translate_forminator_fields_to_english', 40, 2 );
+
+/**
  * Replace the submitted position with the authoritative title from WordPress.
  */
 function ingbiro_store_career_position( $field_data, $form_id ) {
@@ -441,6 +549,14 @@ function ingbiro_translate_forminator_message( $translated, $text, $domain ) {
 		return $translated;
 	}
 
+	/*
+	 * Forminator's source strings are English. Return those originals on the
+	 * English site even when the WordPress installation locale is Croatian.
+	 */
+	if ( ingbiro_form_request_is_english() ) {
+		return $text;
+	}
+
 	$translations = array(
 		'This field is required. Please enter text.'                              => 'Ovo polje je obavezno.',
 		'This field is required. Please input a valid email.'                     => 'Unesite e-mail adresu.',
@@ -500,6 +616,46 @@ function ingbiro_translate_forminator_message( $translated, $text, $domain ) {
 	return isset( $translations[ $text ] ) ? $translations[ $text ] : $translated;
 }
 add_filter( 'gettext', 'ingbiro_translate_forminator_message', 20, 3 );
+
+/**
+ * Translate the saved submit label and include the language in AJAX requests.
+ */
+function ingbiro_translate_forminator_submit_markup( $html, $form_id, $post_id, $nonce, $settings ) {
+	unset( $form_id, $post_id, $nonce, $settings );
+
+	if ( ! ingbiro_form_request_is_english() ) {
+		return $html;
+	}
+
+	foreach ( ingbiro_form_english_strings() as $croatian => $english ) {
+		$html = str_replace(
+			array(
+				$croatian,
+				htmlentities( $croatian, ENT_QUOTES, 'UTF-8' ),
+			),
+			esc_html( $english ),
+			$html
+		);
+	}
+	$html .= '<input type="hidden" name="ingbiro_form_language" value="en">';
+
+	return $html;
+}
+add_filter( 'forminator_render_form_submit_markup', 'ingbiro_translate_forminator_submit_markup', 20, 5 );
+
+/**
+ * Translate custom database-backed Forminator response messages after submit.
+ */
+function ingbiro_translate_forminator_response_to_english( $message ) {
+	if ( ! ingbiro_form_request_is_english() ) {
+		return $message;
+	}
+
+	$translations = ingbiro_form_english_strings();
+	return isset( $translations[ $message ] ) ? $translations[ $message ] : $message;
+}
+add_filter( 'forminator_custom_form_invalid_form_message', 'ingbiro_translate_forminator_response_to_english', 20 );
+add_filter( 'forminator_custom_form_thankyou_message', 'ingbiro_translate_forminator_response_to_english', 20 );
 
 /**
  * Stable server-side integration point for future CRM/API code.
