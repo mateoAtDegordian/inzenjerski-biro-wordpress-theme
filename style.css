@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.5.17
+Version: 1.6.4
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -3949,5 +3949,71 @@ select {
 
 	.archive-accordion .accordion-item.is-open .accordion-item__panel {
 		padding-bottom: 30px;
+	}
+}
+
+/* 1.6.4 — keep conferences and training contained on narrow screens. */
+@media (max-width: 760px) {
+	a,
+	button {
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.content-cards--education {
+		grid-template-columns: minmax(0, 1fr);
+		width: 100%;
+	}
+
+	.content-cards--education .content-card,
+	.content-cards--education .content-card:first-child {
+		width: 100%;
+		min-width: 0;
+		padding: 28px 24px;
+	}
+
+	.content-cards--education .pill-button {
+		justify-content: space-between;
+		width: 100%;
+	}
+
+	.content-cards--education .pill-button__label {
+		min-width: 0;
+		overflow: visible;
+		white-space: normal;
+		text-overflow: clip;
+		line-height: 1.25;
+	}
+
+	.content-list--education {
+		grid-template-columns: minmax(0, 1fr);
+		width: min(calc(100% - (var(--ing-gutter) * 2)), var(--ing-container));
+	}
+
+	.content-list--education .content-list__item {
+		grid-template-columns: minmax(0, 1fr);
+		width: 100%;
+		min-width: 0;
+		gap: 24px;
+	}
+
+	.content-list--education .content-list__image,
+	.content-list--education .content-list__item > div {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.content-list--education .content-list__image {
+		height: clamp(210px, 62vw, 260px);
+	}
+}
+
+@media (max-width: 460px) {
+	.ing-forminator--inline .forminator-ui .forminator-button-submit {
+		width: 48px !important;
+		min-width: 48px !important;
+		max-width: 48px !important;
+		padding: 8px !important;
+		color: transparent !important;
+		font-size: 0 !important;
 	}
 }
