@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.6.8
+Version: 1.6.12
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -2409,7 +2409,8 @@ select {
 .ing-forminator .forminator-ui .forminator-row {
 	display: grid !important;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 42px !important;
+	column-gap: 42px !important;
+	row-gap: 18px !important;
 	margin-bottom: 42px !important;
 }
 
@@ -2421,6 +2422,11 @@ select {
 
 .ing-forminator .forminator-ui .forminator-col-12 {
 	grid-column: 1 / -1;
+}
+
+.ing-forminator .forminator-ui.forminator-custom-form[data-design] .forminator-field {
+	position: relative !important;
+	padding-bottom: 24px !important;
 }
 
 .ing-forminator .forminator-ui .forminator-label {
@@ -2445,6 +2451,9 @@ select {
 	font-family: var(--ing-font-sans) !important;
 	font-size: 18px !important;
 	box-shadow: none !important;
+	outline: 0 !important;
+	-webkit-tap-highlight-color: transparent;
+	transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
 }
 
 .ing-forminator .forminator-ui textarea.forminator-textarea {
@@ -2454,9 +2463,16 @@ select {
 }
 
 .ing-forminator .forminator-ui input.forminator-input:focus,
-.ing-forminator .forminator-ui textarea.forminator-textarea:focus {
+.ing-forminator .forminator-ui textarea.forminator-textarea:focus,
+.ing-forminator .forminator-ui select.forminator-select2:focus {
 	border-color: var(--ing-blue) !important;
-	box-shadow: 0 0 0 3px rgb(36 78 156 / 12%) !important;
+	box-shadow: 0 0 0 2px rgb(36 78 156 / 14%) !important;
+	outline: 0 !important;
+}
+
+.ing-forminator .forminator-ui .forminator-file-upload:focus-within {
+	border-color: var(--ing-blue) !important;
+	box-shadow: 0 0 0 2px rgb(36 78 156 / 14%) !important;
 }
 
 .ing-forminator .forminator-ui .forminator-row-last {
@@ -2470,6 +2486,7 @@ select {
 	align-items: center;
 	gap: 8px;
 	min-height: 48px !important;
+	margin: 0 !important;
 	padding: 8px 8px 8px 20px !important;
 	border: 0 !important;
 	border-radius: 999px !important;
@@ -2480,6 +2497,11 @@ select {
 	line-height: 1 !important;
 	white-space: nowrap !important;
 	box-shadow: none !important;
+	outline: 0 !important;
+	-webkit-appearance: none;
+	appearance: none;
+	-webkit-tap-highlight-color: transparent;
+	transition: background-color 180ms ease, box-shadow 180ms ease, transform 120ms ease;
 }
 
 .ing-forminator .forminator-ui .forminator-button-submit::after {
@@ -2507,53 +2529,62 @@ select {
 	background: var(--ing-blue) !important;
 }
 
-.ing-forminator .forminator-ui .forminator-response-message {
-	margin-bottom: 24px !important;
-	border-radius: 12px !important;
+.ing-forminator .forminator-ui .forminator-button-submit:focus-visible {
+	box-shadow: 0 0 0 3px rgb(36 78 156 / 20%) !important;
 }
 
-.ing-forminator .forminator-ui .forminator-response-message.forminator-error {
+.ing-forminator .forminator-ui .forminator-button-submit:active {
+	transform: scale(0.98);
+}
+
+.ing-forminator .forminator-ui .forminator-response-message:not(.forminator-accessible) {
+	position: fixed !important;
+	right: 24px;
+	bottom: 24px;
+	z-index: 10000;
+	width: min(420px, calc(100vw - 48px)) !important;
+	margin: 0 !important;
 	padding: 14px 18px !important;
-	border: 1px solid rgb(173 48 48 / 22%) !important;
-	background: #fff0ee !important;
-	color: #8f2727 !important;
+	border: 1px solid rgb(36 78 156 / 22%) !important;
+	border-radius: 18px !important;
+	background: #f3f7ff !important;
+	color: var(--ing-blue) !important;
 	font-family: var(--ing-font-sans) !important;
 	font-size: 14px !important;
 	line-height: 1.45 !important;
+	box-shadow: 0 14px 36px rgb(23 61 133 / 18%) !important;
+	animation: ing-form-toast-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.ing-forminator .forminator-ui .forminator-response-message.forminator-error:not(.forminator-accessible) {
+	border: 1px solid rgb(173 48 48 / 22%) !important;
+	background: #fff0ee !important;
+	color: #8f2727 !important;
 }
 
 .ing-forminator .forminator-ui .forminator-error-message {
-	display: flex !important;
-	width: fit-content !important;
+	position: absolute !important;
+	bottom: 0;
+	left: 8px;
+	display: block !important;
+	width: auto !important;
 	max-width: 100% !important;
-	align-items: center !important;
-	gap: 7px !important;
-	margin: 9px 0 0 !important;
-	padding: 7px 11px !important;
-	border: 1px solid rgb(173 48 48 / 20%) !important;
-	border-radius: 999px !important;
-	background: #fff0ee !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
 	color: #8f2727 !important;
 	font-family: var(--ing-font-sans) !important;
 	font-size: 13px !important;
-	font-weight: 500 !important;
+	font-weight: 600 !important;
 	line-height: 1.35 !important;
 	box-shadow: none !important;
 }
 
 .ing-forminator .forminator-ui .forminator-error-message::before {
-	display: grid;
-	width: 17px;
-	height: 17px;
-	flex: 0 0 17px;
-	content: "!";
-	place-items: center;
-	border-radius: 50%;
-	background: #a73535;
-	color: #fff;
-	font-size: 11px;
-	font-weight: 700;
-	line-height: 1;
+	display: none !important;
+	content: none !important;
 }
 
 .ing-forminator .forminator-ui .forminator-field.forminator-has_error input.forminator-input,
@@ -2561,11 +2592,21 @@ select {
 .ing-forminator .forminator-ui .forminator-field.forminator-is_error input.forminator-input,
 .ing-forminator .forminator-ui .forminator-field.forminator-is_error textarea.forminator-textarea {
 	border-color: rgb(173 48 48 / 62%) !important;
-	box-shadow: 0 0 0 3px rgb(173 48 48 / 8%) !important;
+	box-shadow: none !important;
+}
+
+.ing-forminator .forminator-ui .forminator-field.forminator-has_error input.forminator-input:focus,
+.ing-forminator .forminator-ui .forminator-field.forminator-has_error textarea.forminator-textarea:focus,
+.ing-forminator .forminator-ui .forminator-field.forminator-is_error input.forminator-input:focus,
+.ing-forminator .forminator-ui .forminator-field.forminator-is_error textarea.forminator-textarea:focus {
+	border-color: rgb(173 48 48 / 75%) !important;
+	box-shadow: 0 0 0 2px rgb(173 48 48 / 10%) !important;
+	outline: 0 !important;
 }
 
 .ing-forminator--inline {
 	min-width: 0;
+	padding-bottom: 28px;
 }
 
 .ing-forminator--inline .forminator-ui .forminator-row {
@@ -2595,8 +2636,23 @@ select {
 
 .ing-forminator--inline .forminator-ui input.forminator-input {
 	min-height: 44px !important;
+	margin: 0 !important;
 	padding: 8px 4px !important;
 	border: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	outline: 0 !important;
+	-webkit-appearance: none !important;
+	appearance: none !important;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-field.forminator-has_error input.forminator-input,
+.ing-forminator--inline .forminator-ui .forminator-field.forminator-is_error input.forminator-input,
+.ing-forminator--inline .forminator-ui .forminator-field.forminator-has_error input.forminator-input:focus,
+.ing-forminator--inline .forminator-ui .forminator-field.forminator-is_error input.forminator-input:focus {
+	border: 0 !important;
+	box-shadow: none !important;
+	outline: 0 !important;
 }
 
 .ing-forminator--inline .forminator-ui .forminator-row-last {
@@ -2604,22 +2660,37 @@ select {
 	grid-row: 1;
 }
 
-.ing-forminator--inline .forminator-ui .forminator-field {
+.ing-forminator--inline .forminator-ui.forminator-custom-form[data-design] .forminator-field {
 	position: static !important;
+	padding-bottom: 0 !important;
 }
 
 .ing-forminator--inline .forminator-ui .forminator-error-message {
 	position: absolute !important;
 	z-index: 2;
 	top: calc(100% + 8px);
-	left: 24px;
+	right: 12px;
+	bottom: auto;
+	left: 12px;
+	width: auto !important;
 	margin: 0 !important;
-	white-space: nowrap;
+	text-align: center;
+	white-space: normal;
 }
 
 .ing-forminator--inline .forminator-ui.forminator-custom-form:has(.forminator-error-message) {
-	margin-bottom: 42px !important;
+	margin-bottom: 0 !important;
 	border-color: rgb(173 48 48 / 45%) !important;
+}
+
+.ing-forminator--inline .forminator-ui.forminator-custom-form:focus-within {
+	border-color: var(--ing-blue) !important;
+	box-shadow: 0 0 0 2px rgb(36 78 156 / 14%) !important;
+}
+
+.ing-forminator--inline .forminator-ui.forminator-custom-form:has(.forminator-error-message):focus-within {
+	border-color: rgb(173 48 48 / 62%) !important;
+	box-shadow: 0 0 0 2px rgb(173 48 48 / 9%) !important;
 }
 
 .ing-forminator--inline .forminator-ui .forminator-button-submit {
@@ -2627,10 +2698,22 @@ select {
 	min-height: 48px !important;
 }
 
+@keyframes ing-form-toast-in {
+	from {
+		opacity: 0;
+		transform: translateY(12px) scale(0.98);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
 @media (max-width: 760px) {
 	.ing-forminator .forminator-ui .forminator-row {
 		grid-template-columns: 1fr;
-		gap: 20px !important;
+		gap: 12px !important;
 		margin-bottom: 20px !important;
 	}
 
@@ -2652,7 +2735,14 @@ select {
 		right: 12px;
 		left: 12px;
 		width: auto !important;
+		text-align: center;
 		white-space: normal;
+	}
+
+	.ing-forminator .forminator-ui .forminator-response-message:not(.forminator-accessible) {
+		right: 16px;
+		bottom: 16px;
+		width: calc(100vw - 32px) !important;
 	}
 
 	.building-banner {
@@ -4043,20 +4133,25 @@ select {
 		width: 48px !important;
 		min-width: 48px !important;
 		max-width: 48px !important;
+		height: 48px !important;
+		min-height: 48px !important;
+		max-height: 48px !important;
 		padding: 4px !important;
-		background: transparent !important;
+		overflow: hidden;
+		border-radius: 50% !important;
+		background-color: var(--ing-blue) !important;
+		background-image: url("assets/icons/arrow-right.svg") !important;
+		background-repeat: no-repeat !important;
+		background-position: center !important;
+		background-size: 17px 17px !important;
 		color: transparent !important;
 		font-size: 0 !important;
+		clip-path: circle(50%);
 	}
 
 	.ing-forminator--inline .forminator-ui .forminator-button-submit::after {
-		width: 40px;
-		min-width: 40px;
-		max-width: 40px;
-		height: 40px;
-		min-height: 40px;
-		max-height: 40px;
-		flex-basis: 40px;
+		display: none !important;
+		content: none !important;
 	}
 }
 

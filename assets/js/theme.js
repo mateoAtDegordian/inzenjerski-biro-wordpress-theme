@@ -335,6 +335,60 @@
 	 * It gives analytics and future integrations one stable, form-agnostic
 	 * event without coupling the theme to a specific analytics vendor.
 	 */
+	if (window.ingbiroForms?.language === "en" && window.ingbiroForms?.translations) {
+		const formMessageSelector = ".forminator-error-message, .forminator-response-message";
+		const translations = window.ingbiroForms.translations;
+
+		const translateFormMessage = (element) => {
+			const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+			let textNode = walker.nextNode();
+
+			while (textNode) {
+				const value = textNode.nodeValue || "";
+				const trimmed = value.trim();
+
+				if (trimmed && translations[trimmed]) {
+					textNode.nodeValue = value.replace(trimmed, translations[trimmed]);
+				}
+
+				textNode = walker.nextNode();
+			}
+		};
+
+		const translateFormMessages = (root) => {
+			if (root.nodeType !== Node.ELEMENT_NODE) {
+				return;
+			}
+
+			const parentMessage = root.closest(formMessageSelector);
+			if (parentMessage) {
+				translateFormMessage(parentMessage);
+			}
+
+			if (root.matches(formMessageSelector)) {
+				translateFormMessage(root);
+			}
+
+			root.querySelectorAll(formMessageSelector).forEach(translateFormMessage);
+		};
+
+		translateFormMessages(document.body);
+
+		new MutationObserver((mutations) => {
+			mutations.forEach((mutation) => {
+				if (mutation.type === "characterData" && mutation.target.parentElement) {
+					translateFormMessages(mutation.target.parentElement);
+				}
+
+				mutation.addedNodes.forEach((node) => {
+					if (node.nodeType === Node.ELEMENT_NODE) {
+						translateFormMessages(node);
+					}
+				});
+			});
+		}).observe(document.body, { characterData: true, childList: true, subtree: true });
+	}
+
 	if (window.jQuery) {
 		window.jQuery(document).on("forminator:form:submit:success", (event) => {
 			const form = event.target?.closest?.(".forminator-custom-form") || event.target;

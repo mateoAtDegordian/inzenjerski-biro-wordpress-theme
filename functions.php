@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.6.8' );
+define( 'INGBIRO_VERSION', '1.6.12' );
 
 function ingbiro_setup() {
 	load_theme_textdomain( 'ingbiro', get_template_directory() . '/languages' );
@@ -48,6 +48,8 @@ function ingbiro_enqueue_assets() {
 		'ingbiro-theme',
 		'ingbiroForms',
 		array(
+			'language'     => function_exists( 'ingbiro_current_language' ) ? ingbiro_current_language() : 'hr',
+			'translations' => function_exists( 'ingbiro_form_english_strings' ) ? ingbiro_form_english_strings() : array(),
 			'formKeys' => array_filter(
 				array(
 					(string) ingbiro_get_form_id( 'contact' )    => 'contact',
