@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.6.13
+Version: 1.6.14
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -2646,6 +2646,12 @@ select {
 	appearance: none !important;
 }
 
+.ing-forminator--inline .forminator-ui input.forminator-input:focus {
+	border: 0 !important;
+	box-shadow: none !important;
+	outline: 0 !important;
+}
+
 .ing-forminator--inline .forminator-ui .forminator-field.forminator-has_error input.forminator-input,
 .ing-forminator--inline .forminator-ui .forminator-field.forminator-is_error input.forminator-input,
 .ing-forminator--inline .forminator-ui .forminator-field.forminator-has_error input.forminator-input:focus,
@@ -4130,8 +4136,6 @@ select {
 	}
 
 	.ing-forminator--inline .forminator-ui .forminator-button-submit {
-		position: relative;
-		isolation: isolate;
 		width: 48px !important;
 		min-width: 48px !important;
 		max-width: 48px !important;
@@ -4149,16 +4153,9 @@ select {
 		color: transparent !important;
 		font-size: 0 !important;
 		clip-path: circle(50%);
-	}
-
-	.ing-forminator--inline .forminator-ui .forminator-button-submit::before {
-		position: absolute;
-		z-index: 2;
-		inset: 0;
-		display: block !important;
-		content: "" !important;
-		background: url("assets/icons/arrow-right.svg") center / 17px 17px no-repeat;
-		pointer-events: none;
+		transform: none !important;
+		animation: none !important;
+		transition: background-color 180ms ease !important;
 	}
 
 	.ing-forminator--inline .forminator-ui .forminator-button-submit::after {
@@ -4169,6 +4166,11 @@ select {
 	.ing-forminator--inline .forminator-ui .forminator-button-submit.forminator-onload,
 	.ing-forminator--inline .forminator-ui .forminator-button-submit.forminator-button-onload,
 	.ing-forminator--inline .forminator-ui .forminator-button-submit:disabled {
+		background-color: var(--ing-blue) !important;
+		background-image: url("assets/icons/arrow-right.svg") !important;
+		background-repeat: no-repeat !important;
+		background-position: center !important;
+		background-size: 17px 17px !important;
 		opacity: 1 !important;
 	}
 
