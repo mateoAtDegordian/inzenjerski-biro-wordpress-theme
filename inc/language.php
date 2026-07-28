@@ -27,6 +27,31 @@ function ingbiro_is_english() {
 }
 
 /**
+ * The English site intentionally has no conference archive.
+ *
+ * Remove the page created by an earlier archive migration and clear the HR
+ * page's stale translation link so the language switch returns to English home.
+ */
+function ingbiro_remove_english_archive_page() {
+	if ( '1.0.0' === get_option( 'ingbiro_english_archive_removed_version' ) ) {
+		return;
+	}
+
+	$english_archive = get_page_by_path( 'en/archive', OBJECT, 'page' );
+	if ( $english_archive ) {
+		wp_delete_post( $english_archive->ID, true );
+	}
+
+	$croatian_archive = get_page_by_path( 'arhiva', OBJECT, 'page' );
+	if ( $croatian_archive ) {
+		delete_post_meta( $croatian_archive->ID, '_ingbiro_translation_id' );
+	}
+
+	update_option( 'ingbiro_english_archive_removed_version', '1.0.0' );
+}
+add_action( 'init', 'ingbiro_remove_english_archive_page', 50 );
+
+/**
  * Keep Croatian and English pages on the same PHP structure.
  */
 function ingbiro_l( $croatian, $english ) {
