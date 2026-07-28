@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.6.6
+Version: 1.6.8
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -1670,6 +1670,7 @@ select {
 
 .site-footer__social {
 	padding-top: 53px;
+	padding-bottom: 28px;
 }
 
 .site-footer__social strong {
@@ -4004,6 +4005,27 @@ select {
 
 	.content-list--education .content-list__image {
 		height: clamp(210px, 62vw, 260px);
+	}
+
+	.event-download__inner {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.event-download__inner > * {
+		min-width: 0;
+	}
+
+	.event-download .pill-button--download {
+		justify-content: space-between;
+		width: 100%;
+	}
+
+	.event-download .pill-button--download .pill-button__label {
+		min-width: 0;
+		overflow: visible;
+		white-space: normal;
+		text-overflow: clip;
+		line-height: 1.25;
 	}
 }
 
