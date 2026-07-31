@@ -81,12 +81,12 @@ while ( have_posts() ) :
 
 			<section class="event-download">
 				<div class="container event-download__inner">
-					<div>
-						<?php ingbiro_section_label( 'Dokument događanja' ); ?>
+					<div class="event-download__copy">
+						<?php ingbiro_section_label( 'Dokument događanja', true ); ?>
 						<h2>Sve informacije u uređenom PDF dokumentu</h2>
 						<p>PDF se generira iz aktualnih podataka i Gutenberg sadržaja ovog događanja.</p>
 					</div>
-					<?php ingbiro_button( 'Preuzmite informacije kao PDF', ingbiro_event_pdf_url( $event_id ), 'pill-button--blue pill-button--download' ); ?>
+					<?php ingbiro_button( 'Preuzmite informacije kao PDF', ingbiro_event_pdf_url( $event_id ), 'pill-button--cream pill-button--download' ); ?>
 				</div>
 			</section>
 

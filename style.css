@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.7.0
+Version: 1.7.3
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -1353,6 +1353,21 @@ select {
 
 .event-download p {
 	margin-bottom: 0;
+}
+
+.event-download__copy h2,
+.event-download__copy > p {
+	padding-left: 29px;
+}
+
+.event-download .pill-button--download {
+	border: 1px solid rgb(255 255 255 / 34%);
+	box-shadow: 0 12px 32px rgb(10 37 86 / 22%);
+}
+
+.event-download .pill-button--download:hover,
+.event-download .pill-button--download:focus-visible {
+	box-shadow: 0 16px 38px rgb(10 37 86 / 30%);
 }
 
 .event-registration__heading {
@@ -4123,6 +4138,11 @@ select {
 		text-overflow: clip;
 		line-height: 1.25;
 	}
+
+	.event-download__copy h2,
+	.event-download__copy > p {
+		padding-left: 0;
+	}
 }
 
 @media (max-width: 460px) {
@@ -4136,6 +4156,7 @@ select {
 	}
 
 	.ing-forminator--inline .forminator-ui .forminator-button-submit {
+		position: relative;
 		width: 48px !important;
 		min-width: 48px !important;
 		max-width: 48px !important;
@@ -4156,6 +4177,20 @@ select {
 		transform: none !important;
 		animation: none !important;
 		transition: background-color 180ms ease !important;
+	}
+
+	.ing-forminator--inline .forminator-ui .forminator-button-submit::before {
+		display: block !important;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 18px;
+		height: 18px;
+		background: url("assets/icons/arrow-right.svg") center / contain no-repeat;
+		content: "" !important;
+		opacity: 1 !important;
+		transform: translate(-50%, -50%) !important;
+		animation: none !important;
 	}
 
 	.ing-forminator--inline .forminator-ui .forminator-button-submit::after {
@@ -4366,6 +4401,85 @@ select {
 .ing-forminator--inline .forminator-ui .forminator-consent,
 .ing-forminator--inline .forminator-ui .forminator-consent__label {
 	font-size: 12px !important;
+}
+
+/* Keep the newsletter consent outside the email-and-submit pill. */
+.ing-forminator--inline .forminator-ui.forminator-custom-form {
+	padding: 7px 7px 0 26px !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+}
+
+.ing-forminator--inline .forminator-ui.forminator-custom-form:focus-within,
+.ing-forminator--inline .forminator-ui.forminator-custom-form:has(.forminator-error-message),
+.ing-forminator--inline .forminator-ui.forminator-custom-form:has(.forminator-error-message):focus-within {
+	border: 0 !important;
+	box-shadow: none !important;
+	outline: 0 !important;
+}
+
+.ing-forminator--inline .forminator-ui.forminator-custom-form::before {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	height: 60px;
+	border: 1px solid rgb(0 0 0 / 20%);
+	border-radius: 999px;
+	pointer-events: none;
+	content: "";
+	transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.ing-forminator--inline .forminator-ui.forminator-custom-form:focus-within::before {
+	border-color: var(--ing-blue);
+	box-shadow: 0 0 0 2px rgb(36 78 156 / 14%);
+}
+
+.ing-forminator--inline .forminator-ui.forminator-custom-form:has(.forminator-row:not(:has(.forminator-consent)) .forminator-error-message)::before {
+	border-color: rgb(173 48 48 / 62%);
+	box-shadow: 0 0 0 2px rgb(173 48 48 / 9%);
+}
+
+.ing-forminator--inline .forminator-ui.forminator-custom-form > .forminator-row:first-of-type,
+.ing-forminator--inline .forminator-ui.forminator-custom-form > .forminator-row-last {
+	position: relative;
+	z-index: 1;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-row:has(.forminator-consent) {
+	position: relative;
+	z-index: 1;
+	margin: 12px 4px 0 !important;
+}
+
+.ing-forminator--inline .forminator-ui.forminator-custom-form[data-design] .forminator-row:has(.forminator-consent) .forminator-field {
+	position: relative !important;
+	min-height: 44px;
+	padding: 0 0 20px !important;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-row:has(.forminator-consent) .forminator-error-message {
+	top: auto;
+	right: auto;
+	bottom: 0;
+	left: 28px;
+	text-align: left;
+}
+
+@media (max-width: 460px) {
+	.ing-forminator--inline .forminator-ui.forminator-custom-form {
+		padding: 6px 6px 0 18px !important;
+	}
+
+	.ing-forminator--inline .forminator-ui.forminator-custom-form::before {
+		height: 60px;
+	}
+
+	.ing-forminator--inline .forminator-ui .forminator-row:has(.forminator-consent) {
+		margin-inline: 0 !important;
+	}
 }
 
 @media (max-width: 760px) {
