@@ -95,10 +95,15 @@ while ( have_posts() ) :
 					<div class="container">
 						<div class="event-registration__heading">
 							<?php ingbiro_section_label( 'Prijava' ); ?>
-							<h2>Prijavite se za edukaciju</h2>
+							<h2>Prijava na događanje</h2>
 							<p>Polja i poruke ove forme uređuju se u Forminatoru, a prijave ostaju dostupne u WordPress dashboardu.</p>
 						</div>
 						<?php ingbiro_render_event_form( $event_id ); ?>
+						<div class="event-registration__fineprint">
+							<p><strong>Podaci za uplatu:</strong><br>IBAN: HR2323400091100205049 (Privredna banka d.d.), SWIFT: PBZGHR2X<br>za INŽENJERSKI BIRO d.o.o. Zagreb.</p>
+							<p>Gore navedena e-mail adresa koristit će se za slanje materijala s webinara i obavijesti o nadolazećim događajima.</p>
+							<p>Napominjemo da postoji mogućnost da na događaju budete fotografirani ili snimljeni, kao i da te fotografije, odnosno snimke, budu objavljene na našim internetskim stranicama i profilima na društvenim mrežama. Ako ne želite da koristimo Vaše fotografije i/ili snimke za promotivne aktivnosti, molimo da se javite našem osoblju na događaju. Ako to ne učinite, smatra se da ste dali pristanak. Zahvaljujemo na razumijevanju.</p>
+						</div>
 					</div>
 				</section>
 			<?php endif; ?>

@@ -192,6 +192,23 @@ function ingbiro_form_english_strings() {
 		'ID pozicije'                                   => 'Position ID',
 		'Životopis (PDF, DOC ili DOCX)'                 => 'CV / résumé (PDF, DOC or DOCX)',
 		'Kratko motivacijsko pismo'                     => 'Short cover letter',
+		'Savjetovanju ću prisustvovati'                 => 'I will attend the conference',
+		'Uživo'                                         => 'In person',
+		'Online'                                        => 'Online',
+		'Naručitelj'                                    => 'Purchaser',
+		'Naziv'                                         => 'Name',
+		'Adresa'                                        => 'Address',
+		'Mjesto'                                        => 'City',
+		'Telefon'                                       => 'Phone',
+		'Broj narudžbenice'                             => 'Purchase order number',
+		'Naznačiti broj isključivo ako se plaćanje vrši putem narudžbenice.' => 'Enter the number only if payment is made by purchase order.',
+		'Prijavljujem sljedeće osobe'                   => 'I am registering the following participants',
+		'Dodaj još osoba'                               => 'Add another participant',
+		'Ukloni osobu'                                  => 'Remove participant',
+		'Naknadu plaćamo'                               => 'Payment method',
+		'Virmanom'                                      => 'Bank transfer',
+		'Gotovinom'                                     => 'Cash',
+		'Prijavite se'                                  => 'Register',
 		'Pošaljite upit'                                => 'Send enquiry',
 		'Pretplatite se'                                => 'Subscribe',
 		'Pošaljite prijavu'                             => 'Submit application',
@@ -324,10 +341,145 @@ function ingbiro_form_text_field( $id, $label, $cols = '6', $required = false, $
 
 function ingbiro_form_wrapper( $id, $fields ) {
 	return array(
-		'wrapper_id' => 'ingbiro-' . $id,
+		'wrapper_id' => 'wrapper-' . sprintf( '%u', crc32( 'ingbiro-' . $id ) ) . '-1',
 		'fields'     => $fields,
 	);
 }
+
+/**
+ * Add the legally required consent to every managed form at render time.
+ * This keeps one editable Forminator form per use case while allowing links
+ * and copy to follow the active HR/EN page.
+ */
+function ingbiro_add_form_consent( $wrappers, $form_id ) {
+	$key = '';
+	foreach ( array( 'contact', 'newsletter', 'quick', 'career', 'event' ) as $candidate ) {
+		if ( ingbiro_get_form_id( $candidate ) === absint( $form_id ) ) {
+			$key = $candidate;
+			break;
+		}
+	}
+	if ( ! $key ) {
+		return $wrappers;
+	}
+
+	$english = ingbiro_form_request_is_english();
+	$privacy = ingbiro_legal_url( 'privacy', $english ? 'en' : 'hr' );
+	$terms   = ingbiro_legal_url( 'terms', $english ? 'en' : 'hr' );
+	$label   = $english ? 'Privacy consent' : 'Privola';
+
+	if ( 'career' === $key ) {
+		$label = $english ? 'Processing of personal data submitted with an open application' : 'Obrada podataka iz otvorene prijave';
+		$description = $english
+			? 'The Data Controller is INŽENJERSKI BIRO d.o.o., Ulica Vjekoslava Heinzela 4A, and the processing is carried out for the purpose of possible employment (Article 6(1)(a) GDPR). By submitting an open application, you consent to the data provided being retained for 12 months from the date of submission, after which it will be permanently deleted. During the retention period, you have the right of access, rectification, erasure, restriction, portability and objection. You may withdraw your consent at any time by e-mailing <a href="mailto:zop@ingbiro.hr">zop@ingbiro.hr</a>, without affecting the lawfulness of processing carried out before withdrawal, and you may lodge a complaint with the Croatian Personal Data Protection Agency (<a href="https://azop.hr" target="_blank" rel="noopener noreferrer">azop.hr</a>).'
+			: 'Voditelj obrade je INŽENJERSKI BIRO d.o.o., Ulica Vjekoslava Heinzela 4A te se obrada provodi u svrhu eventualnog zapošljavanja (čl. 6., stavak 1(a), GDPR-a). Slanjem otvorene prijave pristajete da se Vaši dostavljeni podaci čuvaju 12 mjeseci od dana slanja, nakon čega se trajno brišu. Imate pravo na pristup, ispravak, brisanje, ograničenje, prenosivost i prigovor tijekom vremena čuvanja Vaših podataka. Privolu možete povući u svakom trenutku na e-mail adresu <a href="mailto:zop@ingbiro.hr">zop@ingbiro.hr</a> bez utjecaja na zakonitost prethodne obrade, a pritužbu možete podnijeti Agenciji za zaštitu osobnih podataka (<a href="https://azop.hr" target="_blank" rel="noopener noreferrer">azop.hr</a>).';
+	} elseif ( 'event' === $key ) {
+		$description = $english
+			? sprintf( 'I have read the <a href="%1$s" target="_blank">Privacy Policy</a> and accept the <a href="%2$s" target="_blank">General Terms and Conditions</a>.', esc_url( $privacy ), esc_url( $terms ) )
+			: sprintf( 'Upoznat/a sam s <a href="%1$s" target="_blank">Politikom privatnosti</a> i prihvaćam <a href="%2$s" target="_blank">Opće uvjete poslovanja</a>.', esc_url( $privacy ), esc_url( $terms ) );
+	} else {
+		$description = $english
+			? sprintf( 'I have read the <a href="%s" target="_blank">Privacy Policy</a>.', esc_url( $privacy ) )
+			: sprintf( 'Upoznat/a sam s <a href="%s" target="_blank">Politikom privatnosti</a>.', esc_url( $privacy ) );
+	}
+
+	$wrappers[] = ingbiro_form_wrapper(
+		$key . '-consent',
+		array(
+			array(
+				'element_id'          => 'consent-1',
+				'type'                => 'consent',
+				'cols'                => '12',
+				'required'            => 'true',
+				'field_label'         => $label,
+				'validation'          => true,
+				'validation_text'     => '',
+				'consent_description' => $description,
+			),
+		)
+	);
+	return $wrappers;
+}
+add_filter( 'forminator_cform_render_fields', 'ingbiro_add_form_consent', 30, 2 );
+
+/**
+ * Event registration fields based on the current LING conference form.
+ */
+function ingbiro_event_form_fields() {
+	return array(
+		ingbiro_form_wrapper( 'event-attendance', array(
+			array(
+				'element_id' => 'radio-1', 'type' => 'radio', 'cols' => '12', 'required' => 'true',
+				'field_label' => __( 'Savjetovanju ću prisustvovati', 'ingbiro' ), 'value_type' => 'radio',
+				'options' => array(
+					array( 'label' => __( 'Uživo', 'ingbiro' ), 'value' => 'uzivo' ),
+					array( 'label' => __( 'Online', 'ingbiro' ), 'value' => 'online' ),
+				),
+			),
+		) ),
+		ingbiro_form_wrapper( 'event-primary-email', array(
+			ingbiro_form_text_field( 'email-2', __( 'E-mail', 'ingbiro' ), '12', true, 'email' ),
+		) ),
+		ingbiro_form_wrapper( 'event-purchaser-heading', array(
+			array( 'element_id' => 'html-1', 'type' => 'html', 'cols' => '12', 'field_label' => '', 'variations' => '<h3>' . esc_html__( 'Naručitelj', 'ingbiro' ) . '</h3>' ),
+		) ),
+		ingbiro_form_wrapper( 'event-purchaser-name', array(
+			ingbiro_form_text_field( 'text-1', __( 'Naziv', 'ingbiro' ), '6', true ),
+			ingbiro_form_text_field( 'text-2', __( 'Adresa', 'ingbiro' ), '6', true ),
+		) ),
+		ingbiro_form_wrapper( 'event-purchaser-place', array(
+			ingbiro_form_text_field( 'text-3', __( 'Mjesto', 'ingbiro' ), '6', true ),
+			ingbiro_form_text_field( 'phone-1', __( 'Telefon', 'ingbiro' ), '6', true, 'phone' ),
+		) ),
+		ingbiro_form_wrapper( 'event-purchaser-data', array(
+			ingbiro_form_text_field( 'text-4', __( 'OIB', 'ingbiro' ), '6', true ),
+			array_merge( ingbiro_form_text_field( 'text-5', __( 'Broj narudžbenice', 'ingbiro' ), '6', false ), array( 'description' => __( 'Naznačiti broj isključivo ako se plaćanje vrši putem narudžbenice.', 'ingbiro' ) ) ),
+		) ),
+		ingbiro_form_wrapper( 'event-participants', array(
+			array(
+				'element_id' => 'group-1', 'type' => 'group', 'cols' => '12', 'field_label' => __( 'Prijavljujem sljedeće osobe', 'ingbiro' ),
+				'is_repeater' => 'true', 'min_type' => 'custom', 'min_limit' => 1, 'max_type' => 'custom', 'max_limit' => 10,
+				'action_element_type' => 'button', 'add_action_text' => __( 'Dodaj još osoba', 'ingbiro' ), 'remove_action_text' => __( 'Ukloni osobu', 'ingbiro' ),
+			),
+		) ),
+		array(
+			'wrapper_id' => 'wrapper-' . sprintf( '%u', crc32( 'ingbiro-event-participant-row' ) ) . '-1', 'parent_group' => 'group-1',
+			'fields' => array(
+				ingbiro_form_text_field( 'text-6', __( 'Ime i prezime', 'ingbiro' ), '6', true ),
+				ingbiro_form_text_field( 'email-1', __( 'E-mail', 'ingbiro' ), '6', true, 'email' ),
+			),
+		),
+		ingbiro_form_wrapper( 'event-payment', array(
+			array(
+				'element_id' => 'radio-2', 'type' => 'radio', 'cols' => '12', 'required' => 'true',
+				'field_label' => __( 'Naknadu plaćamo', 'ingbiro' ), 'value_type' => 'radio',
+				'options' => array(
+					array( 'label' => __( 'Virmanom', 'ingbiro' ), 'value' => 'virmanom' ),
+					array( 'label' => __( 'Gotovinom', 'ingbiro' ), 'value' => 'gotovinom' ),
+				),
+			),
+		) )
+	);
+}
+
+function ingbiro_migrate_event_form() {
+	if ( version_compare( (string) get_option( 'ingbiro_event_form_schema_version', '0' ), '2.0.2', '>=' ) || ! class_exists( 'Forminator_API' ) ) {
+		return;
+	}
+	$form_id = ingbiro_get_form_id( 'event' );
+	$model   = $form_id ? Forminator_Base_Form_Model::get_model( $form_id ) : null;
+	if ( ! $model ) {
+		return;
+	}
+	$settings = $model->settings;
+	$settings['formName'] = __( 'Prijava na događanje', 'ingbiro' );
+	$settings['submitData']['custom-submit-text'] = __( 'Prijavite se', 'ingbiro' );
+	$result = Forminator_API::update_form( $form_id, ingbiro_event_form_fields(), $settings, '', $model->notifications );
+	if ( ! is_wp_error( $result ) ) {
+		update_option( 'ingbiro_event_form_schema_version', '2.0.2' );
+	}
+}
+add_action( 'admin_init', 'ingbiro_migrate_event_form', 45 );
 
 /**
  * Create one managed form from the shared Forminator contact template.

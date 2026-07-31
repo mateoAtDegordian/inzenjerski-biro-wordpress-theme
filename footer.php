@@ -42,7 +42,9 @@ $language   = $is_english ? 'en' : 'hr';
 				<ul class="footer-links">
 					<li><a href="<?php echo esc_url( $is_english ? ingbiro_english_page_url( 'contact' ) : ingbiro_page_url( 'kontakt' ) ); ?>"><?php echo esc_html( $is_english ? 'Contact' : 'Kontakt' ); ?></a></li>
 					<li><a href="<?php echo esc_url( ingbiro_page_url( 'karijera' ) ); ?>"><?php echo esc_html( $is_english ? 'Careers' : 'Karijera' ); ?></a></li>
-					<li><a href="<?php echo esc_url( ingbiro_page_url( 'politika-privatnosti' ) ); ?>"><?php echo esc_html( $is_english ? 'Privacy policy' : 'Politika privatnosti' ); ?></a></li>
+					<li><a href="<?php echo esc_url( ingbiro_legal_url( 'terms' ) ); ?>"><?php echo esc_html( $is_english ? 'General Terms and Conditions' : 'Opći uvjeti poslovanja' ); ?></a></li>
+					<li><a href="<?php echo esc_url( ingbiro_legal_url( 'privacy' ) ); ?>"><?php echo esc_html( $is_english ? 'Privacy Policy' : 'Politika privatnosti' ); ?></a></li>
+					<li><a href="<?php echo esc_url( ingbiro_legal_url( 'cookies' ) ); ?>"><?php echo esc_html( $is_english ? 'Cookie Policy' : 'Politika korištenja kolačića' ); ?></a></li>
 					<li><a href="<?php echo esc_url( ingbiro_page_url( 'newsletter' ) ); ?>">Newsletter</a></li>
 				</ul>
 

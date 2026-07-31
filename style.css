@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.6.14
+Version: 1.7.0
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -4181,4 +4181,213 @@ select {
 
 .forminator-edit-module {
 	display: none !important;
+}
+
+/* Client-approved legal documents. */
+.legal-page {
+	background: var(--ing-paper);
+}
+
+.legal-page__content {
+	max-width: 1040px;
+	padding-block: clamp(64px, 9vw, 128px);
+}
+
+.legal-page__content h1 {
+	max-width: 900px;
+	margin-bottom: clamp(48px, 7vw, 88px);
+	font-size: clamp(46px, 7vw, 84px);
+	line-height: 0.98;
+}
+
+.legal-page__content h2 {
+	margin: clamp(52px, 7vw, 82px) 0 24px;
+	font-size: clamp(28px, 3.5vw, 42px);
+	line-height: 1.12;
+}
+
+.legal-page__content h3 {
+	margin: 36px 0 16px;
+	font-size: clamp(20px, 2.2vw, 27px);
+}
+
+.legal-page__content p,
+.legal-page__content li,
+.legal-page__content td,
+.legal-page__content th {
+	font-size: clamp(16px, 1.4vw, 19px);
+	line-height: 1.65;
+}
+
+.legal-page__content p {
+	margin-bottom: 20px;
+}
+
+.legal-page__content ul {
+	margin: 0 0 28px;
+	padding-left: 24px;
+}
+
+.legal-callout {
+	margin: 32px 0;
+	padding: clamp(24px, 4vw, 42px);
+	border-radius: 20px;
+	background: var(--ing-cream);
+}
+
+.legal-callout p:last-child {
+	margin-bottom: 0;
+}
+
+.legal-table-wrap {
+	max-width: 100%;
+	margin: 28px 0;
+	overflow-x: auto;
+	border: 1px solid var(--ing-border);
+	border-radius: 16px;
+	-webkit-overflow-scrolling: touch;
+}
+
+.legal-table-wrap table {
+	width: 100%;
+	min-width: 720px;
+	border-collapse: collapse;
+	background: #fff;
+}
+
+.legal-table-wrap th,
+.legal-table-wrap td {
+	padding: 18px;
+	border-right: 1px solid var(--ing-border);
+	border-bottom: 1px solid var(--ing-border);
+	vertical-align: top;
+	text-align: left;
+}
+
+.legal-table-wrap th {
+	background: var(--ing-blue);
+	color: #fff;
+}
+
+.legal-table-wrap tr:last-child td {
+	border-bottom: 0;
+}
+
+.legal-table-wrap th:last-child,
+.legal-table-wrap td:last-child {
+	border-right: 0;
+}
+
+/* Native Forminator consent and repeatable participant controls. */
+.ing-forminator .forminator-ui .forminator-consent,
+.ing-forminator .forminator-ui .forminator-consent__label {
+	color: var(--ing-ink) !important;
+	font-family: var(--ing-font-sans) !important;
+	font-size: 15px !important;
+	line-height: 1.55 !important;
+}
+
+.ing-forminator .forminator-ui .forminator-consent__label a,
+.ing-forminator .forminator-ui .forminator-description a {
+	color: var(--ing-blue) !important;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.ing-forminator .forminator-ui .forminator-checkbox-box {
+	border-color: rgb(0 0 0 / 34%) !important;
+	border-radius: 5px !important;
+	box-shadow: none !important;
+}
+
+.ing-forminator .forminator-ui .forminator-consent input:focus-visible + .forminator-checkbox-box {
+	outline: 3px solid rgb(36 78 156 / 20%) !important;
+	outline-offset: 3px;
+}
+
+.ing-forminator .forminator-ui .forminator-repeater-action-button {
+	padding: 11px 18px !important;
+	border: 1px solid var(--ing-blue) !important;
+	border-radius: 999px !important;
+	background: transparent !important;
+	color: var(--ing-blue) !important;
+	font-family: var(--ing-font-mono) !important;
+	cursor: pointer;
+}
+
+.ing-forminator .forminator-ui .forminator-repeater-action-button:hover,
+.ing-forminator .forminator-ui .forminator-repeater-action-button:focus-visible {
+	background: var(--ing-blue) !important;
+	color: #fff !important;
+}
+
+.ing-forminator .forminator-ui .forminator-grouped-fields {
+	padding: clamp(18px, 3vw, 28px) !important;
+	border: 1px solid var(--ing-border);
+	border-radius: 20px;
+}
+
+.ing-forminator .forminator-ui .forminator-row:has(.forminator-field-html) {
+	margin-bottom: 14px !important;
+}
+
+.ing-forminator .forminator-ui .forminator-field-html h3 {
+	margin: 0;
+	font-size: clamp(22px, 2.2vw, 30px);
+}
+
+.event-registration__fineprint {
+	max-width: 1220px;
+	margin: 48px auto 0;
+	padding-top: 34px;
+	border-top: 1px solid var(--ing-border);
+	color: var(--ing-muted);
+}
+
+.event-registration__fineprint p {
+	max-width: 980px;
+	font-size: 14px;
+	line-height: 1.55;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-row:has(.forminator-consent) {
+	grid-column: 1 / -1;
+	margin: 4px 10px 0 !important;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-row:has(.forminator-consent) .forminator-field {
+	padding-bottom: 0 !important;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-row:has(.forminator-consent) .forminator-label {
+	display: none !important;
+}
+
+.ing-forminator--inline .forminator-ui .forminator-consent,
+.ing-forminator--inline .forminator-ui .forminator-consent__label {
+	font-size: 12px !important;
+}
+
+@media (max-width: 760px) {
+	.legal-page__content {
+		padding-block: 52px 72px;
+	}
+
+	.legal-page__content h1 {
+		margin-bottom: 44px;
+		font-size: clamp(40px, 13vw, 58px);
+	}
+
+	.legal-page__content h2 {
+		font-size: 28px;
+	}
+
+	.legal-callout {
+		margin-inline: calc(var(--ing-gutter) * -0.25);
+		padding: 24px;
+	}
+
+	.legal-table-wrap {
+		margin-right: calc(var(--ing-gutter) * -0.5);
+	}
 }

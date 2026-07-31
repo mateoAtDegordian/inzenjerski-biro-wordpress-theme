@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.6.14' );
+define( 'INGBIRO_VERSION', '1.7.0' );
 
 function ingbiro_setup() {
 	load_theme_textdomain( 'ingbiro', get_template_directory() . '/languages' );
@@ -70,6 +70,7 @@ function ingbiro_asset( $path ) {
 
 require_once get_template_directory() . '/inc/forms.php';
 require_once get_template_directory() . '/inc/language.php';
+require_once get_template_directory() . '/inc/legal.php';
 require_once get_template_directory() . '/inc/patterns.php';
 
 function ingbiro_favicons() {
@@ -749,83 +750,10 @@ function ingbiro_create_default_forminator_form() {
 	$template          = new stdClass();
 	$template->settings = $base->settings;
 	$template->settings['thankyou-message'] = __( 'Hvala! Vaša prijava je zaprimljena.', 'ingbiro' );
-	$template->settings['submitData']['custom-submit-text'] = __( 'Pošaljite prijavu', 'ingbiro' );
-	$template->fields = array(
-		array(
-			'wrapper_id' => 'ingbiro-event-name',
-			'fields'     => array(
-				array(
-					'element_id'   => 'name-1',
-					'type'         => 'name',
-					'cols'         => '12',
-					'required'     => 'true',
-					'field_label'  => __( 'Ime i prezime', 'ingbiro' ),
-					'prefix_label' => __( 'Titula', 'ingbiro' ),
-					'fname_label'  => __( 'Ime', 'ingbiro' ),
-					'mname_label'  => __( 'Srednje ime', 'ingbiro' ),
-					'lname_label'  => __( 'Prezime', 'ingbiro' ),
-				),
-			),
-		),
-		array(
-			'wrapper_id' => 'ingbiro-event-contact',
-			'fields'     => array(
-				array(
-					'element_id'      => 'email-1',
-					'type'            => 'email',
-					'cols'            => '6',
-					'required'        => 'true',
-					'field_label'     => __( 'E-mail', 'ingbiro' ),
-					'validation'      => true,
-					'validation_text' => '',
-				),
-				array(
-					'element_id'            => 'phone-1',
-					'type'                  => 'phone',
-					'cols'                  => '6',
-					'required'              => 'true',
-					'field_label'           => __( 'Broj telefona', 'ingbiro' ),
-					'validation'            => 'none',
-					'phone_validation_type' => 'standard',
-					'validation_text'       => '',
-				),
-			),
-		),
-		array(
-			'wrapper_id' => 'ingbiro-event-company',
-			'fields'     => array(
-				array(
-					'element_id'  => 'text-1',
-					'type'        => 'text',
-					'cols'        => '6',
-					'required'    => 'true',
-					'field_label' => __( 'Tvrtka / institucija', 'ingbiro' ),
-				),
-				array(
-					'element_id'  => 'text-2',
-					'type'        => 'text',
-					'cols'        => '6',
-					'required'    => false,
-					'field_label' => __( 'OIB', 'ingbiro' ),
-				),
-			),
-		),
-		array(
-			'wrapper_id' => 'ingbiro-event-message',
-			'fields'     => array(
-				array(
-					'element_id'  => 'textarea-1',
-					'type'        => 'textarea',
-					'cols'        => '12',
-					'required'    => false,
-					'field_label' => __( 'Napomena', 'ingbiro' ),
-					'input_type'  => 'paragraph',
-				),
-			),
-		),
-	);
+	$template->settings['submitData']['custom-submit-text'] = __( 'Prijavite se', 'ingbiro' );
+	$template->fields = ingbiro_event_form_fields();
 
-	$form_id = Forminator_Custom_Form_Admin::create( __( 'Prijava za edukaciju', 'ingbiro' ), Forminator_Form_Model::STATUS_PUBLISH, $template );
+	$form_id = Forminator_Custom_Form_Admin::create( __( 'Prijava na događanje', 'ingbiro' ), Forminator_Form_Model::STATUS_PUBLISH, $template );
 	if ( ! is_wp_error( $form_id ) ) {
 		update_option( 'ingbiro_default_event_form_id', absint( $form_id ) );
 	}
