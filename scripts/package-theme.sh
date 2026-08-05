@@ -18,6 +18,10 @@ output_dir="$(cd "${output_dir}" && pwd)"
 package_path="${output_dir}/${repository_slug}-${version}.zip"
 staging_dir="$(mktemp -d)"
 
+# Never update an older ZIP in place: removed/excluded files would otherwise
+# remain as stale entries in the archive.
+rm -f "${package_path}"
+
 cleanup() {
 	rm -rf "${staging_dir}"
 }

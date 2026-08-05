@@ -21,10 +21,8 @@ if ( ! $ingbiro_embedded_template ) {
 				</div>
 			</div>
 			<div class="portal-video">
-				<video controls playsinline preload="metadata" poster="<?php echo esc_url( ingbiro_asset( 'images/ling-video-poster.jpg' ) ); ?>">
-					<source src="<?php echo esc_url( ingbiro_asset( 'video/ling-promo.mp4' ) ); ?>" type="video/mp4">
-					Vaš preglednik ne podržava HTML5 video.
-				</video>
+				<img src="<?php echo esc_url( ingbiro_asset( 'images/ling-video-poster.jpg' ) ); ?>" alt="Pravni portal LING">
+				<button class="portal-video__play" type="button" data-video-open data-video-src="<?php echo esc_url( ingbiro_asset( 'video/ling-promo.mp4' ) ); ?>" aria-label="Pokreni video"><span>▶</span></button>
 			</div>
 		</div>
 	</section>

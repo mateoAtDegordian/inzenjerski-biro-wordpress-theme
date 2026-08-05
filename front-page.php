@@ -31,8 +31,7 @@ $event = $events ? $events[0] : null;
 			</div>
 			<div class="home-hero__media">
 				<img src="<?php echo esc_url( ingbiro_asset( 'images/home-hero.jpg' ) ); ?>" alt="Poslovni razgovor sa savjetnikom">
-				<button class="home-hero__play" type="button" data-video-placeholder aria-label="Pokreni video"><span>▶</span></button>
-				<p class="video-message screen-reader-text" hidden>Video će biti povezan kada se unese konačni video URL.</p>
+				<button class="home-hero__play" type="button" data-video-open data-video-src="<?php echo esc_url( ingbiro_asset( 'video/ling-promo.mp4' ) ); ?>" aria-label="Pokreni video"><span>▶</span></button>
 			</div>
 		</div>
 	</section>

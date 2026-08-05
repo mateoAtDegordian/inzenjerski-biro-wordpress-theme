@@ -3,6 +3,13 @@
 
 	const toggle = document.querySelector(".menu-toggle");
 	const navigation = document.querySelector(".site-nav");
+	const siteHeader = document.querySelector(".site-header");
+
+	if (siteHeader) {
+		const updateHeader = () => siteHeader.classList.toggle("is-scrolled", window.scrollY > 16);
+		updateHeader();
+		window.addEventListener("scroll", updateHeader, { passive: true });
+	}
 
 	if (toggle && navigation) {
 		const toggleLabel = toggle.querySelector(".screen-reader-text");
@@ -66,24 +73,84 @@
 		});
 	});
 
-	document.querySelectorAll("[data-video-placeholder]").forEach((button) => {
+	const videoDialog = document.querySelector("[data-video-dialog]");
+	const dialogVideo = videoDialog?.querySelector(".video-dialog__video");
+	let lastVideoTrigger = null;
+
+	const closeVideo = () => {
+		if (!videoDialog || !dialogVideo) {
+			return;
+		}
+
+		dialogVideo.pause();
+		dialogVideo.removeAttribute("src");
+		dialogVideo.load();
+		videoDialog.hidden = true;
+		document.body.classList.remove("video-dialog-open");
+		lastVideoTrigger?.focus();
+	};
+
+	document.querySelectorAll("[data-video-open]").forEach((button) => {
 		button.addEventListener("click", () => {
-			const message = button.closest(".portal-video, .home-hero__media")?.querySelector(".video-message");
-			if (message) {
-				message.hidden = false;
+			if (!videoDialog || !dialogVideo || !button.dataset.videoSrc) {
+				return;
 			}
+
+			lastVideoTrigger = button;
+			dialogVideo.src = button.dataset.videoSrc;
+			videoDialog.hidden = false;
+			document.body.classList.add("video-dialog-open");
+			videoDialog.querySelector(".video-dialog__close")?.focus();
+			dialogVideo.play().catch(() => {});
 		});
 	});
 
+	videoDialog?.querySelectorAll("[data-video-close]").forEach((button) => {
+		button.addEventListener("click", closeVideo);
+	});
+
+	document.addEventListener("keydown", (event) => {
+		if (event.key === "Escape" && videoDialog && !videoDialog.hidden) {
+			closeVideo();
+		}
+	});
+
 	const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+	const legalContent = document.querySelector(".legal-page__content");
+
+	if (legalContent) {
+		Array.from(legalContent.children)
+			.filter((element) => element.tagName === "H2")
+			.forEach((heading, index) => {
+				const details = document.createElement("details");
+				const summary = document.createElement("summary");
+				summary.innerHTML = heading.innerHTML;
+				details.className = "legal-accordion";
+				details.open = index === 0;
+				heading.before(details);
+				details.append(summary);
+
+				let sibling = heading.nextSibling;
+				heading.remove();
+				while (sibling && !(sibling.nodeType === Node.ELEMENT_NODE && sibling.tagName === "H2")) {
+					const next = sibling.nextSibling;
+					details.append(sibling);
+					sibling = next;
+				}
+			});
+	}
 
 	const typewriterTitles = new Set(document.querySelectorAll("[data-typewriter]"));
 	const primaryTitle = document.querySelector("main h1");
-	if (primaryTitle) {
+	if (primaryTitle && !legalContent && !primaryTitle.matches("[data-no-typewriter]")) {
 		typewriterTitles.add(primaryTitle);
 	}
 
 	typewriterTitles.forEach((title) => {
+		if (title.matches("[data-no-typewriter]")) {
+			return;
+		}
+
 		const text = title.innerText.trim();
 		if (!text) {
 			return;
@@ -257,6 +324,33 @@
 	} else {
 		revealTargets.forEach((target) => target.classList.add("is-visible"));
 	}
+
+	document.querySelectorAll(".building-banner-shell").forEach((shell) => {
+		const banner = shell.querySelector(".building-banner");
+		if (!banner) {
+			return;
+		}
+
+		if (!("IntersectionObserver" in window)) {
+			banner.classList.add("is-revealed");
+			return;
+		}
+
+		const bannerObserver = new IntersectionObserver(
+			(entries) => {
+				if (entries.some((entry) => entry.isIntersecting)) {
+					banner.classList.add("is-revealed");
+					bannerObserver.disconnect();
+				}
+			},
+			{ threshold: 0.18 }
+		);
+		/*
+		 * Observe the un-clipped shell. A fully clipped child can report a zero
+		 * intersection area in WebKit and never start its reveal animation.
+		 */
+		bannerObserver.observe(shell);
+	});
 
 	document.querySelectorAll("[data-image-stack]").forEach((stack) => {
 		const cards = Array.from(stack.querySelectorAll(".about-motion__card"));

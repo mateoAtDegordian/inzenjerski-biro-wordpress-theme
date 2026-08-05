@@ -5,7 +5,10 @@
  * @package Ingbiro
  */
 
-get_header();
+$ingbiro_embedded_template = ! empty( $GLOBALS['ingbiro_embedded_template'] );
+if ( ! $ingbiro_embedded_template ) {
+	get_header();
+}
 ?>
 <main id="main" class="page-main">
 	<section class="form-page">
@@ -17,4 +20,6 @@ get_header();
 	<?php ingbiro_building_banner(); ?>
 </main>
 <?php
-get_footer();
+if ( ! $ingbiro_embedded_template ) {
+	get_footer();
+}

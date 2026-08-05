@@ -1,5 +1,40 @@
 # Changelog
 
+## 1.8.0 — 2026-08-05
+
+- Ugrađene su lokalno licencirane Helvetica Regular, Bold i Oblique web varijante, uz siguran sistemski fallback i bez javnog distribuiranja binarnih fontova.
+- Ugrađeni su potvrđeni klijentski tekstovi za O nama te osam optimiziranih povijesnih fotografija u postojeću animiranu galeriju.
+- Dodani su responzivni pravni accordioni za Politiku privatnosti, Politiku korištenja kolačića i Opće uvjete poslovanja.
+- Kontakt, otvorena prijava, newsletter i prijava na događanje koriste tražene privole te potpune HR/EN oznake i validacijske poruke.
+- Engleski web dobio je povezane stranice Careers, Career application i Newsletter, dok arhiva događanja ostaje dostupna samo na hrvatskom.
+- Building SVG dobio je pouzdan reveal preko neizrezanog wrappera, a video CTA-ovi koriste zajednički pristupačni modal.
+- PDF događanja ostaje uredan A4 dokument s aktualnim CMS podacima, slikom događanja i bez prazne obojene kartice.
+- Provjeren je prikaz bez horizontalnog overflowa na 390, 768 i 1440 px.
+
+## 1.6.2 — 2026-07-27
+
+- Legacy raspored je postao adaptivan: uvodni blokovi s kratkom lijevom stranom ostaju u jednom stupcu, dok kotizacija i lokacija koriste dvije ravnopravne kolone kada za njih postoji sadržaj.
+- Predavači se na desktopu prikazuju u responzivnom redu, a na mobitelu se uredno slažu jedan ispod drugoga.
+- Dugi arhivski naslovi automatski koriste manju tipografsku skalu prema broju znakova kako više ne bi dominirali cijelim viewportom.
+- Lokalni detalji arhive dobili su čitljive SEO slugove izvedene iz naslova i datuma, uz trajne redirecte sa starih filename URL-ova.
+- URL-ovi i struktura potpuno lokalnih izvornih HTML kopija ostali su nepromijenjeni.
+
+## 1.6.1 — 2026-07-27
+
+- Svih 91 internih legacy zapisa dobilo je potpuno lokalnu statičnu kopiju, lokalne slike, stilove, skripte i fontove; poveznica **Otvori izvorni zapis** više ne ovisi o staroj domeni.
+- Svaki lokalni detalj arhive prikazuje naslovnu sliku izdvojenu iz izvornog zapisa, a dostupne fotografije predavača ostaju uz pripadajući sadržaj.
+- Typewriter animacija isključena je samo na detaljima arhive kako bi dugi povijesni naslovi odmah bili čitljivi.
+- Program, predavači, lokacija i kotizacija dobili su preglednije širine, tipografiju i razmake; sadržaj teče u jednom stupcu kroz pune sekcije s izmjeničnim pozadinama, bez vanjskog okvira.
+- Iz aktualnih i statičnih arhivskih prikaza uklonjeni su obrasci i gumbi za prijavu, a međusobne poveznice starih zapisa vode na lokalnu arhivu.
+
+## 1.6.0 — 2026-07-27
+
+- Arhiva je popunjena sa 96 stvarnih zapisa iz postojeće arhive za razdoblje 2021.–2026.
+- Interni legacy HTML sadržaj prenesen je na lokalne `/arhiva/.../` rute u aktualnom dizajnu, uz lokalno spremljene dostupne slike i poveznicu na izvor.
+- Događanja su dobila opciju **Prikaži u arhivi** koja ih automatski uklanja iz aktualnih edukacija, gasi prijavu i dodaje u arhivu bez dupliciranja sadržaja.
+- Hrvatska i engleska arhivska stranica koriste isti predložak, strukturu, godine i pristupačni accordion.
+- Dodan je ponovljiv importer koji koristi izvorni link, datum i naslov kao stabilni identitet zapisa.
+
 ## 1.5.12 — 2026-07-27
 
 - Elementi vidljivi u početnom viewportu izuzeti su iz scroll reveal sustava kako bi prvi paint ostao potpuno vidljiv.

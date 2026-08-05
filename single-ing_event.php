@@ -10,7 +10,8 @@ get_header();
 while ( have_posts() ) :
 	the_post();
 	$event_id            = get_the_ID();
-	$registration_active = (bool) get_post_meta( $event_id, 'ing_event_registration_enabled', true );
+	$is_archived         = ingbiro_is_event_archived( $event_id );
+	$registration_active = ! $is_archived && (bool) get_post_meta( $event_id, 'ing_event_registration_enabled', true );
 	$format_parts        = preg_split( '/\s*[·|]\s*/', (string) get_post_meta( $event_id, 'ing_event_format', true ) );
 	$related_events      = new WP_Query(
 		array(
@@ -19,6 +20,7 @@ while ( have_posts() ) :
 			'posts_per_page' => 3,
 			'post__not_in'   => array( $event_id ),
 			'meta_key'       => 'ing_event_start_date',
+			'meta_query'     => ingbiro_active_event_meta_query(),
 			'orderby'        => 'meta_value',
 			'order'          => 'ASC',
 		)
@@ -28,7 +30,7 @@ while ( have_posts() ) :
 		<article class="event-single">
 			<header class="event-single__hero">
 				<div class="container">
-					<a class="back-link" href="<?php echo esc_url( ingbiro_page_url( 'savjetovanja-i-edukacije' ) ); ?>">← <span>Natrag</span></a>
+					<a class="back-link" href="<?php echo esc_url( ingbiro_page_url( $is_archived ? 'arhiva' : 'savjetovanja-i-edukacije' ) ); ?>">← <span>Natrag</span></a>
 					<h1><?php the_title(); ?></h1>
 					<div class="event-single__meta-row">
 						<div class="tag-list">

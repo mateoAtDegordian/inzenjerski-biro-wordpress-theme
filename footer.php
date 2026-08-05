@@ -18,7 +18,7 @@ $language   = $is_english ? 'en' : 'hr';
 					<ul class="contact-list">
 						<li>
 							<span class="contact-list__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/footer-location.svg' ) ); ?>" alt=""></span>
-							<a href="https://www.google.com/maps/search/?api=1&amp;query=Heinzelova+4A%2C+10000+Zagreb" target="_blank" rel="noopener noreferrer">Heinzelova 4A, 10000 Zagreb, <?php echo esc_html( $is_english ? 'Croatia' : 'Hrvatska' ); ?></a>
+							<a href="https://www.google.com/maps/search/?api=1&amp;query=Ulica+Vjekoslava+Heinzela+4A%2C+10000+Zagreb" target="_blank" rel="noopener noreferrer">Ulica Vjekoslava Heinzela 4A, 10000 Zagreb, <?php echo esc_html( $is_english ? 'Croatia' : 'Hrvatska' ); ?></a>
 						</li>
 						<li>
 							<span class="contact-list__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/footer-email.svg' ) ); ?>" alt=""></span>
@@ -41,11 +41,11 @@ $language   = $is_english ? 'en' : 'hr';
 
 				<ul class="footer-links">
 					<li><a href="<?php echo esc_url( $is_english ? ingbiro_english_page_url( 'contact' ) : ingbiro_page_url( 'kontakt' ) ); ?>"><?php echo esc_html( $is_english ? 'Contact' : 'Kontakt' ); ?></a></li>
-					<li><a href="<?php echo esc_url( ingbiro_page_url( 'karijera' ) ); ?>"><?php echo esc_html( $is_english ? 'Careers' : 'Karijera' ); ?></a></li>
+					<li><a href="<?php echo esc_url( $is_english ? ingbiro_english_page_url( 'careers' ) : ingbiro_page_url( 'karijera' ) ); ?>"><?php echo esc_html( $is_english ? 'Careers' : 'Karijera' ); ?></a></li>
 					<li><a href="<?php echo esc_url( ingbiro_legal_url( 'terms' ) ); ?>"><?php echo esc_html( $is_english ? 'General Terms and Conditions' : 'Opći uvjeti poslovanja' ); ?></a></li>
 					<li><a href="<?php echo esc_url( ingbiro_legal_url( 'privacy' ) ); ?>"><?php echo esc_html( $is_english ? 'Privacy Policy' : 'Politika privatnosti' ); ?></a></li>
 					<li><a href="<?php echo esc_url( ingbiro_legal_url( 'cookies' ) ); ?>"><?php echo esc_html( $is_english ? 'Cookie Policy' : 'Politika korištenja kolačića' ); ?></a></li>
-					<li><a href="<?php echo esc_url( ingbiro_page_url( 'newsletter' ) ); ?>">Newsletter</a></li>
+					<li><a href="<?php echo esc_url( $is_english ? ingbiro_english_page_url( 'newsletter' ) : ingbiro_page_url( 'newsletter' ) ); ?>">Newsletter</a></li>
 				</ul>
 
 				<div class="site-footer__social">
@@ -67,6 +67,7 @@ $language   = $is_english ? 'en' : 'hr';
 			</div>
 		</div>
 	</footer>
+	<?php ingbiro_video_dialog(); ?>
 </div>
 <?php wp_footer(); ?>
 </body>

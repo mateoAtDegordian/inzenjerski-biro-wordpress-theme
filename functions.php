@@ -9,7 +9,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.7.3' );
+define( 'INGBIRO_VERSION', '1.8.0' );
+
+/**
+ * Resolve optional licensed webfonts without requiring them in the public repo.
+ *
+ * Files in uploads survive normal theme updates; the theme-local location is
+ * retained as a convenient fallback for Local development and rsync deploys.
+ */
+function ingbiro_local_font_stylesheet() {
+	$uploads = wp_upload_dir();
+	$choices = array(
+		array(
+			'path' => trailingslashit( $uploads['basedir'] ) . 'ingbiro-fonts/local-fonts.css',
+			'url'  => trailingslashit( $uploads['baseurl'] ) . 'ingbiro-fonts/local-fonts.css',
+		),
+		array(
+			'path' => get_template_directory() . '/assets/fonts/helvetica/local-fonts.css',
+			'url'  => get_template_directory_uri() . '/assets/fonts/helvetica/local-fonts.css',
+		),
+	);
+
+	foreach ( $choices as $choice ) {
+		if ( is_readable( $choice['path'] ) ) {
+			return $choice;
+		}
+	}
+
+	return null;
+}
 
 function ingbiro_setup() {
 	load_theme_textdomain( 'ingbiro', get_template_directory() . '/languages' );
@@ -20,6 +48,10 @@ function ingbiro_setup() {
 	add_theme_support( 'align-wide' );
 	add_theme_support( 'editor-styles' );
 	add_editor_style( 'style.css' );
+	$font_stylesheet = ingbiro_local_font_stylesheet();
+	if ( $font_stylesheet ) {
+		add_editor_style( $font_stylesheet['url'] );
+	}
 	add_image_size( 'ingbiro-event-hero', 1600, 800, true );
 	add_theme_support(
 		'html5',
@@ -36,7 +68,19 @@ function ingbiro_setup() {
 add_action( 'after_setup_theme', 'ingbiro_setup' );
 
 function ingbiro_enqueue_assets() {
-	wp_enqueue_style( 'ingbiro-style', get_stylesheet_uri(), array(), INGBIRO_VERSION );
+	$dependencies = array();
+	$font_stylesheet = ingbiro_local_font_stylesheet();
+	if ( $font_stylesheet ) {
+		wp_enqueue_style(
+			'ingbiro-local-fonts',
+			$font_stylesheet['url'],
+			array(),
+			(string) filemtime( $font_stylesheet['path'] )
+		);
+		$dependencies[] = 'ingbiro-local-fonts';
+	}
+
+	wp_enqueue_style( 'ingbiro-style', get_stylesheet_uri(), $dependencies, INGBIRO_VERSION );
 	wp_enqueue_script(
 		'ingbiro-theme',
 		get_template_directory_uri() . '/assets/js/theme.js',
@@ -71,6 +115,7 @@ function ingbiro_asset( $path ) {
 require_once get_template_directory() . '/inc/forms.php';
 require_once get_template_directory() . '/inc/language.php';
 require_once get_template_directory() . '/inc/legal.php';
+require_once get_template_directory() . '/inc/archive.php';
 require_once get_template_directory() . '/inc/patterns.php';
 
 function ingbiro_favicons() {
@@ -92,6 +137,9 @@ function ingbiro_page_url( $slug ) {
 			'pravni-portal'            => 'legal-portal',
 			'savjetovanja-i-edukacije' => 'conferences-and-training',
 			'kontakt'                  => 'contact',
+			'karijera'                 => 'careers',
+			'prijava-za-posao'         => 'career-application',
+			'newsletter'               => 'newsletter',
 		);
 
 		if ( array_key_exists( $slug, $english_slugs ) ) {
@@ -151,9 +199,26 @@ function ingbiro_button( $label, $url, $class = '', $attributes = array() ) {
 
 function ingbiro_building_banner() {
 	printf(
-		'<div class="building-banner" aria-hidden="true"><img class="building-banner__image" src="%s" alt="" width="1470" height="630"></div>',
+		'<div class="building-banner-shell"><div class="building-banner" aria-hidden="true"><img class="building-banner__image" src="%s" alt="" width="1470" height="630"></div></div>',
 		esc_url( add_query_arg( 'ver', INGBIRO_VERSION, ingbiro_asset( 'images/building-animation.svg' ) ) )
 	);
+}
+
+/**
+ * Shared video dialog. Triggers provide their source through data-video-src,
+ * so the same accessible component can serve the home and LING pages.
+ */
+function ingbiro_video_dialog() {
+	?>
+	<div class="video-dialog" data-video-dialog hidden>
+		<div class="video-dialog__backdrop" data-video-close></div>
+		<div class="video-dialog__panel" role="dialog" aria-modal="true" aria-labelledby="ingbiro-video-title">
+			<h2 id="ingbiro-video-title" class="screen-reader-text"><?php echo esc_html( ingbiro_is_english() ? 'Video' : 'Video zapis' ); ?></h2>
+			<button class="video-dialog__close" type="button" data-video-close aria-label="<?php echo esc_attr( ingbiro_is_english() ? 'Close video' : 'Zatvori video' ); ?>"><span aria-hidden="true"></span></button>
+			<video class="video-dialog__video" controls playsinline preload="metadata"></video>
+		</div>
+	</div>
+	<?php
 }
 
 /**
@@ -240,12 +305,12 @@ function ingbiro_event_blueprint_content() {
 <!-- wp:columns {"className":"event-fee-columns"} --><div class="wp-block-columns event-fee-columns">
 <!-- wp:column --><div class="wp-block-column"><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Naknada</h3><!-- /wp:heading -->
 <!-- wp:paragraph --><p>Naknada za sudjelovanje po sudioniku iznosi <strong>180,00 eura</strong>, a uplaćuje se unaprijed na žiro-račun organizatora:</p><!-- /wp:paragraph -->
-<!-- wp:paragraph --><p>INŽENJERSKI BIRO d.o.o., Heinzelova 4a, Zagreb<br><strong>IBAN: HR2323400091100205049<br>SWIFT: PBZGHR2X<br>OIB: 84170114747<br>poziv na broj: 02-312608<br>naznaka: „za program usavršavanja”</strong></p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p>INŽENJERSKI BIRO d.o.o., Ulica Vjekoslava Heinzela 4A, Zagreb<br><strong>IBAN: HR2323400091100205049<br>SWIFT: PBZGHR2X<br>OIB: 84170114747<br>poziv na broj: 02-312608<br>naznaka: „za program usavršavanja”</strong></p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p><strong>Na temelju čl. 39. st. 1. toč. i) Zakona o PDV-u, kotizacija je oslobođena od PDV-a.</strong></p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p><strong>Naknada uključuje:</strong></p><!-- /wp:paragraph --><!-- wp:list --><ul class="wp-block-list"><li>sudjelovanje u Programu usavršavanja</li><li>prezentaciju predavača u elektroničkom formatu</li></ul><!-- /wp:list -->
 </div><!-- /wp:column -->
 <!-- wp:column --><div class="wp-block-column"><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Prijave</h3><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Prijave za Program usavršavanja molimo poslati:</p><!-- /wp:paragraph --><!-- wp:list --><ul class="wp-block-list"><li>online prijavom na ovoj stranici</li><li>e-mailom na <a href="mailto:prodaja@ingbiro.hr">prodaja@ingbiro.hr</a></li><li>poštom na INŽENJERSKI BIRO d.o.o., Heinzelova 4a, 10 000 Zagreb</li></ul><!-- /wp:list -->
+<!-- wp:paragraph --><p>Prijave za Program usavršavanja molimo poslati:</p><!-- /wp:paragraph --><!-- wp:list --><ul class="wp-block-list"><li>online prijavom na ovoj stranici</li><li>e-mailom na <a href="mailto:prodaja@ingbiro.hr">prodaja@ingbiro.hr</a></li><li>poštom na INŽENJERSKI BIRO d.o.o., Ulica Vjekoslava Heinzela 4A, 10 000 Zagreb</li></ul><!-- /wp:list -->
 <!-- wp:paragraph --><p><strong>Posebne pogodnosti:</strong></p><!-- /wp:paragraph --><!-- wp:list --><ul class="wp-block-list"><li>svi pretplatnici na pravni portal LING ostvaruju popust na radionice i webinare</li><li>paket LING – 10 % popusta</li><li>paket LING PLUS – 25 % popusta</li></ul><!-- /wp:list -->
 </div><!-- /wp:column -->
 </div><!-- /wp:columns -->
@@ -402,19 +467,24 @@ function ingbiro_register_content_types() {
 	register_post_type(
 		'ing_archive',
 		array(
-			'labels' => array(
-				'name'          => __( 'Arhiva savjetovanja', 'ingbiro' ),
-				'singular_name' => __( 'Arhivski zapis', 'ingbiro' ),
-				'add_new_item'  => __( 'Dodaj arhivski link', 'ingbiro' ),
-				'edit_item'     => __( 'Uredi arhivski link', 'ingbiro' ),
+				'labels' => array(
+					'name'          => __( 'Arhiva savjetovanja', 'ingbiro' ),
+					'singular_name' => __( 'Arhivski zapis', 'ingbiro' ),
+					'add_new_item'  => __( 'Dodaj arhivski zapis', 'ingbiro' ),
+					'edit_item'     => __( 'Uredi arhivski zapis', 'ingbiro' ),
 			),
-			'public'              => false,
+			'public'              => true,
 			'show_ui'             => true,
 			'show_in_menu'        => true,
 			'show_in_rest'        => true,
 			'menu_icon'           => 'dashicons-archive',
-			'supports'            => array( 'title', 'editor' ),
-			'exclude_from_search' => true,
+			'has_archive'         => false,
+			'rewrite'             => array(
+				'slug'       => 'arhiva',
+				'with_front' => false,
+			),
+			'supports'            => array( 'title', 'editor', 'excerpt' ),
+			'exclude_from_search' => false,
 		)
 	);
 
@@ -529,6 +599,7 @@ function ingbiro_register_meta() {
 		'ing_event_fee'                  => 'string',
 		'ing_event_form_id'              => 'integer',
 		'ing_event_registration_enabled' => 'boolean',
+		'ing_event_archived'             => 'boolean',
 	);
 
 	foreach ( $event_meta as $key => $type ) {
@@ -575,7 +646,15 @@ function ingbiro_register_meta() {
 		)
 	);
 
-	foreach ( array( 'ing_archive_date' => 'sanitize_text_field', 'ing_archive_url' => 'esc_url_raw' ) as $key => $sanitize_callback ) {
+	foreach ( array(
+		'ing_archive_date'       => 'sanitize_text_field',
+		'ing_archive_date_label' => 'sanitize_text_field',
+		'ing_archive_location'   => 'sanitize_text_field',
+		'ing_archive_url'        => 'esc_url_raw',
+		'ing_archive_legacy_url' => 'esc_url_raw',
+		'ing_archive_legacy_key' => 'sanitize_text_field',
+		'ing_archive_hero_url'   => 'esc_url_raw',
+	) as $key => $sanitize_callback ) {
 		register_post_meta(
 			'ing_archive',
 			$key,
@@ -630,6 +709,12 @@ function ingbiro_event_meta_box( $post ) {
 		checked( (bool) get_post_meta( $post->ID, 'ing_event_registration_enabled', true ), true, false ),
 		esc_html__( 'Omogući prijavu i prikaži formu na stranici događanja', 'ingbiro' )
 	);
+	printf(
+		'<p><label><input type="checkbox" name="ing_event_archived" value="1" %s> <strong>%s</strong></label></p><p class="description">%s</p>',
+		checked( ingbiro_is_event_archived( $post->ID ), true, false ),
+		esc_html__( 'Prikaži u arhivi', 'ingbiro' ),
+		esc_html__( 'Arhivirana edukacija više se ne prikazuje među aktualnim događanjima. Njezina postojeća stranica i sadržaj ostaju dostupni kroz arhivu.', 'ingbiro' )
+	);
 
 	echo '<p class="description">' . esc_html__( 'Glavni sadržaj programa, upute, raspored, slike, tablice i dodatne sekcije uređuju se u Gutenberg editoru iznad. Istaknuta slika koristi se kao hero fotografija.', 'ingbiro' ) . '</p>';
 }
@@ -657,10 +742,15 @@ function ingbiro_archive_meta_box( $post ) {
 		esc_attr( get_post_meta( $post->ID, 'ing_archive_date', true ) )
 	);
 	printf(
+		'<p><label for="ing_archive_location"><strong>%s</strong></label><br><input class="widefat" type="text" id="ing_archive_location" name="ing_archive_location" value="%s"></p>',
+		esc_html__( 'Lokacija', 'ingbiro' ),
+		esc_attr( get_post_meta( $post->ID, 'ing_archive_location', true ) )
+	);
+	printf(
 		'<p><label for="ing_archive_url"><strong>%s</strong></label><br><input class="widefat" type="url" id="ing_archive_url" name="ing_archive_url" value="%s" placeholder="https://..."></p><p class="description">%s</p>',
-		esc_html__( 'Link na snimku ili preneseni stari HTML', 'ingbiro' ),
+		esc_html__( 'Vanjska poveznica (opcionalno)', 'ingbiro' ),
 		esc_attr( get_post_meta( $post->ID, 'ing_archive_url', true ) ),
-		esc_html__( 'Naslov zapisa automatski postaje tekst linka u arhivi. Dodatnu bilješku možete unijeti u editor.', 'ingbiro' )
+		esc_html__( 'Arhiva uvijek otvara lokalnu stranicu zapisa. Vanjska poveznica prikazuje se na detalju kao dodatni izvor.', 'ingbiro' )
 	);
 }
 
@@ -687,7 +777,9 @@ function ingbiro_save_meta( $post_id ) {
 			}
 		}
 		update_post_meta( $post_id, 'ing_event_form_id', isset( $_POST['ing_event_form_id'] ) ? absint( $_POST['ing_event_form_id'] ) : 0 );
-		update_post_meta( $post_id, 'ing_event_registration_enabled', isset( $_POST['ing_event_registration_enabled'] ) ? 1 : 0 );
+		$is_archived = isset( $_POST['ing_event_archived'] ) ? 1 : 0;
+		update_post_meta( $post_id, 'ing_event_archived', $is_archived );
+		update_post_meta( $post_id, 'ing_event_registration_enabled', ! $is_archived && isset( $_POST['ing_event_registration_enabled'] ) ? 1 : 0 );
 	}
 
 	if ( isset( $_POST['ingbiro_job_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ingbiro_job_nonce'] ) ), 'ingbiro_save_job' ) && isset( $_POST['ing_job_location'] ) ) {
@@ -698,6 +790,9 @@ function ingbiro_save_meta( $post_id ) {
 	if ( isset( $_POST['ingbiro_archive_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ingbiro_archive_nonce'] ) ), 'ingbiro_save_archive' ) ) {
 		if ( isset( $_POST['ing_archive_date'] ) ) {
 			update_post_meta( $post_id, 'ing_archive_date', sanitize_text_field( wp_unslash( $_POST['ing_archive_date'] ) ) );
+		}
+		if ( isset( $_POST['ing_archive_location'] ) ) {
+			update_post_meta( $post_id, 'ing_archive_location', sanitize_text_field( wp_unslash( $_POST['ing_archive_location'] ) ) );
 		}
 		if ( isset( $_POST['ing_archive_url'] ) ) {
 			update_post_meta( $post_id, 'ing_archive_url', esc_url_raw( wp_unslash( $_POST['ing_archive_url'] ) ) );
@@ -1000,12 +1095,15 @@ function ingbiro_handle_event_pdf() {
 					<?php foreach ( $chunk as $label => $value ) : ?>
 						<td><strong><?php echo esc_html( $label ); ?></strong><?php echo esc_html( $value ); ?></td>
 					<?php endforeach; ?>
-					<?php for ( $i = count( $chunk ); $i < 3; $i++ ) : ?><td></td><?php endfor; ?>
+					<?php if ( count( $chunk ) < 3 ) : ?>
+						<?php $remaining_columns = 3 - count( $chunk ); ?>
+						<td colspan="<?php echo esc_attr( $remaining_columns ); ?>" style="padding:0;background:transparent;"></td>
+					<?php endif; ?>
 				</tr>
 			<?php endforeach; ?>
 		</table>
 		<div class="content"><?php echo wp_kses( $content, wp_kses_allowed_html( 'post' ), array( 'http', 'https', 'mailto', 'data' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
-		<div class="footer">Inženjerski biro d.o.o. · Heinzelova 4A, Zagreb · ingbiro@ingbiro.hr · (+385) 1 46 00 888</div>
+		<div class="footer">Inženjerski biro d.o.o. · Ulica Vjekoslava Heinzela 4A, Zagreb · ingbiro@ingbiro.hr · (+385) 1 46 00 888</div>
 	</body>
 	</html>
 	<?php

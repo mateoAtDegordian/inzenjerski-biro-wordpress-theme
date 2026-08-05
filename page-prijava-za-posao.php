@@ -5,7 +5,10 @@
  * @package Ingbiro
  */
 
-get_header();
+$ingbiro_embedded_template = ! empty( $GLOBALS['ingbiro_embedded_template'] );
+if ( ! $ingbiro_embedded_template ) {
+	get_header();
+}
 
 $job = ingbiro_get_career_application_job();
 ?>
@@ -18,4 +21,6 @@ $job = ingbiro_get_career_application_job();
 	</section>
 </main>
 <?php
-get_footer();
+if ( ! $ingbiro_embedded_template ) {
+	get_footer();
+}
