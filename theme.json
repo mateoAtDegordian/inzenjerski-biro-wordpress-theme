@@ -21,7 +21,7 @@
         {
           "slug": "sans",
           "name": "Helvetica",
-          "fontFamily": "\"Ingbiro Helvetica\", \"Helvetica Neue\", Helvetica, Arial, sans-serif"
+          "fontFamily": "Helvetica, \"Helvetica Neue\", Arial, sans-serif"
         },
         {
           "slug": "mono",

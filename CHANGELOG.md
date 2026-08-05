@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.8.1 — 2026-08-05
+
+- Lokalni webfont koristi standardni naziv obitelji `Helvetica` u CSS-u i Gutenberg editoru.
+- Animirani banner zgrade ponovno je full-bleed, bez bočnih margina ili unutarnjeg paddinga.
+
 ## 1.8.0 — 2026-08-05
 
 - Ugrađene su lokalno licencirane Helvetica Regular, Bold i Oblique web varijante, uz siguran sistemski fallback i bez javnog distribuiranja binarnih fontova.

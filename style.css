@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.8.0
+Version: 1.8.1
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -23,7 +23,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 	--ing-paper: #fafafa;
 	--ing-muted: #61707d;
 	--ing-border: #dae0e1;
-	--ing-font-sans: "Ingbiro Helvetica", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	--ing-font-sans: Helvetica, "Helvetica Neue", Arial, sans-serif;
 	--ing-font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 	--ing-container: 1360px;
 	--ing-gutter: 40px;
@@ -4860,9 +4860,10 @@ select {
 }
 
 .building-banner-shell {
-	width: min(calc(100% - (var(--ing-gutter) * 2)), var(--ing-container));
-	margin-inline: auto;
-	padding-block: clamp(32px, 5vw, 72px);
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	padding: 0;
 	background: var(--ing-cream);
 }
 
@@ -5109,10 +5110,6 @@ body.video-dialog-open {
 @media (max-width: 620px) {
 	:root {
 		--ing-gutter: 18px;
-	}
-
-	.building-banner-shell {
-		padding-block: 28px;
 	}
 
 	.video-dialog {
