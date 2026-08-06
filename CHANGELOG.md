@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.2 — 2026-08-06
+
+- Cinematic povećanje počinje prije sticky točke, s izraženijim početnim ease-outom, pa se pri ulasku više ne pojavljuje velika prazna zona iznad videa.
+- Izlazna animacija ponovno se jasno vidi: video ostaje uz gornji rub dok se smanjuje, a sljedeća sekcija dolazi neposredno ispod kadra bez preklapanja.
+- Chevron ispod oznake `SCROLL` dobio je blagu kontinuiranu animaciju gore-dolje.
+
 ## 1.9.1 — 2026-08-06
 
 - Uklonjen je play gumb iz inline hero videa, dodan diskretan `SCROLL` indikator, a kadar je na desktopu uvećan kako ugrađeni crni rubovi snimke ne bi ostali vidljivi.

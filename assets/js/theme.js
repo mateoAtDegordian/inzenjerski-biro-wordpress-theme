@@ -137,6 +137,7 @@
 			const progress = clamp(value);
 			return progress * progress * progress * (progress * (progress * 6 - 15) + 10);
 		};
+		const easeOutCubic = (value) => 1 - Math.pow(1 - clamp(value), 3);
 		const states = cinematicTargets.map((media) => {
 			let stage = media.closest("[data-cinematic-scroll]");
 
@@ -153,6 +154,7 @@
 			}
 
 			media.classList.add("cinematic-scroll__media");
+			stage.closest("section")?.classList.add("has-cinematic-scroll");
 			if (!media.querySelector(".cinematic-scroll__hint")) {
 				const hint = document.createElement("span");
 				hint.className = "cinematic-scroll__hint";
@@ -226,6 +228,7 @@
 			const baseHeight = viewportWidth <= 620 ? 270 : viewportWidth <= 1200 ? 400 : 490;
 			const initialRadius = viewportWidth <= 620 ? 12 : 16;
 			const stageMultiplier = viewportWidth <= 900 ? 1.85 : 2.15;
+			const entranceLead = clamp(viewportHeight * 0.36, 260, 360);
 
 			states.forEach((state) => {
 				state.stage.style.setProperty("--cinematic-header-height", `${headerBottom}px`);
@@ -235,7 +238,11 @@
 				} else {
 					state.stage.style.height = `${Math.max(980, stickyHeight * stageMultiplier)}px`;
 				}
-				state.stage.style.marginBottom = "0px";
+				state.stage.style.marginBottom = viewportWidth <= 900
+					? "0px"
+					: `${Math.min(0, baseHeight - stickyHeight)}px`;
+				const scrollRange = Math.max(1, state.stage.offsetHeight - stickyHeight);
+				const fullTimeline = scrollRange + entranceLead;
 				state.metrics = {
 					viewportWidth,
 					viewportHeight,
@@ -243,6 +250,10 @@
 					normalHeaderHeight,
 					compactHeaderHeight,
 					stickyHeight,
+					entranceLead,
+					entranceEnd: entranceLead / fullTimeline,
+					exitStart: scrollRange / fullTimeline,
+					timelineLength: fullTimeline,
 					baseHeight: Math.min(baseHeight, stickyHeight),
 					baseWidth: Math.max(0, viewportWidth - sideInset * 2),
 					sideInset,
@@ -256,8 +267,7 @@
 			const stickyTop = Number.parseFloat(
 				getComputedStyle(state.stage).getPropertyValue("--cinematic-header-height")
 			) || 0;
-			const scrollRange = Math.max(1, state.stage.offsetHeight - state.metrics.stickyHeight);
-			return clamp((stickyTop - stageRect.top) / scrollRange);
+			return clamp((stickyTop + state.metrics.entranceLead - stageRect.top) / state.metrics.timelineLength);
 		};
 
 		const renderState = (state) => {
@@ -274,19 +284,17 @@
 				return;
 			}
 
-			const expansion = progress < 0.28
-				? smootherStep(progress / 0.28)
-				: progress > 0.72
-					? smootherStep((1 - progress) / 0.28)
-					: 1;
+			const entranceExpansion = easeOutCubic(progress / metrics.entranceEnd);
+			const exitExpansion = 1 - smootherStep((progress - metrics.exitStart) / (1 - metrics.exitStart));
+			const expansion = Math.min(entranceExpansion, exitExpansion);
 			const currentHeaderHeight = mix(metrics.normalHeaderHeight, metrics.compactHeaderHeight, expansion);
 			const currentHeaderBottom = metrics.headerOffset + currentHeaderHeight;
 			const currentStickyHeight = Math.max(320, metrics.viewportHeight - currentHeaderBottom);
 			const mediaHeight = mix(metrics.baseHeight, currentStickyHeight, expansion);
 			const mediaWidth = mix(metrics.baseWidth, metrics.viewportWidth, expansion);
 			const mediaLeft = mix(metrics.sideInset, 0, expansion);
-			const exitGlide = smootherStep((progress - 0.72) / 0.28) * (1 - expansion);
-			const mediaY = mix(0, currentStickyHeight - metrics.baseHeight, exitGlide);
+			const virtualStageTop = currentHeaderBottom + metrics.entranceLead - progress * metrics.timelineLength;
+			const entranceLift = Math.min(0, currentHeaderBottom - virtualStageTop) * entranceExpansion;
 
 			renderCinematicHeader(expansion, metrics.viewportWidth);
 			state.stage.style.setProperty("--cinematic-header-height", `${currentHeaderBottom}px`);
@@ -295,7 +303,7 @@
 			state.media.style.width = `${mediaWidth}px`;
 			state.media.style.height = `${mediaHeight}px`;
 			state.media.style.borderRadius = `${mix(metrics.initialRadius, 0, expansion)}px`;
-			state.stage.style.setProperty("--cinematic-media-y", `${mediaY}px`);
+			state.stage.style.setProperty("--cinematic-media-y", `${entranceLift}px`);
 			state.stage.dataset.cinematicProgress = progress.toFixed(3);
 			state.stage.dataset.cinematicExpansion = expansion.toFixed(3);
 			state.stage.classList.add("is-ready");
@@ -311,7 +319,7 @@
 				} else {
 					const difference = state.targetProgress - state.currentProgress;
 					if (Math.abs(difference) > 0.0005) {
-						state.currentProgress += difference * 0.18;
+						state.currentProgress += difference * 0.24;
 						needsAnotherFrame = true;
 					} else {
 						state.currentProgress = state.targetProgress;
