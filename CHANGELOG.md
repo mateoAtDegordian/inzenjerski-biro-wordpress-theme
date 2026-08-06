@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.5 — 2026-08-06
+
+- Sva događanja i novi Gutenberg predlošci koriste jedinstven, klijentski potvrđen tekst Uputa sa stare stranice.
+- Event PDF ima kompaktan ispis do dvije stranice, urednički odabir sekcija, opcionalnu hero sliku i print preview iz CMS-a.
+- Kontaktne, karijerne i event forme imaju znatno kompaktnija polja i vertikalne razmake bez promjene newsletter forme.
+- Ujednačena je veličina naslova pravnih dokumenata, povećan razmak u O nama marqueeju te ispravljena kapitalizacija naziva u footeru i PDF-u.
+
 ## 1.9.4 — 2026-08-06
 
 - Naslov Pravnog portala drži `LING` u istom retku na svim breakpointima, a tablet hero ima dovoljno odmaka između CTA gumba i videa.

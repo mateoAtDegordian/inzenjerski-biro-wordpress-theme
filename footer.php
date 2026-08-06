@@ -63,7 +63,7 @@ $language   = $is_english ? 'en' : 'hr';
 			</div>
 
 			<div class="site-footer__bottom">
-				@<?php echo esc_html( gmdate( 'Y' ) ); ?> All rights reserved. Inženjerski biro d.o.o.
+				@<?php echo esc_html( gmdate( 'Y' ) ); ?> All rights reserved. INŽENJERSKI BIRO d.o.o.
 			</div>
 		</div>
 	</footer>

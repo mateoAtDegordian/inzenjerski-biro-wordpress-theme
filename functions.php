@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.9.4' );
+define( 'INGBIRO_VERSION', '1.9.5' );
 
 /**
  * Resolve optional licensed webfonts without requiring them in the public repo.
@@ -110,6 +110,51 @@ add_action( 'wp_enqueue_scripts', 'ingbiro_enqueue_assets' );
 
 function ingbiro_asset( $path ) {
 	return get_template_directory_uri() . '/assets/' . ltrim( $path, '/' );
+}
+
+/**
+ * Canonical participant instructions supplied by the client.
+ *
+ * Keeping the copy in one function ensures new events, block patterns and the
+ * one-time content migration all use the exact same wording.
+ */
+function ingbiro_event_instructions_content() {
+	return <<<'HTML'
+<!-- wp:group {"className":"event-block event-block--instructions","layout":{"type":"constrained"}} -->
+<div class="wp-block-group event-block event-block--instructions">
+<!-- wp:heading --><h2 class="wp-block-heading">Upute</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>Doznajte kako se prijaviti i sudjelovati na webinaru.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><strong>Prijavnicu za webinar treba popuniti točnim i obveznim podacima putem internetske stranice ingbiro.hr.</strong></p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><strong>Kotizaciju za webinar treba uplatiti u cijelosti (bez uplate pune cijene kotizacije nije moguće pristupiti webinaru).</strong>&nbsp;Potvrdu o uplaćenoj kotizaciji potrebno je dostaviti u INŽENJERSKI BIRO d.o.o. najkasnije jedan (1) dan prije dana održavanja webinara.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><strong>Poveznica (link) na webinar</strong>&nbsp;će Vam biti dostavljena na dan održavanja elektroničkim putem na adresu elektroničke pošte koju ste naveli u prijavnici.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><strong>Registraciju je potrebno napraviti najkasnije 15-ak minuta prije početka webinara, kako biste nas u slučaju kakvih tehničkih poteškoća mogli kontaktirati i tražiti pomoć.</strong>&nbsp;Postupak je jednostavan:</p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>prije početka webinara na Vaš e-mail dostavit ćemo poveznicu (link) na webinar;</li><li>poveznica (link) na webinar aktivna je od trenutka dostavljanja;</li><li>putem poveznice (linka) sudionik se prijavljuje u tzv. čekaonicu (lobby);</li><li>polaznici borave u čekaonici sve dok im administrator ne dopusti ulaz na webinar;</li><li>prije početka webinara, administratori provjeravaju uspješnost postupka prijave na webinar – moguće je da ćemo Vas kontaktirati telefonom/mobitelom (na prijavnici je potrebno upisati broj telefona/mobitela koji je dostupan na dan webinara);</li><li>nakon provjere uspješnosti postupka prijave, webinar počinje u najavljeno vrijeme i odvija se sukladno rasporedu predavanja;</li><li>po završetku webinara dostavit ćemo na Vaš e-mail poveznicu (link) za preuzimanje prezentacija u ppt. formatu.</li></ul><!-- /wp:list -->
+<!-- wp:paragraph --><p><strong>Osnovne pretpostavke za pristup i sudjelovanje na webinaru:</strong></p><!-- /wp:paragraph -->
+<!-- wp:list --><ul class="wp-block-list"><li>na računalo nije potrebno instalirati nikakav dodatan program. Dovoljno je kliknuti link koji ćete dobiti na adresu elektroničke pošte koju ste naveli na prijavnici;</li><li>ako sudjelujete na webinaru koristeći pametni mobitel, potrebno je instalirati Microsoft Teams s App Storea ili Google Playa;</li><li>webinari se mogu pratiti putem stolnog/prijenosnog računala, tableta i mobitela;</li><li>potrebna je širokopojasna internetska veza (žičana ili bežična);</li><li>potreban je zvučnik (integrirani ili vanjski povezan putem USB kabla ili bluetootha);</li><li>mikrofon je opcionalan (nije obvezan) – polaznik prati webinar bez mikrofona;</li><li>web kamera je opcionalna (nije obvezna) – polaznik prati webinar bez web kamere.</li></ul><!-- /wp:list -->
+<!-- wp:paragraph --><p>U slučaju poteškoća kod povezivanja, polaznici se mogu na dan održavanja webinara javiti na telefon: 01 / 4600 888.<br>Molimo da nam svojom pravodobnom uplatom i prijavom omogućite kvalitetnu organizaciju.<br>Dodatne informacije možete dobiti na broj 01 4600 888 ili na e-mail: <a href="mailto:prodaja@ingbiro.hr"><strong>prodaja@ingbiro.hr</strong></a>.<br>Sudionici mogu postaviti pitanja tijekom održavanja webinara, a mogu ih i unaprijed dostaviti na e-mail: <a href="mailto:abatinic@ingbiro.hr"><strong>abatinic@ingbiro.hr</strong></a>.</p><!-- /wp:paragraph -->
+</div><!-- /wp:group -->
+HTML;
+}
+
+/**
+ * Replace any legacy/plain or JSON-escaped instructions blocks with one copy.
+ */
+function ingbiro_replace_event_instructions( $content ) {
+	$pattern = '/<!-- wp:group \{[^\n]*"className":"[^"]*event-block[^"]*instructions[^"]*"[^\n]*\} -->.*?<!-- \/wp:group -->/s';
+	$count   = preg_match_all( $pattern, $content, $matches, PREG_OFFSET_CAPTURE );
+
+	if ( ! $count ) {
+		return rtrim( $content ) . "\n\n" . ingbiro_event_instructions_content();
+	}
+
+	$first_offset = $matches[0][0][1];
+	for ( $index = $count - 1; $index >= 0; $index-- ) {
+		$match   = $matches[0][ $index ][0];
+		$offset  = $matches[0][ $index ][1];
+		$content = substr_replace( $content, '', $offset, strlen( $match ) );
+	}
+
+	return substr_replace( $content, ingbiro_event_instructions_content(), $first_offset, 0 );
 }
 
 require_once get_template_directory() . '/inc/forms.php';
@@ -252,7 +297,7 @@ function ingbiro_event_blueprint_content() {
 	$image_two   = esc_url( ingbiro_asset( 'images/event-detail-2.jpg' ) );
 	$image_three = esc_url( ingbiro_asset( 'images/event-detail-3.jpg' ) );
 
-	return '
+	$content = '
 <!-- wp:group {"className":"event-block event-block--why","layout":{"type":"constrained"}} -->
 <div class="wp-block-group event-block event-block--why">
 <!-- wp:heading --><h2 class="wp-block-heading">Zašto sudjelovati na webinaru?</h2><!-- /wp:heading -->
@@ -327,6 +372,8 @@ function ingbiro_event_blueprint_content() {
 <!-- wp:list --><ul class="wp-block-list"><li>na računalo nije potrebno instalirati dodatni program; dovoljno je otvoriti primljenu poveznicu</li><li>za praćenje na pametnom telefonu potrebno je instalirati Microsoft Teams</li><li>potrebna je stabilna širokopojasna internetska veza i zvučnik</li><li>mikrofon nije obvezan, ali web kamera mora biti uključena u realnom vremenu</li></ul><!-- /wp:list -->
 <!-- wp:paragraph --><p>Za tehničku pomoć i dodatne informacije nazovite 01 / 4600 888 ili pišite na <a href="mailto:abatinic@ingbiro.hr">abatinic@ingbiro.hr</a>. Pitanja za predavača možete poslati i unaprijed na istu adresu.</p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->';
+
+	return ingbiro_replace_event_instructions( $content );
 }
 
 /**
@@ -340,7 +387,7 @@ function ingbiro_event_editor_template_content() {
 	$image_two   = esc_url( ingbiro_asset( 'images/event-detail-2.jpg' ) );
 	$image_three = esc_url( ingbiro_asset( 'images/event-detail-3.jpg' ) );
 
-	return '
+	$content = '
 <!-- wp:group {"className":"event-block event-block--why","layout":{"type":"constrained"}} -->
 <div class="wp-block-group event-block event-block--why">
 <!-- wp:heading --><h2 class="wp-block-heading">[Zašto sudjelovati na edukaciji?]</h2><!-- /wp:heading -->
@@ -406,6 +453,8 @@ function ingbiro_event_editor_template_content() {
 <!-- wp:list --><ul class="wp-block-list"><li>[Način pristupa edukaciji ili lokacija]</li><li>[Potrebna oprema ili dokumenti]</li><li>[Vrijeme registracije ili dolaska]</li></ul><!-- /wp:list -->
 <!-- wp:paragraph --><p>[Dodajte kontakt za pomoć i dodatne informacije.]</p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->';
+
+	return ingbiro_replace_event_instructions( $content );
 }
 
 function ingbiro_register_content_types() {
@@ -600,6 +649,8 @@ function ingbiro_register_meta() {
 		'ing_event_form_id'              => 'integer',
 		'ing_event_registration_enabled' => 'boolean',
 		'ing_event_archived'             => 'boolean',
+		'ing_event_pdf_excluded_sections' => 'string',
+		'ing_event_pdf_include_hero'      => 'boolean',
 	);
 
 	foreach ( $event_meta as $key => $type ) {
@@ -674,10 +725,62 @@ add_action( 'init', 'ingbiro_register_meta' );
 
 function ingbiro_add_meta_boxes() {
 	add_meta_box( 'ing_event_details', __( 'Detalji događanja', 'ingbiro' ), 'ingbiro_event_meta_box', 'ing_event', 'normal', 'high' );
+	add_meta_box( 'ing_event_pdf', __( 'PDF za ispis', 'ingbiro' ), 'ingbiro_event_pdf_meta_box', 'ing_event', 'side', 'high' );
 	add_meta_box( 'ing_job_details', __( 'Detalji pozicije', 'ingbiro' ), 'ingbiro_job_meta_box', 'ing_job', 'side' );
 	add_meta_box( 'ing_archive_details', __( 'Datum i poveznica', 'ingbiro' ), 'ingbiro_archive_meta_box', 'ing_archive', 'normal', 'high' );
 }
 add_action( 'add_meta_boxes', 'ingbiro_add_meta_boxes' );
+
+function ingbiro_event_pdf_section_choices() {
+	return array(
+		'why'          => __( 'Uvod / zašto sudjelovati', 'ingbiro' ),
+		'program'      => __( 'Program', 'ingbiro' ),
+		'fee'          => __( 'Kotizacija', 'ingbiro' ),
+		'instructions' => __( 'Upute', 'ingbiro' ),
+		'other'        => __( 'Ostali Gutenberg blokovi', 'ingbiro' ),
+	);
+}
+
+function ingbiro_event_pdf_excluded_sections( $event_id ) {
+	if ( ! metadata_exists( 'post', $event_id, 'ing_event_pdf_excluded_sections' ) ) {
+		return array( 'why' );
+	}
+
+	$value = (string) get_post_meta( $event_id, 'ing_event_pdf_excluded_sections', true );
+	if ( '' === $value ) {
+		return array();
+	}
+
+	return array_values( array_intersect( array_keys( ingbiro_event_pdf_section_choices() ), array_filter( array_map( 'sanitize_key', explode( ',', $value ) ) ) ) );
+}
+
+function ingbiro_event_pdf_meta_box( $post ) {
+	$excluded = ingbiro_event_pdf_excluded_sections( $post->ID );
+	echo '<p class="description">' . esc_html__( 'Redoslijed slijedi Gutenberg blokove. Premjestite ili uklonite blokove u editoru, zatim otvorite pregled i provjerite da dokument ostaje na najviše dvije stranice.', 'ingbiro' ) . '</p>';
+
+	foreach ( ingbiro_event_pdf_section_choices() as $key => $label ) {
+		printf(
+			'<p><label><input type="checkbox" name="ing_event_pdf_sections[]" value="%1$s" %2$s> %3$s</label></p>',
+			esc_attr( $key ),
+			checked( ! in_array( $key, $excluded, true ), true, false ),
+			esc_html( $label )
+		);
+	}
+
+	printf(
+		'<p><label><input type="checkbox" name="ing_event_pdf_include_hero" value="1" %1$s> %2$s</label></p>',
+		checked( (bool) get_post_meta( $post->ID, 'ing_event_pdf_include_hero', true ), true, false ),
+		esc_html__( 'Uključi veliku naslovnu sliku', 'ingbiro' )
+	);
+
+	if ( 'auto-draft' !== $post->post_status ) {
+		printf(
+			'<p><a class="button button-primary" href="%1$s" target="_blank" rel="noopener">%2$s</a></p>',
+			esc_url( ingbiro_event_pdf_url( $post->ID, true ) ),
+			esc_html__( 'Otvori print preview', 'ingbiro' )
+		);
+	}
+}
 
 function ingbiro_event_meta_box( $post ) {
 	wp_nonce_field( 'ingbiro_save_event', 'ingbiro_event_nonce' );
@@ -780,6 +883,10 @@ function ingbiro_save_meta( $post_id ) {
 		$is_archived = isset( $_POST['ing_event_archived'] ) ? 1 : 0;
 		update_post_meta( $post_id, 'ing_event_archived', $is_archived );
 		update_post_meta( $post_id, 'ing_event_registration_enabled', ! $is_archived && isset( $_POST['ing_event_registration_enabled'] ) ? 1 : 0 );
+		$selected_pdf_sections = isset( $_POST['ing_event_pdf_sections'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['ing_event_pdf_sections'] ) ) : array();
+		$pdf_excluded_sections = array_diff( array_keys( ingbiro_event_pdf_section_choices() ), $selected_pdf_sections );
+		update_post_meta( $post_id, 'ing_event_pdf_excluded_sections', implode( ',', $pdf_excluded_sections ) );
+		update_post_meta( $post_id, 'ing_event_pdf_include_hero', isset( $_POST['ing_event_pdf_include_hero'] ) ? 1 : 0 );
 	}
 
 	if ( isset( $_POST['ingbiro_job_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['ingbiro_job_nonce'] ) ), 'ingbiro_save_job' ) && isset( $_POST['ing_job_location'] ) ) {
@@ -989,14 +1096,21 @@ function ingbiro_form_status() {
 	}
 }
 
-function ingbiro_event_pdf_url( $event_id ) {
-	return add_query_arg(
+function ingbiro_event_pdf_url( $event_id, $preview = false ) {
+	$url = add_query_arg(
 		array(
 			'action'   => 'ingbiro_event_pdf',
 			'event_id' => absint( $event_id ),
+			'preview'  => $preview ? 1 : 0,
 		),
 		admin_url( 'admin-post.php' )
 	);
+
+	if ( $preview ) {
+		$url = add_query_arg( '_wpnonce', wp_create_nonce( 'ingbiro_event_pdf_preview_' . absint( $event_id ) ), $url );
+	}
+
+	return $url;
 }
 
 function ingbiro_pdf_image_data_uri( $path ) {
@@ -1011,11 +1125,41 @@ function ingbiro_pdf_image_data_uri( $path ) {
 	return $data ? 'data:' . $mime . ';base64,' . base64_encode( $data ) : ''; // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 }
 
+function ingbiro_event_pdf_block_section( $block ) {
+	$class_name = (string) ( $block['attrs']['className'] ?? '' );
+	foreach ( array( 'why', 'program', 'fee', 'instructions' ) as $section ) {
+		if ( str_contains( $class_name, 'event-block--' . $section ) ) {
+			return $section;
+		}
+	}
+
+	return 'other';
+}
+
+function ingbiro_event_pdf_content( $event_id ) {
+	$excluded = ingbiro_event_pdf_excluded_sections( $event_id );
+	$blocks   = parse_blocks( (string) get_post_field( 'post_content', $event_id ) );
+	$included = array();
+
+	foreach ( $blocks as $block ) {
+		if ( in_array( ingbiro_event_pdf_block_section( $block ), $excluded, true ) ) {
+			continue;
+		}
+		$included[] = $block;
+	}
+
+	return apply_filters( 'the_content', serialize_blocks( $included ) );
+}
+
 function ingbiro_handle_event_pdf() {
 	$event_id = isset( $_GET['event_id'] ) ? absint( $_GET['event_id'] ) : 0;
 	$event    = $event_id ? get_post( $event_id ) : null;
+	$preview  = ! empty( $_GET['preview'] ) && current_user_can( 'edit_post', $event_id );
+	if ( $preview ) {
+		check_admin_referer( 'ingbiro_event_pdf_preview_' . $event_id );
+	}
 
-	if ( ! $event || 'ing_event' !== $event->post_type || 'publish' !== $event->post_status ) {
+	if ( ! $event || 'ing_event' !== $event->post_type || ( 'publish' !== $event->post_status && ! $preview ) ) {
 		wp_die( esc_html__( 'Događanje nije pronađeno.', 'ingbiro' ), 404 );
 	}
 
@@ -1029,12 +1173,12 @@ function ingbiro_handle_event_pdf() {
 	$hero_path = ingbiro_event_image_path( $event_id );
 
 	$logo    = ingbiro_pdf_image_data_uri( $logo_path );
-	$hero    = ingbiro_pdf_image_data_uri( $hero_path );
-	$content = apply_filters( 'the_content', $event->post_content );
+	$hero    = get_post_meta( $event_id, 'ing_event_pdf_include_hero', true ) ? ingbiro_pdf_image_data_uri( $hero_path ) : '';
+	$content = ingbiro_event_pdf_content( $event_id );
 	$content = preg_replace( '/<figure\b.*?<\/figure>/s', '', $content );
 	$content = preg_replace( '/<img\b[^>]*>/s', '', $content );
 	$content = preg_replace( '/<div class="event-program-gears".*?<\/div>/s', '', $content );
-	$content = strip_tags( $content, '<h2><h3><p><ul><ol><li><strong><b><em><br><a><img><figure>' );
+	$content = strip_tags( $content, '<div><h2><h3><p><ul><ol><li><strong><b><em><br><a>' );
 
 	$meta_cards = array(
 		__( 'Predavač', 'ingbiro' ) => get_post_meta( $event_id, 'ing_event_speaker', true ),
@@ -1051,34 +1195,46 @@ function ingbiro_handle_event_pdf() {
 	<head>
 		<meta charset="utf-8">
 		<style>
-			@page { margin: 34px 42px 58px; }
-			body { margin: 0; color: #1b1b1b; font-family: "DejaVu Sans", sans-serif; font-size: 10px; line-height: 1.42; }
-			.header { padding-bottom: 18px; border-bottom: 2px solid #244e9c; }
-			.logo { width: 175px; }
-			.kicker { margin: 20px 0 8px; color: #244e9c; font-size: 10px; font-weight: bold; text-transform: uppercase; }
-			h1 { margin: 0 0 12px; font-size: 25px; line-height: 1.12; }
-			h2 { margin: 24px 0 8px; color: #244e9c; font-size: 16px; line-height: 1.2; page-break-after: avoid; }
-			h3 { margin: 16px 0 6px; font-size: 12px; page-break-after: avoid; }
-			p { margin: 0 0 9px; }
-			.hero { width: 100%; height: 230px; margin: 18px 0; object-fit: cover; border-radius: 12px; }
-			.meta { width: 100%; margin: 4px 0 20px; border-collapse: separate; border-spacing: 6px; }
-			.meta td { width: 33.33%; padding: 12px; vertical-align: top; border-radius: 8px; background: #244e9c; color: white; }
-			.meta strong { display: block; margin-bottom: 4px; color: #fff4e5; font-size: 8px; text-transform: uppercase; }
-			.content ul, .content ol { padding-left: 20px; }
-			.content img { display: block; width: 100%; max-width: 100%; height: auto; margin: 8px 0 14px; border-radius: 8px; }
-			.event-block { padding: 8px 0 14px; page-break-inside: auto; }
-			.event-block > h2 { padding-bottom: 5px; border-bottom: 1px solid #dae0e1; text-transform: uppercase; }
-			.event-why-layout, .event-fee-columns { width: 100%; }
-			.event-why-layout .wp-block-column, .event-fee-columns .wp-block-column { width: 100% !important; }
-			.event-image-stack figure { margin: 0 0 14px; page-break-inside: avoid; }
+			@page { margin: 24px 30px 40px; }
+			body { margin: 0; color: #1b1b1b; font-family: "DejaVu Sans", sans-serif; font-size: 8px; line-height: 1.27; }
+			.header { padding-bottom: 8px; border-bottom: 2px solid #244e9c; }
+			.logo { width: 128px; }
+			.kicker { margin: 9px 0 4px; color: #244e9c; font-size: 7px; font-weight: bold; text-transform: uppercase; }
+			h1 { margin: 0 0 5px; font-size: 18px; line-height: 1.08; }
+			h2 { margin: 10px 0 4px; color: #244e9c; font-size: 11px; line-height: 1.15; page-break-after: avoid; }
+			h3 { margin: 7px 0 3px; font-size: 8.5px; page-break-after: avoid; }
+			p { margin: 0 0 4px; }
+			.hero { width: 100%; height: 100px; margin: 8px 0; object-fit: cover; border-radius: 8px; }
+			.meta { width: 100%; margin: 3px 0 8px; border-collapse: separate; border-spacing: 3px; }
+			.meta td { width: 33.33%; padding: 6px 7px; vertical-align: top; border-radius: 5px; background: #244e9c; color: white; }
+			.meta strong { display: block; margin-bottom: 2px; color: #fff4e5; font-size: 6px; text-transform: uppercase; }
+			.content ul, .content ol { margin: 2px 0 5px; padding-left: 15px; }
+			.content li { margin-bottom: 1px; }
+			.event-block { padding: 2px 0 5px; page-break-inside: auto; }
+			.event-block > h2 { padding-bottom: 3px; border-bottom: 1px solid #dae0e1; text-transform: uppercase; }
 			.event-program h3 { color: #244e9c; page-break-after: avoid; }
 			.event-program p, .event-program ul { page-break-inside: avoid; }
-			.event-fee-columns .wp-block-column { padding: 10px 12px; margin-bottom: 12px; background: #fff4e5; }
-			.footer { position: fixed; right: 42px; bottom: 14px; left: 42px; padding-top: 6px; border-top: 1px solid #dae0e1; color: #61707d; font-size: 8px; }
+			.event-fee-columns { width: 100%; }
+			.event-fee-columns .wp-block-column { padding: 5px 7px; margin-bottom: 5px; background: #fff4e5; }
+			.event-block--instructions { font-size: 7.4px; line-height: 1.23; }
+			.pdf-tight { font-size: 6.7px; line-height: 1.18; }
+			.pdf-tight h1 { font-size: 16px; }
+			.pdf-tight h2 { margin-top: 7px; font-size: 9.5px; }
+			.pdf-tight h3 { margin-top: 5px; font-size: 7.5px; }
+			.pdf-tight p { margin-bottom: 2px; }
+			.pdf-tight .content ul, .pdf-tight .content ol { margin-bottom: 3px; padding-left: 13px; }
+			.pdf-tight .event-block--instructions { font-size: 6.2px; line-height: 1.14; }
+			.pdf-ultra { font-size: 5.8px; line-height: 1.12; }
+			.pdf-ultra h1 { font-size: 15px; }
+			.pdf-ultra h2 { margin-top: 5px; font-size: 8.5px; }
+			.pdf-ultra h3 { margin-top: 4px; font-size: 6.7px; }
+			.pdf-ultra p { margin-bottom: 1px; }
+			.pdf-ultra .event-block--instructions { font-size: 5.5px; line-height: 1.1; }
+			.footer { position: fixed; right: 30px; bottom: 12px; left: 30px; padding-top: 4px; border-top: 1px solid #dae0e1; color: #61707d; font-size: 6.5px; }
 			a { color: #244e9c; }
 		</style>
 	</head>
-	<body>
+	<body class="pdf-normal">
 		<div class="header">
 			<?php if ( $logo ) : ?><img class="logo" src="<?php echo esc_attr( $logo ); ?>" alt="Inženjerski biro"><?php endif; ?>
 			<div class="kicker"><?php echo esc_html( get_post_meta( $event_id, 'ing_event_format', true ) ?: __( 'Edukacija', 'ingbiro' ) ); ?></div>
@@ -1103,7 +1259,7 @@ function ingbiro_handle_event_pdf() {
 			<?php endforeach; ?>
 		</table>
 		<div class="content"><?php echo wp_kses( $content, wp_kses_allowed_html( 'post' ), array( 'http', 'https', 'mailto', 'data' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
-		<div class="footer">Inženjerski biro d.o.o. · Ulica Vjekoslava Heinzela 4A, Zagreb · ingbiro@ingbiro.hr · (+385) 1 46 00 888</div>
+		<div class="footer">INŽENJERSKI BIRO d.o.o. · Ulica Vjekoslava Heinzela 4A, Zagreb · ingbiro@ingbiro.hr · (+385) 1 46 00 888</div>
 	</body>
 	</html>
 	<?php
@@ -1114,12 +1270,19 @@ function ingbiro_handle_event_pdf() {
 	$options->set( 'isRemoteEnabled', false );
 	$options->setChroot( array( get_template_directory(), wp_upload_dir()['basedir'] ) );
 
-	$pdf = new Dompdf\Dompdf( $options );
-	$pdf->loadHtml( $html, 'UTF-8' );
-	$pdf->setPaper( 'A4', 'portrait' );
-	$pdf->render();
+	$pdf = null;
+	foreach ( array( 'pdf-normal', 'pdf-tight', 'pdf-ultra' ) as $density ) {
+		$pdf_html = str_replace( 'class="pdf-normal"', 'class="' . $density . '"', $html );
+		$pdf      = new Dompdf\Dompdf( $options );
+		$pdf->loadHtml( $pdf_html, 'UTF-8' );
+		$pdf->setPaper( 'A4', 'portrait' );
+		$pdf->render();
+		if ( $pdf->getCanvas()->get_page_count() <= 2 ) {
+			break;
+		}
+	}
 	$pdf->getCanvas()->page_text( 520, 806, '{PAGE_NUM}/{PAGE_COUNT}', null, 8, array( 0.38, 0.44, 0.49 ) );
-	$pdf->stream( sanitize_file_name( get_the_title( $event_id ) ) . '.pdf', array( 'Attachment' => true ) );
+	$pdf->stream( sanitize_file_name( get_the_title( $event_id ) ) . '.pdf', array( 'Attachment' => ! $preview ) );
 	exit;
 }
 add_action( 'admin_post_nopriv_ingbiro_event_pdf', 'ingbiro_handle_event_pdf' );
@@ -1434,3 +1597,37 @@ function ingbiro_repair_event_program_blocks() {
 	update_option( 'ingbiro_event_block_repair_version', '1.0.0' );
 }
 add_action( 'init', 'ingbiro_repair_event_program_blocks', 36 );
+
+/**
+ * Keep the client-approved instructions identical across every event.
+ */
+function ingbiro_upgrade_event_instructions() {
+	if ( version_compare( (string) get_option( 'ingbiro_event_instructions_version', '0' ), '1.0.3', '>=' ) ) {
+		return;
+	}
+
+	$event_ids = get_posts(
+		array(
+			'post_type'      => 'ing_event',
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+		)
+	);
+	foreach ( $event_ids as $event_id ) {
+		$content = (string) get_post_field( 'post_content', $event_id );
+		$updated = ingbiro_replace_event_instructions( $content );
+
+		if ( $updated !== $content ) {
+			wp_update_post(
+				array(
+					'ID'           => $event_id,
+					'post_content' => $updated,
+				)
+			);
+		}
+	}
+
+	update_option( 'ingbiro_event_instructions_version', '1.0.3' );
+}
+add_action( 'init', 'ingbiro_upgrade_event_instructions', 38 );
