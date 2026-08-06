@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.3 — 2026-08-06
+
+- Sticky wrapper sada se smanjuje zajedno s videom, pa video više ne prekriva sadržaj sljedeće sekcije niti ostavlja dugačak prazan prostor ispod sebe.
+- Uklonjena je negativna kompenzacija margine i cijeli prijelaz ponovno prati stvarni tok dokumenta.
+- Između zatvorenog video kadra i sljedeće sekcije ostavljen je umjeren responzivni razmak, bez povratka velikog praznog scroll područja.
+
 ## 1.9.2 — 2026-08-06
 
 - Cinematic povećanje počinje prije sticky točke, s izraženijim početnim ease-outom, pa se pri ulasku više ne pojavljuje velika prazna zona iznad videa.

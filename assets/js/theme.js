@@ -229,6 +229,7 @@
 			const initialRadius = viewportWidth <= 620 ? 12 : 16;
 			const stageMultiplier = viewportWidth <= 900 ? 1.85 : 2.15;
 			const entranceLead = clamp(viewportHeight * 0.36, 260, 360);
+			const sectionGap = viewportWidth <= 900 ? 0 : clamp(viewportHeight * 0.055, 40, 64);
 
 			states.forEach((state) => {
 				state.stage.style.setProperty("--cinematic-header-height", `${headerBottom}px`);
@@ -238,11 +239,10 @@
 				} else {
 					state.stage.style.height = `${Math.max(980, stickyHeight * stageMultiplier)}px`;
 				}
-				state.stage.style.marginBottom = viewportWidth <= 900
-					? "0px"
-					: `${Math.min(0, baseHeight - stickyHeight)}px`;
-				const scrollRange = Math.max(1, state.stage.offsetHeight - stickyHeight);
-				const fullTimeline = scrollRange + entranceLead;
+				state.stage.style.marginBottom = `${sectionGap}px`;
+				const stageTravel = Math.max(1, state.stage.offsetHeight - baseHeight);
+				const exitDistance = Math.max(1, stickyHeight - baseHeight);
+				const fullTimeline = stageTravel + entranceLead;
 				state.metrics = {
 					viewportWidth,
 					viewportHeight,
@@ -252,7 +252,7 @@
 					stickyHeight,
 					entranceLead,
 					entranceEnd: entranceLead / fullTimeline,
-					exitStart: scrollRange / fullTimeline,
+					exitStart: 1 - exitDistance / fullTimeline,
 					timelineLength: fullTimeline,
 					baseHeight: Math.min(baseHeight, stickyHeight),
 					baseWidth: Math.max(0, viewportWidth - sideInset * 2),
@@ -277,6 +277,7 @@
 			if (metrics.viewportWidth <= 900) {
 				resetCinematicHeader();
 				["left", "width", "height", "border-radius"].forEach((property) => state.media.style.removeProperty(property));
+				state.sticky.style.removeProperty("height");
 				state.stage.style.removeProperty("--cinematic-media-y");
 				state.stage.dataset.cinematicProgress = "0.000";
 				state.stage.dataset.cinematicExpansion = "0.000";
@@ -299,6 +300,7 @@
 			renderCinematicHeader(expansion, metrics.viewportWidth);
 			state.stage.style.setProperty("--cinematic-header-height", `${currentHeaderBottom}px`);
 			state.stage.style.setProperty("--cinematic-sticky-height", `${currentStickyHeight}px`);
+			state.sticky.style.height = `${mediaHeight}px`;
 			state.media.style.left = `${mediaLeft}px`;
 			state.media.style.width = `${mediaWidth}px`;
 			state.media.style.height = `${mediaHeight}px`;
