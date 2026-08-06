@@ -87,6 +87,10 @@
 		dialogVideo.load();
 		videoDialog.hidden = true;
 		document.body.classList.remove("video-dialog-open");
+		const inlineVideo = lastVideoTrigger?.closest(".cinematic-scroll__media")?.querySelector("[data-cinematic-video]");
+		if (inlineVideo && inlineVideo.getBoundingClientRect().bottom > 0 && inlineVideo.getBoundingClientRect().top < window.innerHeight) {
+			inlineVideo.play().catch(() => {});
+		}
 		lastVideoTrigger?.focus();
 	};
 
@@ -97,6 +101,7 @@
 			}
 
 			lastVideoTrigger = button;
+			button.closest(".cinematic-scroll__media")?.querySelector("[data-cinematic-video]")?.pause();
 			dialogVideo.src = button.dataset.videoSrc;
 			videoDialog.hidden = false;
 			document.body.classList.add("video-dialog-open");
@@ -114,6 +119,186 @@
 			closeVideo();
 		}
 	});
+
+	/*
+	 * Expand the two primary media frames to the available viewport while the
+	 * user moves through their sticky scroll stages, then reverse the motion on
+	 * exit. Gutenberg's English video hero is wrapped at runtime so existing CMS
+	 * content does not need to be overwritten.
+	 */
+	const cinematicTargets = Array.from(
+		document.querySelectorAll(".home-hero__media, .portal-video, .modular-hero__video")
+	);
+
+	if (cinematicTargets.length) {
+		const clamp = (value, minimum = 0, maximum = 1) => Math.min(maximum, Math.max(minimum, value));
+		const mix = (start, end, amount) => start + (end - start) * amount;
+		const smootherStep = (value) => {
+			const progress = clamp(value);
+			return progress * progress * progress * (progress * (progress * 6 - 15) + 10);
+		};
+		const states = cinematicTargets.map((media) => {
+			let stage = media.closest("[data-cinematic-scroll]");
+
+			if (!stage) {
+				stage = document.createElement("div");
+				stage.className = "cinematic-scroll";
+				stage.dataset.cinematicScroll = "";
+
+				const sticky = document.createElement("div");
+				sticky.className = "cinematic-scroll__sticky";
+				media.before(stage);
+				stage.append(sticky);
+				sticky.append(media);
+			}
+
+			media.classList.add("cinematic-scroll__media");
+
+			return {
+				stage,
+				media,
+				sticky: stage.querySelector(".cinematic-scroll__sticky"),
+				currentProgress: null,
+				targetProgress: 0,
+				metrics: null,
+			};
+		});
+		let animationFrame = 0;
+
+		const measure = () => {
+			const viewportWidth = document.documentElement.clientWidth;
+			const viewportHeight = window.innerHeight;
+			const headerBottom = Math.max(0, siteHeader?.getBoundingClientRect().bottom || 0);
+			const headerInner = document.querySelector(".site-header__inner");
+			const contentWidth = Math.min(
+				viewportWidth,
+				headerInner?.getBoundingClientRect().width || viewportWidth
+			);
+			const sideInset = Math.max(0, (viewportWidth - contentWidth) / 2);
+			const stickyHeight = Math.max(320, viewportHeight - headerBottom);
+			const baseHeight = viewportWidth <= 620 ? 270 : viewportWidth <= 1200 ? 400 : 490;
+			const initialRadius = viewportWidth <= 620 ? 12 : 16;
+			const stageMultiplier = viewportWidth <= 900 ? 1.85 : 2.15;
+
+			states.forEach((state) => {
+				state.stage.style.setProperty("--cinematic-header-height", `${headerBottom}px`);
+				state.stage.style.setProperty("--cinematic-sticky-height", `${stickyHeight}px`);
+				state.stage.style.height = `${Math.max(viewportWidth <= 900 ? 900 : 980, stickyHeight * stageMultiplier)}px`;
+				state.stage.style.marginBottom = `${Math.min(0, baseHeight - stickyHeight)}px`;
+				state.metrics = {
+					viewportWidth,
+					stickyHeight,
+					baseHeight: Math.min(baseHeight, stickyHeight),
+					baseWidth: Math.max(0, viewportWidth - sideInset * 2),
+					sideInset,
+					initialRadius,
+				};
+			});
+		};
+
+		const readProgress = (state) => {
+			const stageRect = state.stage.getBoundingClientRect();
+			const stickyTop = Number.parseFloat(
+				getComputedStyle(state.stage).getPropertyValue("--cinematic-header-height")
+			) || 0;
+			const scrollRange = Math.max(1, state.stage.offsetHeight - state.metrics.stickyHeight);
+			return clamp((stickyTop - stageRect.top) / scrollRange);
+		};
+
+		const renderState = (state) => {
+			const progress = state.currentProgress;
+			const metrics = state.metrics;
+			const expansion = progress < 0.28
+				? smootherStep(progress / 0.28)
+				: progress > 0.72
+					? smootherStep((1 - progress) / 0.28)
+					: 1;
+			const mediaHeight = mix(metrics.baseHeight, metrics.stickyHeight, expansion);
+			const mediaWidth = mix(metrics.baseWidth, metrics.viewportWidth, expansion);
+			const mediaLeft = mix(metrics.sideInset, 0, expansion);
+
+			state.media.style.left = `${mediaLeft}px`;
+			state.media.style.width = `${mediaWidth}px`;
+			state.media.style.height = `${mediaHeight}px`;
+			state.media.style.borderRadius = `${mix(metrics.initialRadius, 0, expansion)}px`;
+			state.stage.style.setProperty("--cinematic-media-y", "0px");
+			state.stage.dataset.cinematicProgress = progress.toFixed(3);
+			state.stage.dataset.cinematicExpansion = expansion.toFixed(3);
+			state.stage.classList.add("is-ready");
+		};
+
+		const animate = () => {
+			let needsAnotherFrame = false;
+
+			states.forEach((state) => {
+				state.targetProgress = readProgress(state);
+				if (state.currentProgress === null) {
+					state.currentProgress = state.targetProgress;
+				} else {
+					const difference = state.targetProgress - state.currentProgress;
+					if (Math.abs(difference) > 0.0005) {
+						state.currentProgress += difference * 0.18;
+						needsAnotherFrame = true;
+					} else {
+						state.currentProgress = state.targetProgress;
+					}
+				}
+				renderState(state);
+			});
+
+			animationFrame = needsAnotherFrame ? window.requestAnimationFrame(animate) : 0;
+		};
+
+		const requestRender = () => {
+			if (!animationFrame) {
+				animationFrame = window.requestAnimationFrame(animate);
+			}
+		};
+
+		measure();
+		animate();
+		window.addEventListener("scroll", requestRender, { passive: true });
+		window.addEventListener("resize", () => {
+			measure();
+			states.forEach((state) => {
+				state.currentProgress = null;
+			});
+			requestRender();
+		}, { passive: true });
+
+		const inlineVideos = states
+			.map((state) => state.media.querySelector("[data-cinematic-video]"))
+			.filter(Boolean);
+
+		if (inlineVideos.length && "IntersectionObserver" in window) {
+			const playbackObserver = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						const video = entry.target;
+						if (entry.isIntersecting && !document.hidden) {
+							video.play().catch(() => {});
+						} else {
+							video.pause();
+						}
+					});
+				},
+				{ rootMargin: "25% 0px", threshold: 0.01 }
+			);
+
+			inlineVideos.forEach((video) => playbackObserver.observe(video));
+			document.addEventListener("visibilitychange", () => {
+				if (document.hidden) {
+					inlineVideos.forEach((video) => video.pause());
+				} else {
+					inlineVideos.forEach((video) => {
+						if (video.getBoundingClientRect().bottom > 0 && video.getBoundingClientRect().top < window.innerHeight) {
+							video.play().catch(() => {});
+						}
+					});
+				}
+			});
+		}
+	}
 
 	const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 	const legalContent = document.querySelector(".legal-page__content");

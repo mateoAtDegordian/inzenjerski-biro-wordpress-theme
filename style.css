@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.8.1
+Version: 1.9.0
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -5005,6 +5005,88 @@ select {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+}
+
+/*
+ * 1.9.0 — reversible, Wabital-inspired hero expansion.
+ * The sticky stage owns the extra scroll distance; the media itself is
+ * absolutely positioned so its interpolation never pushes surrounding copy.
+ */
+.cinematic-scroll {
+	--cinematic-header-height: 118px;
+	--cinematic-sticky-height: calc(100svh - var(--cinematic-header-height));
+	position: relative;
+	width: 100vw;
+	height: max(980px, calc(var(--cinematic-sticky-height) * 2.15));
+	margin-bottom: min(0px, calc(490px - var(--cinematic-sticky-height)));
+	margin-left: calc(50% - 50vw);
+	background: var(--ing-cream);
+}
+
+.cinematic-scroll__sticky {
+	position: sticky;
+	top: var(--cinematic-header-height);
+	height: var(--cinematic-sticky-height);
+	overflow: hidden;
+}
+
+.cinematic-scroll__media {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: min(calc(100% - (var(--ing-gutter) * 2)), var(--ing-container));
+	height: 490px;
+	margin: 0;
+	border-radius: var(--ing-radius);
+	transform: translate3d(-50%, 0, 0);
+	transform-origin: center top;
+	will-change: left, width, height, border-radius, transform;
+}
+
+.cinematic-scroll.is-ready .cinematic-scroll__media {
+	transform: translate3d(0, var(--cinematic-media-y, 0), 0);
+}
+
+.cinematic-scroll__media > img,
+.cinematic-scroll__media > video,
+.cinematic-scroll__media .wp-block-video,
+.cinematic-scroll__media video {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.cinematic-scroll__media video {
+	border-radius: inherit;
+}
+
+@media (max-width: 1200px) {
+	.cinematic-scroll__media {
+		height: 400px;
+	}
+
+	.cinematic-scroll {
+		margin-bottom: min(0px, calc(400px - var(--cinematic-sticky-height)));
+	}
+}
+
+@media (max-width: 900px) {
+	.cinematic-scroll {
+		--cinematic-header-height: 92px;
+		height: max(900px, calc(var(--cinematic-sticky-height) * 1.85));
+	}
+}
+
+@media (max-width: 620px) {
+	.cinematic-scroll__media {
+		height: 270px;
+		border-radius: 12px;
+	}
+
+	.cinematic-scroll {
+		margin-bottom: min(0px, calc(270px - var(--cinematic-sticky-height)));
+	}
 }
 
 .video-dialog[hidden] {

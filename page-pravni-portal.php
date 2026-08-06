@@ -20,9 +20,15 @@ if ( ! $ingbiro_embedded_template ) {
 					<?php ingbiro_button( 'Posjetite portal', 'https://ling.hr/' ); ?>
 				</div>
 			</div>
-			<div class="portal-video">
-				<img src="<?php echo esc_url( ingbiro_asset( 'images/ling-video-poster.jpg' ) ); ?>" alt="Pravni portal LING">
-				<button class="portal-video__play" type="button" data-video-open data-video-src="<?php echo esc_url( ingbiro_asset( 'video/ling-promo.mp4' ) ); ?>" aria-label="Pokreni video"><span>▶</span></button>
+			<div class="cinematic-scroll" data-cinematic-scroll>
+				<div class="cinematic-scroll__sticky">
+					<div class="portal-video cinematic-scroll__media">
+						<video data-cinematic-video autoplay muted loop playsinline preload="metadata" poster="<?php echo esc_url( ingbiro_asset( 'images/ling-video-poster.jpg' ) ); ?>" aria-hidden="true" tabindex="-1">
+							<source src="<?php echo esc_url( ingbiro_asset( 'video/ling-promo.mp4' ) ); ?>" type="video/mp4">
+						</video>
+						<button class="portal-video__play" type="button" data-video-open data-video-src="<?php echo esc_url( ingbiro_asset( 'video/ling-promo.mp4' ) ); ?>" aria-label="Pokreni video"><span>▶</span></button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>

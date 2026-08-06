@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.0 — 2026-08-06
+
+- Glavni medijski kadar na naslovnici i Pravnom portalu dobio je Wabital-inspirirano scroll širenje do cijelog viewporta.
+- Animacija se reverzibilno i kontinuirano vraća u početni uvučeni kadar pri izlasku iz sekcije, uz tihi inline autoplay/loop i postojeći video modal s kontrolama i zvukom.
+- Isti scroll tretman automatski se primjenjuje i na modularni engleski hero Pravnog portala.
+
 ## 1.8.1 — 2026-08-05
 
 - Lokalni webfont koristi standardni naziv obitelji `Helvetica` u CSS-u i Gutenberg editoru.
