@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.9.0
+Version: 1.9.1
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -5018,7 +5018,7 @@ select {
 	position: relative;
 	width: 100vw;
 	height: max(980px, calc(var(--cinematic-sticky-height) * 2.15));
-	margin-bottom: min(0px, calc(490px - var(--cinematic-sticky-height)));
+	margin-bottom: 0;
 	margin-left: calc(50% - 50vw);
 	background: var(--ing-cream);
 }
@@ -5059,33 +5059,133 @@ select {
 
 .cinematic-scroll__media video {
 	border-radius: inherit;
+	transform: scale(1.6);
+	transform-origin: center;
+}
+
+.cinematic-scroll__hint {
+	position: absolute;
+	z-index: 3;
+	bottom: clamp(22px, 4vh, 42px);
+	left: 50%;
+	display: grid;
+	justify-items: center;
+	gap: 9px;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.18em;
+	pointer-events: none;
+	text-shadow: 0 1px 12px rgb(0 0 0 / 50%);
+	transform: translateX(-50%);
+}
+
+.cinematic-scroll__hint::after {
+	width: 10px;
+	height: 10px;
+	border-right: 2px solid currentColor;
+	border-bottom: 2px solid currentColor;
+	content: "";
+	transform: rotate(45deg);
+}
+
+@media (min-width: 901px) {
+	.site-header {
+		height: var(--ing-active-header-height, 118px);
+		will-change: height;
+	}
+
+	.site-header__inner {
+		grid-template-columns: var(--ing-active-logo-column, 240px) 1fr auto;
+		gap: var(--ing-active-header-gap, 40px);
+	}
+
+	.site-logo,
+	.site-logo img {
+		width: var(--ing-active-logo-width, 240px);
+	}
+
+	.site-logo img {
+		height: var(--ing-active-logo-height, 63px);
+	}
+
+	.site-nav a {
+		font-size: var(--ing-active-nav-font-size, 18px);
+	}
+
+	.contact-link {
+		min-height: var(--ing-active-contact-height, 40px);
+		font-size: var(--ing-active-contact-font-size, 17px);
+	}
+}
+
+@media (min-width: 901px) and (max-width: 1120px) {
+	.site-header__inner {
+		grid-template-columns: var(--ing-active-logo-column, 210px) 1fr auto;
+		gap: var(--ing-active-header-gap, 24px);
+	}
+
+	.site-logo,
+	.site-logo img {
+		width: var(--ing-active-logo-width, 210px);
+	}
+
+	.site-nav a {
+		font-size: var(--ing-active-nav-font-size, 16px);
+	}
+
+	.contact-link {
+		font-size: var(--ing-active-contact-font-size, 14px);
+	}
 }
 
 @media (max-width: 1200px) {
 	.cinematic-scroll__media {
 		height: 400px;
 	}
-
-	.cinematic-scroll {
-		margin-bottom: min(0px, calc(400px - var(--cinematic-sticky-height)));
-	}
 }
 
 @media (max-width: 900px) {
 	.cinematic-scroll {
 		--cinematic-header-height: 92px;
-		height: max(900px, calc(var(--cinematic-sticky-height) * 1.85));
+		width: 100vw;
+		height: auto !important;
+		min-height: 0;
+		margin-bottom: 0 !important;
+		margin-left: calc(50% - 50vw);
+	}
+
+	.cinematic-scroll__sticky {
+		position: relative;
+		top: auto !important;
+		height: auto !important;
+		overflow: hidden;
+	}
+
+	.cinematic-scroll__media,
+	.cinematic-scroll.is-ready .cinematic-scroll__media {
+		position: relative;
+		top: auto;
+		left: 0 !important;
+		width: 100% !important;
+		height: auto !important;
+		aspect-ratio: 16 / 9;
+		border-radius: 0 !important;
+		transform: none !important;
+	}
+
+	.cinematic-scroll__media video {
+		transform: none;
+	}
+
+	.cinematic-scroll__hint {
+		display: none;
 	}
 }
 
 @media (max-width: 620px) {
 	.cinematic-scroll__media {
-		height: 270px;
-		border-radius: 12px;
-	}
-
-	.cinematic-scroll {
-		margin-bottom: min(0px, calc(270px - var(--cinematic-sticky-height)));
+		height: auto;
 	}
 }
 

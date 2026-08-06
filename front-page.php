@@ -35,7 +35,6 @@ $event = $events ? $events[0] : null;
 						<video data-cinematic-video autoplay muted loop playsinline preload="metadata" poster="<?php echo esc_url( ingbiro_asset( 'images/home-hero.jpg' ) ); ?>" aria-hidden="true" tabindex="-1">
 							<source src="<?php echo esc_url( ingbiro_asset( 'video/ling-promo.mp4' ) ); ?>" type="video/mp4">
 						</video>
-						<button class="home-hero__play" type="button" data-video-open data-video-src="<?php echo esc_url( ingbiro_asset( 'video/ling-promo.mp4' ) ); ?>" aria-label="Pokreni video"><span>▶</span></button>
 					</div>
 				</div>
 			</div>

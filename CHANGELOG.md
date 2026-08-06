@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.1 — 2026-08-06
+
+- Uklonjen je play gumb iz inline hero videa, dodan diskretan `SCROLL` indikator, a kadar je na desktopu uvećan kako ugrađeni crni rubovi snimke ne bi ostali vidljivi.
+- Navigacija se kontinuirano smanjuje dok video ulazi u puni viewport i vraća na izvornu veličinu pri izlasku.
+- Mobilni prikaz koristi statičan video od ruba do ruba u izvornom omjeru 16:9, bez sticky cinematic animacije i bez scroll indikatora.
+- Uklonjeno je preklapanje sljedeće sekcije uz zadržan gladak povrat videa u početni kadar.
+
 ## 1.9.0 — 2026-08-06
 
 - Glavni medijski kadar na naslovnici i Pravnom portalu dobio je Wabital-inspirirano scroll širenje do cijelog viewporta.

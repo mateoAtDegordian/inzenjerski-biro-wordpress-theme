@@ -153,6 +153,13 @@
 			}
 
 			media.classList.add("cinematic-scroll__media");
+			if (!media.querySelector(".cinematic-scroll__hint")) {
+				const hint = document.createElement("span");
+				hint.className = "cinematic-scroll__hint";
+				hint.setAttribute("aria-hidden", "true");
+				hint.textContent = "SCROLL";
+				media.append(hint);
+			}
 
 			return {
 				stage,
@@ -164,11 +171,51 @@
 			};
 		});
 		let animationFrame = 0;
+		const headerProperties = [
+			"--ing-active-header-height",
+			"--ing-active-logo-column",
+			"--ing-active-header-gap",
+			"--ing-active-logo-width",
+			"--ing-active-logo-height",
+			"--ing-active-nav-font-size",
+			"--ing-active-contact-height",
+			"--ing-active-contact-font-size",
+		];
+
+		const resetCinematicHeader = () => {
+			headerProperties.forEach((property) => siteHeader?.style.removeProperty(property));
+		};
+
+		const renderCinematicHeader = (expansion, viewportWidth) => {
+			if (!siteHeader || viewportWidth <= 900) {
+				resetCinematicHeader();
+				return;
+			}
+
+			const compactLayout = viewportWidth <= 1120;
+			const normalLogoWidth = compactLayout ? 210 : 240;
+			const normalHeaderGap = compactLayout ? 24 : 40;
+			const normalNavSize = compactLayout ? 16 : 18;
+			const normalContactSize = compactLayout ? 14 : 17;
+
+			siteHeader.style.setProperty("--ing-active-header-height", `${mix(118, 68, expansion)}px`);
+			siteHeader.style.setProperty("--ing-active-logo-column", `${mix(normalLogoWidth, compactLayout ? 150 : 170, expansion)}px`);
+			siteHeader.style.setProperty("--ing-active-header-gap", `${mix(normalHeaderGap, compactLayout ? 18 : 24, expansion)}px`);
+			siteHeader.style.setProperty("--ing-active-logo-width", `${mix(normalLogoWidth, compactLayout ? 140 : 155, expansion)}px`);
+			siteHeader.style.setProperty("--ing-active-logo-height", `${mix(63, 42, expansion)}px`);
+			siteHeader.style.setProperty("--ing-active-nav-font-size", `${mix(normalNavSize, compactLayout ? 13 : 15, expansion)}px`);
+			siteHeader.style.setProperty("--ing-active-contact-height", `${mix(40, 34, expansion)}px`);
+			siteHeader.style.setProperty("--ing-active-contact-font-size", `${mix(normalContactSize, compactLayout ? 12 : 14, expansion)}px`);
+		};
 
 		const measure = () => {
+			resetCinematicHeader();
 			const viewportWidth = document.documentElement.clientWidth;
 			const viewportHeight = window.innerHeight;
-			const headerBottom = Math.max(0, siteHeader?.getBoundingClientRect().bottom || 0);
+			const normalHeaderHeight = viewportWidth <= 900 ? 92 : 118;
+			const compactHeaderHeight = 68;
+			const headerOffset = Math.max(0, siteHeader?.getBoundingClientRect().top || 0);
+			const headerBottom = headerOffset + normalHeaderHeight;
 			const headerInner = document.querySelector(".site-header__inner");
 			const contentWidth = Math.min(
 				viewportWidth,
@@ -183,10 +230,18 @@
 			states.forEach((state) => {
 				state.stage.style.setProperty("--cinematic-header-height", `${headerBottom}px`);
 				state.stage.style.setProperty("--cinematic-sticky-height", `${stickyHeight}px`);
-				state.stage.style.height = `${Math.max(viewportWidth <= 900 ? 900 : 980, stickyHeight * stageMultiplier)}px`;
-				state.stage.style.marginBottom = `${Math.min(0, baseHeight - stickyHeight)}px`;
+				if (viewportWidth <= 900) {
+					state.stage.style.removeProperty("height");
+				} else {
+					state.stage.style.height = `${Math.max(980, stickyHeight * stageMultiplier)}px`;
+				}
+				state.stage.style.marginBottom = "0px";
 				state.metrics = {
 					viewportWidth,
+					viewportHeight,
+					headerOffset,
+					normalHeaderHeight,
+					compactHeaderHeight,
 					stickyHeight,
 					baseHeight: Math.min(baseHeight, stickyHeight),
 					baseWidth: Math.max(0, viewportWidth - sideInset * 2),
@@ -208,20 +263,39 @@
 		const renderState = (state) => {
 			const progress = state.currentProgress;
 			const metrics = state.metrics;
+
+			if (metrics.viewportWidth <= 900) {
+				resetCinematicHeader();
+				["left", "width", "height", "border-radius"].forEach((property) => state.media.style.removeProperty(property));
+				state.stage.style.removeProperty("--cinematic-media-y");
+				state.stage.dataset.cinematicProgress = "0.000";
+				state.stage.dataset.cinematicExpansion = "0.000";
+				state.stage.classList.add("is-ready");
+				return;
+			}
+
 			const expansion = progress < 0.28
 				? smootherStep(progress / 0.28)
 				: progress > 0.72
 					? smootherStep((1 - progress) / 0.28)
 					: 1;
-			const mediaHeight = mix(metrics.baseHeight, metrics.stickyHeight, expansion);
+			const currentHeaderHeight = mix(metrics.normalHeaderHeight, metrics.compactHeaderHeight, expansion);
+			const currentHeaderBottom = metrics.headerOffset + currentHeaderHeight;
+			const currentStickyHeight = Math.max(320, metrics.viewportHeight - currentHeaderBottom);
+			const mediaHeight = mix(metrics.baseHeight, currentStickyHeight, expansion);
 			const mediaWidth = mix(metrics.baseWidth, metrics.viewportWidth, expansion);
 			const mediaLeft = mix(metrics.sideInset, 0, expansion);
+			const exitGlide = smootherStep((progress - 0.72) / 0.28) * (1 - expansion);
+			const mediaY = mix(0, currentStickyHeight - metrics.baseHeight, exitGlide);
 
+			renderCinematicHeader(expansion, metrics.viewportWidth);
+			state.stage.style.setProperty("--cinematic-header-height", `${currentHeaderBottom}px`);
+			state.stage.style.setProperty("--cinematic-sticky-height", `${currentStickyHeight}px`);
 			state.media.style.left = `${mediaLeft}px`;
 			state.media.style.width = `${mediaWidth}px`;
 			state.media.style.height = `${mediaHeight}px`;
 			state.media.style.borderRadius = `${mix(metrics.initialRadius, 0, expansion)}px`;
-			state.stage.style.setProperty("--cinematic-media-y", "0px");
+			state.stage.style.setProperty("--cinematic-media-y", `${mediaY}px`);
 			state.stage.dataset.cinematicProgress = progress.toFixed(3);
 			state.stage.dataset.cinematicExpansion = expansion.toFixed(3);
 			state.stage.classList.add("is-ready");
