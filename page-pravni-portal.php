@@ -11,10 +11,10 @@ if ( ! $ingbiro_embedded_template ) {
 }
 ?>
 <main id="main" class="page-main">
-	<section class="page-hero">
+	<section class="page-hero page-hero--portal">
 		<div class="container">
 			<div class="page-hero__copy">
-				<h1>Pravni portal<br>LING</h1>
+				<h1 class="page-hero__title--portal">Pravni portal LING</h1>
 				<div class="page-hero__aside">
 					<p>Pravni portal nove generacije, dizajniran da zadovolji sve potrebe modernih pravnih profesionalaca, od sudaca, odvjetnika i javnih bilježnika preko pravnika u gospodarstvu, do djelatnika državnih i lokalnih institucija.</p>
 					<?php ingbiro_button( 'Posjetite portal', 'https://ling.hr/' ); ?>

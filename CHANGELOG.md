@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.4 — 2026-08-06
+
+- Naslov Pravnog portala drži `LING` u istom retku na svim breakpointima, a tablet hero ima dovoljno odmaka između CTA gumba i videa.
+- Brzi linkovi u hero sekciji O nama imaju dosljedno lijevo poravnanje i pri prijelomu duljeg naziva.
+- Animirano pročelje ponovno prati širinu standardnog sadržajnog kontejnera umjesto cijelog viewporta.
+- Typewriter je usporen, event markeri imaju vidljiviju nesinkroniziranu rotaciju, a mali programski zupčanik skriven je na mobitelu.
+
 ## 1.9.3 — 2026-08-06
 
 - Sticky wrapper sada se smanjuje zajedno s videom, pa video više ne prekriva sadržaj sljedeće sekcije niti ostavlja dugačak prazan prostor ispod sebe.

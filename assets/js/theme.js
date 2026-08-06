@@ -438,9 +438,9 @@
 		title.classList.add("typewriter-title");
 
 		let characterIndex = 0;
-		const targetTypingDuration = reducedMotion.matches ? 1400 : 2500;
-		const minimumDelay = reducedMotion.matches ? 14 : 28;
-		const maximumDelay = reducedMotion.matches ? 30 : 58;
+		const targetTypingDuration = reducedMotion.matches ? 2000 : 5200;
+		const minimumDelay = reducedMotion.matches ? 20 : 55;
+		const maximumDelay = reducedMotion.matches ? 42 : 155;
 		const baseDelay = Math.round(
 			Math.min(maximumDelay, Math.max(minimumDelay, targetTypingDuration / text.length))
 		);

@@ -132,6 +132,7 @@ function ingbiro_english_output_translations() {
 		'INŽENJERSKI BIRO d.o.o. ima stručnu potporu ovlaštenih revizorskih kuća, društava-kćeri:' => 'INŽENJERSKI BIRO d.o.o. is professionally supported by its authorized auditing subsidiaries:',
 
 		'Pravni portal<br>LING' => 'LING Legal Portal',
+		'Pravni portal LING' => 'LING Legal Portal',
 		'Pravni portal nove generacije, dizajniran da zadovolji sve potrebe modernih pravnih profesionalaca, od sudaca, odvjetnika i javnih bilježnika preko pravnika u gospodarstvu, do djelatnika državnih i lokalnih institucija.' => 'A next-generation legal portal for modern legal professionals — from judges, attorneys and notaries to corporate lawyers and public-sector employees.',
 		'Posjetite portal' => 'Visit the portal',
 		'Vaš preglednik ne podržava HTML5 video.' => 'Your browser does not support HTML5 video.',
