@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.9.5
+Version: 1.9.6
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -4925,6 +4925,18 @@ select {
 	--ing-gutter: clamp(22px, 4vw, 72px);
 }
 
+/*
+ * 1.9.6 — let the layout breathe with the viewport instead of stopping at a
+ * fixed laptop-width canvas. Tablet and mobile spacing remains unchanged;
+ * from 1024px upward both the gutter and usable content width grow together.
+ */
+@media (min-width: 1024px) {
+	:root {
+		--ing-container: 1680px;
+		--ing-gutter: clamp(40.96px, calc(11vw - 71.68px), 128px);
+	}
+}
+
 .site-header {
 	position: sticky;
 	top: 0;
@@ -4942,7 +4954,7 @@ select {
 
 .service-card {
 	display: grid;
-	grid-template-rows: minmax(64px, auto) minmax(76px, auto) 1fr;
+	grid-template-rows: 96px auto 1fr;
 	align-content: start;
 }
 
@@ -4954,6 +4966,14 @@ select {
 .service-card p,
 .service-card ul {
 	align-self: start;
+}
+
+.service-card h3 {
+	margin-bottom: 0;
+}
+
+.service-card p {
+	margin-bottom: 24px;
 }
 
 .building-banner-shell {
@@ -5127,6 +5147,12 @@ select {
 	margin-bottom: 0;
 	margin-left: calc(50% - 50vw);
 	background: var(--ing-cream);
+}
+
+@media (min-width: 901px) {
+	.home-hero__copy + .cinematic-scroll {
+		margin-top: clamp(32px, 3.5vw, 56px);
+	}
 }
 
 .cinematic-scroll__sticky {
@@ -5402,6 +5428,10 @@ body.video-dialog-open {
 
 	.service-card {
 		grid-template-rows: auto;
+	}
+
+	.service-card h3 {
+		margin-bottom: 32px;
 	}
 }
 

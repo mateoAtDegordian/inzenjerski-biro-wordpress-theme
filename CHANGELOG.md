@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.6 — 2026-08-07
+
+- Desktop kontejner i bočne margine od 1200 px naviše rastu fluidno s viewportom, uz zadržane postojeće tablet i mobilne razmake.
+- Početni hero video poravnat je s istim sadržajnim marginama kao naslov i dobio je jasan razmak od uvodnog teksta prije početka scroll animacije.
+- Tekst na sve tri kartice Područja djelovanja počinje na istoj visini neovisno o duljini naslova.
+
 ## 1.9.5 — 2026-08-06
 
 - Sva događanja i novi Gutenberg predlošci koriste jedinstven, klijentski potvrđen tekst Uputa sa stare stranice.

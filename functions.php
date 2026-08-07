@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.9.5' );
+define( 'INGBIRO_VERSION', '1.9.6' );
 
 /**
  * Resolve optional licensed webfonts without requiring them in the public repo.
