@@ -29,10 +29,14 @@ $event = $events ? $events[0] : null;
 					<?php ingbiro_button( 'Pročitajte više', ingbiro_page_url( 'o-nama' ) ); ?>
 				</div>
 			</div>
-			<div class="home-hero__media">
-				<img src="<?php echo esc_url( ingbiro_asset( 'images/home-hero.jpg' ) ); ?>" alt="Poslovni razgovor sa savjetnikom">
-				<button class="home-hero__play" type="button" data-video-placeholder aria-label="Pokreni video"><span>▶</span></button>
-				<p class="video-message screen-reader-text" hidden>Video će biti povezan kada se unese konačni video URL.</p>
+			<div class="cinematic-scroll" data-cinematic-scroll>
+				<div class="cinematic-scroll__sticky">
+					<div class="home-hero__media cinematic-scroll__media">
+						<video data-cinematic-video autoplay muted loop playsinline preload="metadata" poster="<?php echo esc_url( ingbiro_asset( 'images/home-hero.jpg' ) ); ?>" aria-hidden="true" tabindex="-1">
+							<source src="<?php echo esc_url( ingbiro_asset( 'video/ling-promo.mp4' ) ); ?>" type="video/mp4">
+						</video>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>

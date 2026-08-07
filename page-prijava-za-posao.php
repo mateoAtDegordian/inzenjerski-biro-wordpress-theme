@@ -5,10 +5,12 @@
  * @package Ingbiro
  */
 
-get_header();
+$ingbiro_embedded_template = ! empty( $GLOBALS['ingbiro_embedded_template'] );
+if ( ! $ingbiro_embedded_template ) {
+	get_header();
+}
 
-$job_id = isset( $_GET['job_id'] ) ? absint( $_GET['job_id'] ) : 0;
-$job    = $job_id ? get_post( $job_id ) : null;
+$job = ingbiro_get_career_application_job();
 ?>
 <main id="main" class="page-main">
 	<section class="form-page">
@@ -19,4 +21,6 @@ $job    = $job_id ? get_post( $job_id ) : null;
 	</section>
 </main>
 <?php
-get_footer();
+if ( ! $ingbiro_embedded_template ) {
+	get_footer();
+}

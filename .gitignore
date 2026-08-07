@@ -4,9 +4,14 @@ Thumbs.db
 .idea/
 .vscode/
 node_modules/
+dist/
 vendor/*
 !vendor/dompdf/
 !vendor/dompdf/**
 .playwright-cli/
 output/
 tmp/
+# Licensed local webfonts are deployed to each environment but are not
+# distributed through the public theme repository.
+assets/fonts/helvetica/*.woff
+assets/fonts/helvetica/local-fonts.css

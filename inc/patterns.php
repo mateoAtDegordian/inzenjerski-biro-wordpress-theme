@@ -16,6 +16,14 @@ function ingbiro_register_block_patterns() {
 	);
 
 	$patterns = array(
+		'event-instructions-procurement' => array(
+			'title'   => __( 'Upute za webinar — javna nabava', 'ingbiro' ),
+			'content' => ingbiro_event_instructions_content(),
+		),
+		'event-instructions-generic' => array(
+			'title'   => __( 'Upute za webinar — opće', 'ingbiro' ),
+			'content' => ingbiro_event_instructions_content(),
+		),
 		'two-cards' => array(
 			'title'   => __( 'Dvije kartice', 'ingbiro' ),
 			'content' => '<!-- wp:group {"className":"modular-section","layout":{"type":"constrained"}} --><div class="wp-block-group modular-section"><!-- wp:heading --><h2 class="wp-block-heading">Naslov sekcije</h2><!-- /wp:heading --><!-- wp:columns {"className":"modular-cards"} --><div class="wp-block-columns modular-cards"><!-- wp:column --><div class="wp-block-column modular-card"><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Prva kartica</h3><!-- /wp:heading --><!-- wp:paragraph --><p>Uredite sadržaj kartice.</p><!-- /wp:paragraph --></div><!-- /wp:column --><!-- wp:column --><div class="wp-block-column modular-card"><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Druga kartica</h3><!-- /wp:heading --><!-- wp:paragraph --><p>Uredite sadržaj kartice.</p><!-- /wp:paragraph --></div><!-- /wp:column --></div><!-- /wp:columns --></div><!-- /wp:group -->',

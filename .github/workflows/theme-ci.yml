@@ -1,0 +1,56 @@
+name: Theme CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: theme-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-package:
+    name: Validate and package
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out theme
+        uses: actions/checkout@v4
+
+      - name: Validate PHP 8.0 syntax
+        run: |
+          docker run --rm \
+            --volume "$PWD:/theme" \
+            --workdir /theme \
+            php:8.0-cli \
+            sh -c "find . -type f -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l"
+
+      - name: Validate JavaScript syntax
+        run: node --check assets/js/theme.js
+
+      - name: Validate packaging script
+        run: bash -n scripts/package-theme.sh
+
+      - name: Build installable theme ZIP
+        run: scripts/package-theme.sh dist
+
+      - name: Verify ZIP integrity and root folder
+        run: |
+          unzip -t dist/*.zip
+          unzip -Z1 dist/*.zip | grep -q '^ingbiro/style.css$'
+          unzip -Z1 dist/*.zip | grep -q '^ingbiro/functions.php$'
+
+      - name: Upload theme ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: ingbiro-theme-${{ github.sha }}
+          path: dist/*.zip
+          if-no-files-found: error
+          retention-days: 14
