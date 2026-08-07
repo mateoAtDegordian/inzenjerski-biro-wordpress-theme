@@ -25,7 +25,7 @@ if ( ! $ingbiro_embedded_template ) {
 					</nav>
 				</div>
 			</div>
-			<div class="page-hero__image">
+			<div class="page-hero__image page-hero__image--about">
 				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-hero.jpg' ) ); ?>" alt="Arhivska izdanja Inženjerskog biroa">
 			</div>
 		</div>
@@ -65,9 +65,10 @@ if ( ! $ingbiro_embedded_template ) {
 				<?php ingbiro_section_label( 'Povezanost s korijenima', true ); ?>
 				<p>Lansiranje LING-a predstavlja nastavak duge tradicije koju Inženjerski biro ima u pravnoj publicistici, a koja seže u 1950-e godine. Tada je počela izlaziti publikacija ING Registar pravnih propisa, pravni priručnik koji je desetljećima bio nezamjenjiv u radu mnogih generacija pravnika, odvjetnika i drugih poslovnih ljudi i stručnjaka te koji se izdavao na nekoliko jezika. S vremenom smo počeli izdavati i druge cijenjene pravne publikacije, među ostalim, časopis Hrvatsku pravnu reviju, Hrvatsku gospodarsku reviju, publikaciju ING Pregled sudske prakse, zbornike, specijalističke priručnike i druge publikacije.</p>
 			</div>
-			<div class="history-card__images">
-				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-history.jpg' ) ); ?>" alt="Povijesna publikacija">
-				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-team.jpg' ) ); ?>" alt="Arhiva i događanja">
+			<div class="history-card__images history-card__images--collage">
+				<img class="history-card__image--large" src="<?php echo esc_url( ingbiro_asset( 'images/about-history.jpg' ) ); ?>" alt="Povijesno izdanje ING Registra iz 1978. godine">
+				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-gallery/slika28.webp' ) ); ?>" alt="Suradnici Inženjerskog biroa na stručnom susretu">
+				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-gallery/slika25.webp' ) ); ?>" alt="Sudionici povijesnog stručnog sastanka">
 			</div>
 		</div>
 	</section>
@@ -91,9 +92,10 @@ if ( ! $ingbiro_embedded_template ) {
 				<?php ingbiro_section_label( 'Suradnja s vodećim institucijama' ); ?>
 				<p>Naša dugogodišnja suradnja s vodećim obrazovnim i strukovnim institucijama, kao što su Ekonomski fakultet Sveučilišta u Zagrebu, Sveučilišta u Splitu i Sveučilišta u Osijeku, Fakultet za menadžment u turizmu i ugostiteljstvu Opatija, Pravni fakultet Sveučilišta u Rijeci i Sveučilišta u Zagrebu, Hrvatsko društvo ekonomista, Udruga hrvatskih sudaca, Hrvatska revizorska komora i dr., usmjerena je unapređenju ekonomske i pravne znanosti i struke u Republici Hrvatskoj.</p>
 			</div>
-			<div class="history-card__images">
-				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-history.jpg' ) ); ?>" alt="">
-				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-team.jpg' ) ); ?>" alt="">
+			<div class="history-card__images history-card__images--collage">
+				<img class="history-card__image--large" src="<?php echo esc_url( ingbiro_asset( 'images/about-history.jpg' ) ); ?>" alt="Povijesno izdanje ING Registra iz 1978. godine">
+				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-gallery/slika28.webp' ) ); ?>" alt="Suradnici Inženjerskog biroa na stručnom susretu">
+				<img src="<?php echo esc_url( ingbiro_asset( 'images/about-gallery/slika25.webp' ) ); ?>" alt="Sudionici povijesnog stručnog sastanka">
 			</div>
 		</div>
 	</section>

@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.9.6' );
+define( 'INGBIRO_VERSION', '1.9.7' );
 
 /**
  * Resolve optional licensed webfonts without requiring them in the public repo.
@@ -1394,28 +1394,39 @@ function ingbiro_seed_post( $post_type, $slug, $title, $content, $args = array()
 	return $post_id;
 }
 
+/**
+ * Client-approved Croatian consulting copy.
+ *
+ * Keeping the canonical content in one place lets a fresh install and the
+ * one-time content migration use the same exact wording while the resulting
+ * service posts remain editable in WordPress.
+ */
+function ingbiro_consulting_services_hr() {
+	return array(
+		array(
+			'ekonomski-konzalting',
+			'Ekonomski konzalting',
+			'<ul><li>poslovno savjetovanje pri spajanju i preuzimanju kompanija: izrada informacijskog memoranduma, izrada financijskog, komercijalnog i poreznog due diligencea, izrada analize poslovanja, izrada procjene vrijednosti poduzeća, udjela, dionica, obavljanje potrebnih predradnji za prodaju društva, pomoć pri pronalaženju potencijalnih investitora, izrada konačne strukture transakcije i transakcijskih dokumenata, obavljanje pripremnih aktivnosti vezano za održavanje skupština i izbor novih organa u društvima, provedba donesenih odluka u trgovačkom registru</li><li>izrada analize poslovanja i vrednovanje poduzeća</li><li>izrada razvojnih studija društva za potrebe restrukturiranja, novog zaduživanja kod financijskih institucija i sl.</li><li>financijsko, operativno i vlasničko restrukturiranje</li><li>priprema projekata za financiranje bespovratnim potporama iz fondova EU i ostalih izvora</li><li>izrada investicijskih studija za potrebe investitora</li><li>izrada studija gospodarske opravdanosti ulaganja za javni sektor</li></ul>',
+		),
+		array(
+			'pravni-konzalting',
+			'Pravni konzalting',
+			'<ul><li>izrada pravnih due diligencea</li><li>organiziranje i izvođenje stručnih (općih i tematskih) savjetovanja, seminara i radionica s problematikom koja se odnosi na upravljanje društvom i njegovim poslovnim funkcijama, praktičnu primjenu propisa svih područja građanskog prava, trgovačkog prava, radnog i ostalih grana prava</li><li>organiziranje specijalističkih savjetovanja za potrebe naših poslovnih partnera</li><li>pružanje konzultacijskih usluga gospodarskim subjektima u primjeni zakona i drugih propisa iz raznih pravnih područja, zbornika radova, autorskih knjiga i priručnika kojima se promiče pravna teorija i prati relevantna stručna praksa</li></ul>',
+		),
+		array(
+			'organizacijski-konzalting',
+			'Organizacijski konzalting',
+			'<ul><li>snimka, analiza i dijagnostika postojećeg stanja organizacije poslovanja poslovnih i drugih sustava</li><li>analiza postojećih organizacijskih propisa i usuglašavanje s novim organizacijskim rješenjima</li><li>izrada projekata nove organizacije</li><li>izrada programa uvođenja novih organizacijskih rješenja s ciljem unapređenja organizacije poslovanja</li><li>izrada pravilnika o organizaciji, pravilnika o sistematizaciji radnih mjesta, pravilnika o radu</li><li>izrada tehničkog due diligencea</li><li>procjena vrijednosti materijalne imovine poduzeća (oprema, nekretnine)</li></ul>',
+		),
+	);
+}
+
 function ingbiro_upgrade_content_model() {
 	if ( version_compare( (string) get_option( 'ingbiro_content_model_version', '0' ), '1.1.0', '>=' ) ) {
 		return;
 	}
 
-	$services = array(
-		array(
-			'ekonomski-konzalting',
-			'Ekonomski konzalting',
-			'<p><strong>Savjetovanje pri spajanju i preuzimanju kompanija (M&amp;A):</strong></p><ul><li>Izrada informacijskog memoranduma i analiza poslovanja</li><li>Financijski, komercijalni i porezni due diligence</li><li>Procjena vrijednosti poduzeća, udjela i dionica</li><li>Pronalaženje investitora i strukturiranje transakcija</li><li>Pravno-formalna priprema prodaje (skupštine, registracija u trgovačkom registru)</li></ul><p><strong>Strateško i financijsko planiranje:</strong></p><ul><li>Financijsko, operativno i vlasničko restrukturiranje</li><li>Razvojne studije za potrebe restrukturiranja i novih zaduživanja</li><li>Investicijske studije i studije gospodarske opravdanosti za javni sektor</li><li>Priprema projekata za financiranje iz EU fondova i ostalih izvora</li></ul>',
-		),
-		array(
-			'pravni-konzalting',
-			'Pravni konzalting',
-			'<p><strong>Pravni due diligence</strong> – Dubinska pravna analiza poslovanja.</p><p><strong>Konzultantske usluge</strong> – Podrška gospodarskim subjektima u primjeni propisa iz svih područja građanskog, trgovačkog i radnog prava.</p><p><strong>Edukacije i savjetovanja</strong> – Organizacija općih, tematskih i specijalističkih seminara te radionica o upravljanju društvom i primjeni zakona.</p><p><strong>Stručna literatura</strong> – Izdavanje zbornika radova, autorskih knjiga i priručnika koji prate relevantnu pravnu i stručnu praksu.</p>',
-		),
-		array(
-			'organizacijski-konzalting',
-			'Organizacijski konzalting',
-			'<p><strong>Snimka i dijagnostika stanja</strong> – Analiza postojećeg organizacijskog sustava i usklađivanje s novim rješenjima.</p><p><strong>Projektiranje organizacije</strong> – Izrada projekata i programa za uvođenje novih, naprednijih organizacijskih rješenja.</p><p><strong>Izrada korporativnih akata</strong> – Pravilnici o organizaciji, sistematizaciji radnih mjesta i radu.</p><p><strong>Tehnički segment</strong> – Izrada tehničkog due diligencea i procjena vrijednosti materijalne imovine (oprema, nekretnine).</p>',
-		),
-	);
+	$services = ingbiro_consulting_services_hr();
 
 	foreach ( $services as $index => $service ) {
 		ingbiro_seed_post(
@@ -1504,6 +1515,41 @@ function ingbiro_upgrade_content_model() {
 	update_option( 'ingbiro_content_model_version', '1.1.0' );
 }
 add_action( 'init', 'ingbiro_upgrade_content_model', 30 );
+
+/**
+ * Apply the approved consulting bullets to existing editable service posts.
+ */
+function ingbiro_upgrade_consulting_copy() {
+	if ( version_compare( (string) get_option( 'ingbiro_consulting_copy_version', '0' ), '1.0.0', '>=' ) ) {
+		return;
+	}
+
+	foreach ( ingbiro_consulting_services_hr() as $index => $service ) {
+		$existing = get_page_by_path( $service[0], OBJECT, 'ing_service' );
+		if ( $existing ) {
+			wp_update_post(
+				array(
+					'ID'           => $existing->ID,
+					'post_title'   => $service[1],
+					'post_content' => $service[2],
+					'menu_order'   => $index + 1,
+				)
+			);
+			continue;
+		}
+
+		ingbiro_seed_post(
+			'ing_service',
+			$service[0],
+			$service[1],
+			$service[2],
+			array( 'menu_order' => $index + 1 )
+		);
+	}
+
+	update_option( 'ingbiro_consulting_copy_version', '1.0.0' );
+}
+add_action( 'init', 'ingbiro_upgrade_consulting_copy', 32 );
 
 /**
  * Upgrade the original demo webinar to the complete modular Figma blueprint.

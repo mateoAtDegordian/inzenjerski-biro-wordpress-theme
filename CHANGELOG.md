@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.7 — 2026-08-07
+
+- O nama hero prikazuje arhivski natpis ING REGISTAR iz gornjeg dijela izvornog kadra.
+- Sekcije Povezanost s korijenima i Suradnja s vodećim institucijama koriste odobreni trodijelni raspored povijesnih fotografija.
+- Hrvatski i engleski sadržaj svih konzultantskih usluga usklađen je s klijentskim dokumentima, uz jednokratnu migraciju postojećih uređivih CMS zapisa.
+
 ## 1.9.6 — 2026-08-07
 
 - Desktop kontejner i bočne margine od 1200 px naviše rastu fluidno s viewportom, uz zadržane postojeće tablet i mobilne razmake.
