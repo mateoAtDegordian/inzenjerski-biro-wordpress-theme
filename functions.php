@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.9.7' );
+define( 'INGBIRO_VERSION', '1.9.8' );
 
 /**
  * Resolve optional licensed webfonts without requiring them in the public repo.
@@ -1406,17 +1406,17 @@ function ingbiro_consulting_services_hr() {
 		array(
 			'ekonomski-konzalting',
 			'Ekonomski konzalting',
-			'<ul><li>poslovno savjetovanje pri spajanju i preuzimanju kompanija: izrada informacijskog memoranduma, izrada financijskog, komercijalnog i poreznog due diligencea, izrada analize poslovanja, izrada procjene vrijednosti poduzeća, udjela, dionica, obavljanje potrebnih predradnji za prodaju društva, pomoć pri pronalaženju potencijalnih investitora, izrada konačne strukture transakcije i transakcijskih dokumenata, obavljanje pripremnih aktivnosti vezano za održavanje skupština i izbor novih organa u društvima, provedba donesenih odluka u trgovačkom registru</li><li>izrada analize poslovanja i vrednovanje poduzeća</li><li>izrada razvojnih studija društva za potrebe restrukturiranja, novog zaduživanja kod financijskih institucija i sl.</li><li>financijsko, operativno i vlasničko restrukturiranje</li><li>priprema projekata za financiranje bespovratnim potporama iz fondova EU i ostalih izvora</li><li>izrada investicijskih studija za potrebe investitora</li><li>izrada studija gospodarske opravdanosti ulaganja za javni sektor</li></ul>',
+			'<ul><li>Poslovno savjetovanje pri spajanju i preuzimanju kompanija: izrada informacijskog memoranduma, izrada financijskog, komercijalnog i poreznog due diligencea, izrada analize poslovanja, izrada procjene vrijednosti poduzeća, udjela, dionica, obavljanje potrebnih predradnji za prodaju društva, pomoć pri pronalaženju potencijalnih investitora, izrada konačne strukture transakcije i transakcijskih dokumenata, obavljanje pripremnih aktivnosti vezano za održavanje skupština i izbor novih organa u društvima, provedba donesenih odluka u trgovačkom registru</li><li>Izrada analize poslovanja i vrednovanje poduzeća</li><li>Izrada razvojnih studija društva za potrebe restrukturiranja, novog zaduživanja kod financijskih institucija i sl.</li><li>Financijsko, operativno i vlasničko restrukturiranje</li><li>Priprema projekata za financiranje bespovratnim potporama iz fondova EU i ostalih izvora</li><li>Izrada investicijskih studija za potrebe investitora</li><li>Izrada studija gospodarske opravdanosti ulaganja za javni sektor</li></ul>',
 		),
 		array(
 			'pravni-konzalting',
 			'Pravni konzalting',
-			'<ul><li>izrada pravnih due diligencea</li><li>organiziranje i izvođenje stručnih (općih i tematskih) savjetovanja, seminara i radionica s problematikom koja se odnosi na upravljanje društvom i njegovim poslovnim funkcijama, praktičnu primjenu propisa svih područja građanskog prava, trgovačkog prava, radnog i ostalih grana prava</li><li>organiziranje specijalističkih savjetovanja za potrebe naših poslovnih partnera</li><li>pružanje konzultacijskih usluga gospodarskim subjektima u primjeni zakona i drugih propisa iz raznih pravnih područja, zbornika radova, autorskih knjiga i priručnika kojima se promiče pravna teorija i prati relevantna stručna praksa</li></ul>',
+			'<ul><li>Izrada pravnih due diligencea</li><li>Organiziranje i izvođenje stručnih (općih i tematskih) savjetovanja, seminara i radionica s problematikom koja se odnosi na upravljanje društvom i njegovim poslovnim funkcijama, praktičnu primjenu propisa svih područja građanskog prava, trgovačkog prava, radnog i ostalih grana prava</li><li>Organiziranje specijalističkih savjetovanja za potrebe naših poslovnih partnera</li><li>Pružanje konzultacijskih usluga gospodarskim subjektima u primjeni zakona i drugih propisa iz raznih pravnih područja, zbornika radova, autorskih knjiga i priručnika kojima se promiče pravna teorija i prati relevantna stručna praksa</li></ul>',
 		),
 		array(
 			'organizacijski-konzalting',
 			'Organizacijski konzalting',
-			'<ul><li>snimka, analiza i dijagnostika postojećeg stanja organizacije poslovanja poslovnih i drugih sustava</li><li>analiza postojećih organizacijskih propisa i usuglašavanje s novim organizacijskim rješenjima</li><li>izrada projekata nove organizacije</li><li>izrada programa uvođenja novih organizacijskih rješenja s ciljem unapređenja organizacije poslovanja</li><li>izrada pravilnika o organizaciji, pravilnika o sistematizaciji radnih mjesta, pravilnika o radu</li><li>izrada tehničkog due diligencea</li><li>procjena vrijednosti materijalne imovine poduzeća (oprema, nekretnine)</li></ul>',
+			'<ul><li>Snimka, analiza i dijagnostika postojećeg stanja organizacije poslovanja poslovnih i drugih sustava</li><li>Analiza postojećih organizacijskih propisa i usuglašavanje s novim organizacijskim rješenjima</li><li>Izrada projekata nove organizacije</li><li>Izrada programa uvođenja novih organizacijskih rješenja s ciljem unapređenja organizacije poslovanja</li><li>Izrada pravilnika o organizaciji, pravilnika o sistematizaciji radnih mjesta, pravilnika o radu</li><li>Izrada tehničkog due diligencea</li><li>Procjena vrijednosti materijalne imovine poduzeća (oprema, nekretnine)</li></ul>',
 		),
 	);
 }
@@ -1520,7 +1520,7 @@ add_action( 'init', 'ingbiro_upgrade_content_model', 30 );
  * Apply the approved consulting bullets to existing editable service posts.
  */
 function ingbiro_upgrade_consulting_copy() {
-	if ( version_compare( (string) get_option( 'ingbiro_consulting_copy_version', '0' ), '1.0.0', '>=' ) ) {
+	if ( version_compare( (string) get_option( 'ingbiro_consulting_copy_version', '0' ), '1.1.0', '>=' ) ) {
 		return;
 	}
 
@@ -1547,7 +1547,7 @@ function ingbiro_upgrade_consulting_copy() {
 		);
 	}
 
-	update_option( 'ingbiro_consulting_copy_version', '1.0.0' );
+	update_option( 'ingbiro_consulting_copy_version', '1.1.0' );
 }
 add_action( 'init', 'ingbiro_upgrade_consulting_copy', 32 );
 

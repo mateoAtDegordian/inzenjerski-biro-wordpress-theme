@@ -194,7 +194,7 @@
 				return;
 			}
 
-			const compactLayout = viewportWidth <= 1120;
+			const compactLayout = viewportWidth <= 1500;
 			const normalLogoWidth = compactLayout ? 210 : 240;
 			const normalHeaderGap = compactLayout ? 24 : 40;
 			const normalNavSize = compactLayout ? 16 : 18;
@@ -242,7 +242,10 @@
 				state.stage.style.marginBottom = `${sectionGap}px`;
 				const stageTravel = Math.max(1, state.stage.offsetHeight - baseHeight);
 				const exitDistance = Math.max(1, stickyHeight - baseHeight);
-				const fullTimeline = stageTravel + entranceLead;
+				const stageDocumentTop = state.stage.getBoundingClientRect().top + window.scrollY;
+				const availableEntranceLead = Math.max(0, stageDocumentTop - headerBottom);
+				const stateEntranceLead = Math.max(1, Math.min(entranceLead, availableEntranceLead));
+				const fullTimeline = stageTravel + stateEntranceLead;
 				state.metrics = {
 					viewportWidth,
 					viewportHeight,
@@ -250,8 +253,8 @@
 					normalHeaderHeight,
 					compactHeaderHeight,
 					stickyHeight,
-					entranceLead,
-					entranceEnd: entranceLead / fullTimeline,
+					entranceLead: stateEntranceLead,
+					entranceEnd: stateEntranceLead / fullTimeline,
 					exitStart: 1 - exitDistance / fullTimeline,
 					timelineLength: fullTimeline,
 					baseHeight: Math.min(baseHeight, stickyHeight),
@@ -342,13 +345,33 @@
 		measure();
 		animate();
 		window.addEventListener("scroll", requestRender, { passive: true });
-		window.addEventListener("resize", () => {
+		let cinematicResizeFrame = 0;
+		const refreshCinematicMeasurements = () => {
 			measure();
 			states.forEach((state) => {
 				state.currentProgress = null;
 			});
 			requestRender();
+		};
+		const scheduleCinematicMeasurement = () => {
+			window.cancelAnimationFrame(cinematicResizeFrame);
+			cinematicResizeFrame = window.requestAnimationFrame(() => {
+				cinematicResizeFrame = window.requestAnimationFrame(() => {
+					/* Read the container after responsive CSS has resolved at the new width. */
+					refreshCinematicMeasurements();
+				});
+			});
+		};
+		window.addEventListener("resize", () => {
+			scheduleCinematicMeasurement();
 		}, { passive: true });
+		if ("ResizeObserver" in window) {
+			const cinematicContainerObserver = new ResizeObserver(scheduleCinematicMeasurement);
+			const responsiveContainer = document.querySelector(".site-header__inner");
+			if (responsiveContainer) {
+				cinematicContainerObserver.observe(responsiveContainer);
+			}
+		}
 
 		const inlineVideos = states
 			.map((state) => state.media.querySelector("[data-cinematic-video]"))

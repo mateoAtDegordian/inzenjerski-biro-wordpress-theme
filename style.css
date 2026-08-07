@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.9.7
+Version: 1.9.8
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -4926,14 +4926,15 @@ select {
 }
 
 /*
- * 1.9.6 — let the layout breathe with the viewport instead of stopping at a
- * fixed laptop-width canvas. Tablet and mobile spacing remains unchanged;
- * from 1024px upward both the gutter and usable content width grow together.
+ * 1.9.8 — desktop gutters grow into a consistent 12vw proportion instead of
+ * stopping at a fixed pixel value. The content canvas remains fluid beyond
+ * 1920px, so larger screens preserve the same visual relationship without a
+ * fixed-width dead zone around the page.
  */
 @media (min-width: 1024px) {
 	:root {
-		--ing-container: 1680px;
-		--ing-gutter: clamp(40.96px, calc(11vw - 71.68px), 128px);
+		--ing-container: 100vw;
+		--ing-gutter: clamp(40.96px, calc(31.5vw - 281.6px), 12vw);
 	}
 }
 
@@ -5267,7 +5268,7 @@ select {
 	}
 }
 
-@media (min-width: 901px) and (max-width: 1120px) {
+@media (min-width: 901px) and (max-width: 1500px) {
 	.site-header__inner {
 		grid-template-columns: var(--ing-active-logo-column, 210px) 1fr auto;
 		gap: var(--ing-active-header-gap, 24px);

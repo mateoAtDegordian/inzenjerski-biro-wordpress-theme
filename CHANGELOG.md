@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.9.8 — 2026-08-07
+
+- Konzultantske bullet stavke na hrvatskom počinju velikim slovom, uz jednokratnu nadogradnju postojećih CMS zapisa.
+- Desktop sadržaj koristi izraženije proporcionalne bočne margine koje se od 1440 px približavaju omjeru od 12% širine viewporta.
+- Uklonjen je fiksni maksimalni desktop kontejner, pa sadržaj i oba cinematic videa zadržavaju isti omjer margina i iznad 1920 px.
+- Ponovno mjerenje cinematic videa čeka da se responsive CSS primijeni, pa naslovnica i Pravni portal ostaju poravnati s tekstom i pri promjeni veličine prozora.
+- Početni kadar na kraćem hero sadržaju više ne ulazi djelomično proširen prije prvog skrola; rana animacija ostaje aktivna čim se korisnik počne kretati kroz sekciju.
+- Navigacija koristi kompaktnu desktop varijantu do 1500 px kako bi ostala unutar novih, većih sadržajnih margina.
+
 ## 1.9.7 — 2026-08-07
 
 - O nama hero prikazuje arhivski natpis ING REGISTAR iz gornjeg dijela izvornog kadra.
