@@ -225,7 +225,7 @@
 			);
 			const sideInset = Math.max(0, (viewportWidth - contentWidth) / 2);
 			const stickyHeight = Math.max(320, viewportHeight - headerBottom);
-			const baseHeight = viewportWidth <= 620
+			const fluidBaseHeight = viewportWidth <= 620
 				? 270
 				: viewportWidth <= 1200
 					? 400
@@ -244,9 +244,14 @@
 					state.stage.style.height = `${Math.max(980, stickyHeight * stageMultiplier)}px`;
 				}
 				state.stage.style.marginBottom = `${sectionGap}px`;
+				const stageDocumentTop = state.stage.getBoundingClientRect().top + window.scrollY;
+				const bottomClearance = clamp(viewportHeight * 0.028, 22, 40);
+				const availableInitialHeight = viewportHeight - stageDocumentTop - bottomClearance;
+				const baseHeight = viewportWidth > 900 && availableInitialHeight >= 320
+					? Math.min(fluidBaseHeight, availableInitialHeight)
+					: fluidBaseHeight;
 				const stageTravel = Math.max(1, state.stage.offsetHeight - baseHeight);
 				const exitDistance = Math.max(1, stickyHeight - baseHeight);
-				const stageDocumentTop = state.stage.getBoundingClientRect().top + window.scrollY;
 				const availableEntranceLead = Math.max(0, stageDocumentTop - headerBottom);
 				const stateEntranceLead = Math.max(1, Math.min(entranceLead, availableEntranceLead));
 				const fullTimeline = stageTravel + stateEntranceLead;

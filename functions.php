@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.9.9' );
+define( 'INGBIRO_VERSION', '1.9.10' );
 
 function ingbiro_setup() {
 	load_theme_textdomain( 'ingbiro', get_template_directory() . '/languages' );

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.10 — 2026-08-19
+
+- Početni desktop kadar cinematic videa koristi stvarno dostupnu visinu viewporta i ostavlja responsivnih 22–40 px prostora ispod videa na uobičajenim dimenzijama monitora.
+- Full-screen scroll ekspanzija i mobilni edge-to-edge 16:9 prikaz ostaju nepromijenjeni.
+
 ## 1.9.9 — 2026-08-19
 
 - Cijeli javni web i Gutenberg editor koriste lokalno hostani Inter variable font, bez Google Fontsa ili drugog vanjskog font servisa; Helvetica ostaje fallback.
