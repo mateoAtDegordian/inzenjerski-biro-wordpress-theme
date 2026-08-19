@@ -459,7 +459,7 @@
 					? Math.min(fluidHeight, availableHeight)
 					: fluidHeight;
 
-				media.style.height = `${targetHeight}px`;
+				media.style.setProperty("height", `${targetHeight}px`, "important");
 			});
 		};
 

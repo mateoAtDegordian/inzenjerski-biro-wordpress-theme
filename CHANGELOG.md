@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.13 — 2026-08-19
+
+- Fluidna visina hero slike ima prednost nad ranijim fiksnim stilom teme, pa izračunati donji razmak ostaje stabilan i nakon potpunog učitavanja CSS-a.
+
 ## 1.9.12 — 2026-08-19
 
 - Izračunata fluidna visina uvodnih slika primjenjuje se izravno na element, tako da resize i promjena orijentacije ne mogu kratko zadržati prethodnu visinu kadra.
