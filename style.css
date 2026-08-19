@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.9.15
+Version: 1.9.21
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -5169,6 +5169,10 @@ select {
 .cinematic-scroll {
 	--cinematic-header-height: 118px;
 	--cinematic-sticky-height: calc(100svh - var(--cinematic-header-height));
+	--cinematic-media-height: min(
+		clamp(490px, 34vw, 760px),
+		calc(100svh - 118px - clamp(22px, 2.8svh, 40px))
+	);
 	position: relative;
 	width: 100vw;
 	height: max(980px, calc(var(--cinematic-sticky-height) * 2.15));
@@ -5195,9 +5199,11 @@ select {
 	top: 0;
 	left: 50%;
 	width: min(calc(100% - (var(--ing-gutter) * 2)), var(--ing-container));
-	height: var(--cinematic-media-height, min(clamp(490px, 34vw, 760px), calc(100svh - 118px)));
+	height: var(--cinematic-media-height) !important;
+	max-height: var(--cinematic-media-height) !important;
 	margin: 0;
 	border-radius: var(--ing-radius);
+	transition: none !important;
 	transform: translate3d(-50%, 0, 0);
 	transform-origin: center top;
 	will-change: left, width, height, border-radius, transform;
@@ -5326,6 +5332,7 @@ select {
 		--cinematic-header-height: 92px;
 		width: 100vw;
 		height: auto !important;
+		max-height: none !important;
 		min-height: 0;
 		margin-bottom: 0 !important;
 		margin-left: calc(50% - 50vw);

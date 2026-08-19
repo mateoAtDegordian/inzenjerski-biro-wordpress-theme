@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.9.21 — 2026-08-19
+
+- Cinematic video i velike uvodne slike koriste isti responsivni raspon visina, sadržajne margine i razmak od donjeg ruba viewporta.
+- Početna visina videa sada se čita iz jedne CSS varijable bez složenog fallback izraza, pa JavaScript mjerenje pouzdano preuzima kontrolu na svim desktop omjerima.
+- Izmjerena visina ima prednost nad starim fiksnim hero pravilima i na Full HD prikazu, dok mobilni `auto` raspored ostaje nepromijenjen.
+- Desktop kadar dobiva i izmjereno ograničenje maksimalne visine, čime zadržava donji razmak čak i kada preglednik privremeno zadrži staru izračunatu visinu tijekom responsive relayouta.
+- Ista numerička visina i maksimalna visina prenose se izravno na cinematic element, bez oslanjanja na naknadnu propagaciju naslijeđene CSS varijable.
+- Cinematic box nema CSS prijelaz na dimenzijama; glatkoću i dalje vodi `requestAnimationFrame`, pa promjena viewporta ne može zadržati prethodnu visinu kadra.
+
 ## 1.9.15 — 2026-08-19
 
 - Cinematic kadar prenosi izračunatu početnu i animiranu visinu kroz zajedničku stage varijablu, pa CSS fallback više ne može nadjačati donji razmak na Full HD zaslonu.

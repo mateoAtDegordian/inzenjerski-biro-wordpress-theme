@@ -285,7 +285,7 @@
 
 			if (metrics.viewportWidth <= 900) {
 				resetCinematicHeader();
-				["left", "width", "height", "border-radius"].forEach((property) => state.media.style.removeProperty(property));
+				["left", "width", "height", "max-height", "border-radius"].forEach((property) => state.media.style.removeProperty(property));
 				state.sticky.style.removeProperty("height");
 				state.stage.style.removeProperty("--cinematic-media-y");
 				state.stage.style.removeProperty("--cinematic-media-height");
@@ -314,7 +314,9 @@
 			state.sticky.style.height = `${mediaHeight}px`;
 			state.media.style.left = `${mediaLeft}px`;
 			state.media.style.width = `${mediaWidth}px`;
-			state.media.style.height = `${mediaHeight}px`;
+			/* Keep the measured box authoritative over legacy fixed-height hero rules. */
+			state.media.style.setProperty("height", `${mediaHeight}px`, "important");
+			state.media.style.setProperty("max-height", `${mediaHeight}px`, "important");
 			state.media.style.borderRadius = `${mix(metrics.initialRadius, 0, expansion)}px`;
 			state.stage.style.setProperty("--cinematic-media-y", `${entranceLift}px`);
 			state.stage.dataset.cinematicProgress = progress.toFixed(3);
