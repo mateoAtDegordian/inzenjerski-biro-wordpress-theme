@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.14 — 2026-08-19
+
+- Statične hero slike koriste čisti viewport-responsive CSS izračun istog raspona kao cinematic kadar, bez naknadnog JavaScript layout prolaza.
+
 ## 1.9.13 — 2026-08-19
 
 - Fluidna visina hero slike ima prednost nad ranijim fiksnim stilom teme, pa izračunati donji razmak ostaje stabilan i nakon potpunog učitavanja CSS-a.
