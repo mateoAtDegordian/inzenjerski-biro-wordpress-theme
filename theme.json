@@ -25,8 +25,8 @@
         },
         {
           "slug": "mono",
-          "name": "Inter",
-          "fontFamily": "Inter, Helvetica, sans-serif"
+          "name": "JetBrains Mono",
+          "fontFamily": "\"JetBrains Mono\", \"SFMono-Regular\", Consolas, monospace"
         }
       ]
     }

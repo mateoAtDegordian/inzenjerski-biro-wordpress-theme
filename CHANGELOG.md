@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.22 — 2026-08-19
+
+- Footer umjesto tekstualnog slogana koristi dostavljenu SVG grafiku „Savjetnici od 1952.”.
+- Svi CTA i obrazac gumbi ponovno koriste lokalno hostani JetBrains Mono, dok ostatak stranice ostaje u Interu.
+- Završna animacija zgrade dobiva responsivan razmak prije footera na svim dijeljenim hrvatskim i engleskim predlošcima.
+- Kontakt naslov se prikazuje odmah i izuzet je iz typewriter animacije u obje jezične verzije.
+
 ## 1.9.21 — 2026-08-19
 
 - Cinematic video i velike uvodne slike koriste isti responsivni raspon visina, sadržajne margine i razmak od donjeg ruba viewporta.

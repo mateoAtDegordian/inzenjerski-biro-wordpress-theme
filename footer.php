@@ -14,7 +14,13 @@ $language   = $is_english ? 'en' : 'hr';
 					<a href="<?php echo esc_url( ingbiro_language_home_url() ); ?>">
 						<img src="<?php echo esc_url( ingbiro_asset( 'images/logo.png' ) ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
 					</a>
-					<p class="site-footer__tagline"><?php echo esc_html( $is_english ? 'Consultants since 1952.' : 'Savjetnici od 1952.' ); ?></p>
+					<img
+						class="site-footer__tagline-image"
+						src="<?php echo esc_url( ingbiro_asset( 'images/savjetnici.svg' ) ); ?>"
+						alt="<?php echo esc_attr( $is_english ? 'Advisers since 1952.' : 'Savjetnici od 1952.' ); ?>"
+						width="214"
+						height="31"
+					>
 					<ul class="contact-list">
 						<li>
 							<span class="contact-list__icon" aria-hidden="true"><img src="<?php echo esc_url( ingbiro_asset( 'icons/footer-location.svg' ) ); ?>" alt=""></span>

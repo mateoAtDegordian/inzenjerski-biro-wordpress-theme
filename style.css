@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.9.21
+Version: 1.9.22
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -31,6 +31,14 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 	font-display: swap;
 }
 
+@font-face {
+	font-family: "JetBrains Mono";
+	src: url("assets/fonts/jetbrains-mono/JetBrainsMono-Regular.woff2") format("woff2");
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+}
+
 :root {
 	--ing-cream: #fff4e5;
 	--ing-blue: #244e9c;
@@ -40,7 +48,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 	--ing-muted: #61707d;
 	--ing-border: #dae0e1;
 	--ing-font-sans: Inter, Helvetica, sans-serif;
-	--ing-font-mono: Inter, Helvetica, sans-serif;
+	--ing-font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 	--ing-container: 1360px;
 	--ing-gutter: 40px;
 	--ing-radius: 16px;
@@ -96,6 +104,17 @@ input,
 textarea,
 select {
 	font: inherit;
+}
+
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.contact-link,
+.pill-button,
+.wp-element-button,
+.forminator-button {
+	font-family: var(--ing-font-mono);
 }
 
 .screen-reader-text {
@@ -1681,6 +1700,14 @@ select {
 .site-footer__tagline {
 	margin: 8px 0 36px;
 	color: var(--ing-muted);
+}
+
+.site-footer__brand .site-footer__tagline-image {
+	width: 214px;
+	height: auto;
+	margin: 14px 0 36px;
+	object-fit: contain;
+	object-position: left center;
 }
 
 .contact-list,
@@ -5010,6 +5037,10 @@ select {
 	margin-inline: auto;
 	padding: 0;
 	background: var(--ing-cream);
+}
+
+.page-main > .building-banner-shell:last-child {
+	padding-bottom: clamp(24px, 2.5vw, 44px);
 }
 
 .building-banner {
