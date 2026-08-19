@@ -288,6 +288,7 @@
 				["left", "width", "height", "border-radius"].forEach((property) => state.media.style.removeProperty(property));
 				state.sticky.style.removeProperty("height");
 				state.stage.style.removeProperty("--cinematic-media-y");
+				state.stage.style.removeProperty("--cinematic-media-height");
 				state.stage.dataset.cinematicProgress = "0.000";
 				state.stage.dataset.cinematicExpansion = "0.000";
 				state.stage.classList.add("is-ready");
@@ -309,6 +310,7 @@
 			renderCinematicHeader(expansion, metrics.viewportWidth);
 			state.stage.style.setProperty("--cinematic-header-height", `${currentHeaderBottom}px`);
 			state.stage.style.setProperty("--cinematic-sticky-height", `${currentStickyHeight}px`);
+			state.stage.style.setProperty("--cinematic-media-height", `${mediaHeight}px`);
 			state.sticky.style.height = `${mediaHeight}px`;
 			state.media.style.left = `${mediaLeft}px`;
 			state.media.style.width = `${mediaWidth}px`;

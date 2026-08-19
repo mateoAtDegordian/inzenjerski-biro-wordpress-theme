@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.15 — 2026-08-19
+
+- Cinematic kadar prenosi izračunatu početnu i animiranu visinu kroz zajedničku stage varijablu, pa CSS fallback više ne može nadjačati donji razmak na Full HD zaslonu.
+
 ## 1.9.14 — 2026-08-19
 
 - Statične hero slike koriste čisti viewport-responsive CSS izračun istog raspona kao cinematic kadar, bez naknadnog JavaScript layout prolaza.
