@@ -427,6 +427,69 @@
 		}
 	}
 
+	/*
+	 * Keep the large static page images on the same responsive scale as the
+	 * initial cinematic frames. On desktop they grow with the content width,
+	 * while shorter viewports retain a small, predictable breathing space below
+	 * the image. Tablet and mobile keep their existing fixed responsive crops.
+	 */
+	const primaryImageTargets = Array.from(
+		document.querySelectorAll(".page-hero__image, .archive-hero__image")
+	);
+
+	if (primaryImageTargets.length) {
+		const clampPrimaryMedia = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
+		let primaryMediaResizeFrame = 0;
+
+		const measurePrimaryImages = () => {
+			const viewportWidth = document.documentElement.clientWidth;
+			const viewportHeight = window.innerHeight;
+
+			primaryImageTargets.forEach((media) => {
+				if (viewportWidth <= 900) {
+					media.style.removeProperty("--ing-primary-media-height");
+					return;
+				}
+
+				const fluidHeight = clampPrimaryMedia(viewportWidth * 0.34, 490, 760);
+				const mediaDocumentTop = media.getBoundingClientRect().top + window.scrollY;
+				const bottomClearance = clampPrimaryMedia(viewportHeight * 0.028, 22, 40);
+				const availableHeight = viewportHeight - mediaDocumentTop - bottomClearance;
+				const targetHeight = availableHeight >= 320
+					? Math.min(fluidHeight, availableHeight)
+					: fluidHeight;
+
+				media.style.setProperty("--ing-primary-media-height", `${targetHeight}px`);
+			});
+		};
+
+		const schedulePrimaryImageMeasurement = () => {
+			window.cancelAnimationFrame(primaryMediaResizeFrame);
+			primaryMediaResizeFrame = window.requestAnimationFrame(() => {
+				primaryMediaResizeFrame = window.requestAnimationFrame(measurePrimaryImages);
+			});
+		};
+
+		measurePrimaryImages();
+		window.addEventListener("resize", schedulePrimaryImageMeasurement, { passive: true });
+		document.fonts?.ready.then(schedulePrimaryImageMeasurement);
+
+		if ("ResizeObserver" in window) {
+			const primaryMediaContainer = document.querySelector(".site-header__inner");
+			if (primaryMediaContainer) {
+				let observedPrimaryMediaWidth = primaryMediaContainer.getBoundingClientRect().width;
+				const primaryMediaObserver = new ResizeObserver((entries) => {
+					const nextWidth = entries[0]?.contentRect.width || 0;
+					if (Math.abs(nextWidth - observedPrimaryMediaWidth) > 1) {
+						observedPrimaryMediaWidth = nextWidth;
+						schedulePrimaryImageMeasurement();
+					}
+				});
+				primaryMediaObserver.observe(primaryMediaContainer);
+			}
+		}
+	}
+
 	const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 	const legalContent = document.querySelector(".legal-page__content");
 

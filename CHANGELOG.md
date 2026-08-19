@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.11 — 2026-08-19
+
+- Velike uvodne slike na glavnim stranicama i arhivi koriste istu fluidnu desktop visinu kao početni cinematic kadar.
+- Slike na kraćim desktop viewportima zadržavaju 22–40 px prostora do donjeg ruba, dok tablet i mobilni crop ostaju nepromijenjeni.
+
 ## 1.9.10 — 2026-08-19
 
 - Početni desktop kadar cinematic videa koristi stvarno dostupnu visinu viewporta i ostavlja responsivnih 22–40 px prostora ispod videa na uobičajenim dimenzijama monitora.
