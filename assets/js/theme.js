@@ -447,7 +447,7 @@
 
 			primaryImageTargets.forEach((media) => {
 				if (viewportWidth <= 900) {
-					media.style.removeProperty("--ing-primary-media-height");
+					media.style.removeProperty("height");
 					return;
 				}
 
@@ -459,7 +459,7 @@
 					? Math.min(fluidHeight, availableHeight)
 					: fluidHeight;
 
-				media.style.setProperty("--ing-primary-media-height", `${targetHeight}px`);
+				media.style.height = `${targetHeight}px`;
 			});
 		};
 

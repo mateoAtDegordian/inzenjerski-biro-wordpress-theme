@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.12 — 2026-08-19
+
+- Izračunata fluidna visina uvodnih slika primjenjuje se izravno na element, tako da resize i promjena orijentacije ne mogu kratko zadržati prethodnu visinu kadra.
+
 ## 1.9.11 — 2026-08-19
 
 - Velike uvodne slike na glavnim stranicama i arhivi koriste istu fluidnu desktop visinu kao početni cinematic kadar.
