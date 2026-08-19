@@ -17,7 +17,7 @@ Prijenosna custom WordPress tema izrađena prema Figma dokumentu **UI Design Ver
 - desktop i mobilna navigacija te pristupačni accordion elementi
 - typewriter naslovi, animirani povijesni foto-stack i rotirajući Figma zupčanici uz podršku za smanjeno kretanje
 - lokalno spremljeni originalni Figma asseti; tema ne ovisi o privremenim Figma URL-ovima
-- opcionalne lokalne Helvetica webfont datoteke koje se učitavaju kada postoji licencirani paket; javni repozitorij sadrži samo upute i sistemske fallbackove
+- lokalno hostani Inter variable font za svu tipografiju, bez vanjskog font CDN-a; Helvetica ostaje sistemski fallback
 
 ## Instalacija
 
@@ -48,7 +48,7 @@ E-mail obavijesti koristi Forminator preko standardnog WordPress `wp_mail()`. Na
 
 Tema namjerno nema Node/Tailwind build korak: koristi Gutenberg, `theme.json` i centralizirane CSS komponente, pa je instalacija prenosiva kao obična WordPress tema. Potrebni su WordPress 6.4+ i PHP 8.0+. Paketirani Dompdf 3.1.5 nalazi se u `vendor/dompdf/dompdf` kako bi PDF radio odmah nakon instalacije teme.
 
-Licencirani Helvetica webfontovi na serveru se drže u `wp-content/uploads/ingbiro-fonts/`, izvan javnog release ZIP-a. Tema ih automatski učitava i ta lokacija ostaje sačuvana pri Git Updater nadogradnjama.
+Inter variable webfontovi i njihova OFL licenca nalaze se u `assets/fonts/inter/` te se isporučuju zajedno s temom.
 
 Brza PHP provjera:
 

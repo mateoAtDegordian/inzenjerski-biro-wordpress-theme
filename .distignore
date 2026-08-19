@@ -14,5 +14,3 @@ node_modules
 output
 tmp
 *.log
-assets/fonts/helvetica/*.woff
-assets/fonts/helvetica/local-fonts.css

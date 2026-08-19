@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.9 — 2026-08-19
+
+- Cijeli javni web i Gutenberg editor koriste lokalno hostani Inter variable font, bez Google Fontsa ili drugog vanjskog font servisa; Helvetica ostaje fallback.
+- Uklonjen je prijašnji opcionalni Helvetica font loader i stare font datoteke.
+- Cinematic video je na velikim zaslonima osjetno viši, uz zadržane postojeće margine i mobilni 16:9 prikaz.
+- Scroll animacija koristi stabilnu dokumentnu koordinatu i vremenski neovisno zaglađivanje, pa promjena visine headera više ne uzrokuje povratnu petlju i trzaje.
+- ResizeObserver ponovno mjeri cinematic sekciju samo kada se širina kontejnera stvarno promijeni.
+
 ## 1.9.8 — 2026-08-07
 
 - Konzultantske bullet stavke na hrvatskom počinju velikim slovom, uz jednokratnu nadogradnju postojećih CMS zapisa.

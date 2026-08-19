@@ -3,7 +3,7 @@ Theme Name: Inženjerski biro
 Theme URI: https://github.com/mateoAtDegordian/inzenjerski-biro-wordpress-theme
 Author: Inženjerski biro
 Description: Custom WordPress theme implemented from the Inženjerski biro UI Design Version 2 Figma file.
-Version: 1.9.8
+Version: 1.9.9
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: ingbiro
@@ -15,6 +15,22 @@ License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
 
+@font-face {
+	font-family: "Inter";
+	src: url("assets/fonts/inter/InterVariable.woff2") format("woff2");
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Inter";
+	src: url("assets/fonts/inter/InterVariable-Italic.woff2") format("woff2");
+	font-style: italic;
+	font-weight: 100 900;
+	font-display: swap;
+}
+
 :root {
 	--ing-cream: #fff4e5;
 	--ing-blue: #244e9c;
@@ -23,8 +39,8 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 	--ing-paper: #fafafa;
 	--ing-muted: #61707d;
 	--ing-border: #dae0e1;
-	--ing-font-sans: Helvetica, "Helvetica Neue", Arial, sans-serif;
-	--ing-font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+	--ing-font-sans: Inter, Helvetica, sans-serif;
+	--ing-font-mono: Inter, Helvetica, sans-serif;
 	--ing-container: 1360px;
 	--ing-gutter: 40px;
 	--ing-radius: 16px;
@@ -45,6 +61,7 @@ body {
 	background: var(--ing-cream);
 	color: var(--ing-ink);
 	font-family: var(--ing-font-sans);
+	font-optical-sizing: auto;
 	font-size: 16px;
 	-webkit-font-smoothing: antialiased;
 }
@@ -5168,7 +5185,7 @@ select {
 	top: 0;
 	left: 50%;
 	width: min(calc(100% - (var(--ing-gutter) * 2)), var(--ing-container));
-	height: 490px;
+	height: min(clamp(490px, 34vw, 760px), calc(100svh - 118px));
 	margin: 0;
 	border-radius: var(--ing-radius);
 	transform: translate3d(-50%, 0, 0);

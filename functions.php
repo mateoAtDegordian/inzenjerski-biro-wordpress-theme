@@ -9,35 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.9.8' );
-
-/**
- * Resolve optional licensed webfonts without requiring them in the public repo.
- *
- * Files in uploads survive normal theme updates; the theme-local location is
- * retained as a convenient fallback for Local development and rsync deploys.
- */
-function ingbiro_local_font_stylesheet() {
-	$uploads = wp_upload_dir();
-	$choices = array(
-		array(
-			'path' => trailingslashit( $uploads['basedir'] ) . 'ingbiro-fonts/local-fonts.css',
-			'url'  => trailingslashit( $uploads['baseurl'] ) . 'ingbiro-fonts/local-fonts.css',
-		),
-		array(
-			'path' => get_template_directory() . '/assets/fonts/helvetica/local-fonts.css',
-			'url'  => get_template_directory_uri() . '/assets/fonts/helvetica/local-fonts.css',
-		),
-	);
-
-	foreach ( $choices as $choice ) {
-		if ( is_readable( $choice['path'] ) ) {
-			return $choice;
-		}
-	}
-
-	return null;
-}
+define( 'INGBIRO_VERSION', '1.9.9' );
 
 function ingbiro_setup() {
 	load_theme_textdomain( 'ingbiro', get_template_directory() . '/languages' );
@@ -48,10 +20,6 @@ function ingbiro_setup() {
 	add_theme_support( 'align-wide' );
 	add_theme_support( 'editor-styles' );
 	add_editor_style( 'style.css' );
-	$font_stylesheet = ingbiro_local_font_stylesheet();
-	if ( $font_stylesheet ) {
-		add_editor_style( $font_stylesheet['url'] );
-	}
 	add_image_size( 'ingbiro-event-hero', 1600, 800, true );
 	add_theme_support(
 		'html5',
@@ -68,19 +36,7 @@ function ingbiro_setup() {
 add_action( 'after_setup_theme', 'ingbiro_setup' );
 
 function ingbiro_enqueue_assets() {
-	$dependencies = array();
-	$font_stylesheet = ingbiro_local_font_stylesheet();
-	if ( $font_stylesheet ) {
-		wp_enqueue_style(
-			'ingbiro-local-fonts',
-			$font_stylesheet['url'],
-			array(),
-			(string) filemtime( $font_stylesheet['path'] )
-		);
-		$dependencies[] = 'ingbiro-local-fonts';
-	}
-
-	wp_enqueue_style( 'ingbiro-style', get_stylesheet_uri(), $dependencies, INGBIRO_VERSION );
+	wp_enqueue_style( 'ingbiro-style', get_stylesheet_uri(), array(), INGBIRO_VERSION );
 	wp_enqueue_script(
 		'ingbiro-theme',
 		get_template_directory_uri() . '/assets/js/theme.js',

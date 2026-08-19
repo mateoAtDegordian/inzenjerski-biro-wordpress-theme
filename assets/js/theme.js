@@ -225,7 +225,11 @@
 			);
 			const sideInset = Math.max(0, (viewportWidth - contentWidth) / 2);
 			const stickyHeight = Math.max(320, viewportHeight - headerBottom);
-			const baseHeight = viewportWidth <= 620 ? 270 : viewportWidth <= 1200 ? 400 : 490;
+			const baseHeight = viewportWidth <= 620
+				? 270
+				: viewportWidth <= 1200
+					? 400
+					: clamp(viewportWidth * 0.34, 490, 760);
 			const initialRadius = viewportWidth <= 620 ? 12 : 16;
 			const stageMultiplier = viewportWidth <= 900 ? 1.85 : 2.15;
 			const entranceLead = clamp(viewportHeight * 0.36, 260, 360);
@@ -257,6 +261,7 @@
 					entranceEnd: stateEntranceLead / fullTimeline,
 					exitStart: 1 - exitDistance / fullTimeline,
 					timelineLength: fullTimeline,
+					timelineStartScroll: stageDocumentTop - headerBottom - stateEntranceLead,
 					baseHeight: Math.min(baseHeight, stickyHeight),
 					baseWidth: Math.max(0, viewportWidth - sideInset * 2),
 					sideInset,
@@ -266,11 +271,7 @@
 		};
 
 		const readProgress = (state) => {
-			const stageRect = state.stage.getBoundingClientRect();
-			const stickyTop = Number.parseFloat(
-				getComputedStyle(state.stage).getPropertyValue("--cinematic-header-height")
-			) || 0;
-			return clamp((stickyTop + state.metrics.entranceLead - stageRect.top) / state.metrics.timelineLength);
+			return clamp((window.scrollY - state.metrics.timelineStartScroll) / state.metrics.timelineLength);
 		};
 
 		const renderState = (state) => {
@@ -314,8 +315,13 @@
 			state.stage.classList.add("is-ready");
 		};
 
-		const animate = () => {
+		let lastAnimationTime = 0;
+		const animate = (timestamp = performance.now()) => {
 			let needsAnotherFrame = false;
+			const elapsedSeconds = lastAnimationTime
+				? clamp((timestamp - lastAnimationTime) / 1000, 0, 0.05)
+				: 1 / 60;
+			const smoothing = 1 - Math.exp(-14 * elapsedSeconds);
 
 			states.forEach((state) => {
 				state.targetProgress = readProgress(state);
@@ -324,7 +330,7 @@
 				} else {
 					const difference = state.targetProgress - state.currentProgress;
 					if (Math.abs(difference) > 0.0005) {
-						state.currentProgress += difference * 0.24;
+						state.currentProgress += difference * smoothing;
 						needsAnotherFrame = true;
 					} else {
 						state.currentProgress = state.targetProgress;
@@ -333,6 +339,7 @@
 				renderState(state);
 			});
 
+			lastAnimationTime = needsAnotherFrame ? timestamp : 0;
 			animationFrame = needsAnotherFrame ? window.requestAnimationFrame(animate) : 0;
 		};
 
@@ -366,12 +373,20 @@
 			scheduleCinematicMeasurement();
 		}, { passive: true });
 		if ("ResizeObserver" in window) {
-			const cinematicContainerObserver = new ResizeObserver(scheduleCinematicMeasurement);
 			const responsiveContainer = document.querySelector(".site-header__inner");
 			if (responsiveContainer) {
+				let observedContainerWidth = responsiveContainer.getBoundingClientRect().width;
+				const cinematicContainerObserver = new ResizeObserver((entries) => {
+					const nextWidth = entries[0]?.contentRect.width || 0;
+					if (Math.abs(nextWidth - observedContainerWidth) > 1) {
+						observedContainerWidth = nextWidth;
+						scheduleCinematicMeasurement();
+					}
+				});
 				cinematicContainerObserver.observe(responsiveContainer);
 			}
 		}
+		document.fonts?.ready.then(scheduleCinematicMeasurement);
 
 		const inlineVideos = states
 			.map((state) => state.media.querySelector("[data-cinematic-video]"))

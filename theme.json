@@ -20,13 +20,13 @@
       "fontFamilies": [
         {
           "slug": "sans",
-          "name": "Helvetica",
-          "fontFamily": "Helvetica, \"Helvetica Neue\", Arial, sans-serif"
+          "name": "Inter",
+          "fontFamily": "Inter, Helvetica, sans-serif"
         },
         {
           "slug": "mono",
-          "name": "Mono",
-          "fontFamily": "\"JetBrains Mono\", \"SFMono-Regular\", Consolas, monospace"
+          "name": "Inter",
+          "fontFamily": "Inter, Helvetica, sans-serif"
         }
       ]
     }
