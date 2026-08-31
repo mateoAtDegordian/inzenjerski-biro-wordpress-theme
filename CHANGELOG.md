@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.23 — 2026-08-31
+
+- Završna SVG ilustracija zgrade zamijenjena je dostavljenom lokalnom WEBM animacijom u izvornom 16:9 omjeru.
+- U Izgled → Postavke teme dodan je jedan globalni odabir medija koji istu animaciju ili sliku primjenjuje na sva mjesta gdje se završni banner prikazuje.
+- Postavka automatski razlikuje video i slikovne formate, prikazuje pregled odabranog fajla i omogućuje povratak na zadani WEBM.
+
 ## 1.9.22 — 2026-08-19
 
 - Footer umjesto tekstualnog slogana koristi dostavljenu SVG grafiku „Savjetnici od 1952.”.

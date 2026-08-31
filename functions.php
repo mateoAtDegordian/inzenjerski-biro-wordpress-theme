@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INGBIRO_VERSION', '1.9.22' );
+define( 'INGBIRO_VERSION', '1.9.23' );
 
 function ingbiro_setup() {
 	load_theme_textdomain( 'ingbiro', get_template_directory() . '/languages' );
@@ -118,6 +118,7 @@ require_once get_template_directory() . '/inc/language.php';
 require_once get_template_directory() . '/inc/legal.php';
 require_once get_template_directory() . '/inc/archive.php';
 require_once get_template_directory() . '/inc/patterns.php';
+require_once get_template_directory() . '/inc/theme-settings.php';
 
 function ingbiro_favicons() {
 	printf(
@@ -195,13 +196,6 @@ function ingbiro_button( $label, $url, $class = '', $attributes = array() ) {
 		$attribute_html, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		esc_html( $label ),
 		esc_url( ingbiro_asset( 'icons/arrow-right.svg' ) )
-	);
-}
-
-function ingbiro_building_banner() {
-	printf(
-		'<div class="building-banner-shell"><div class="building-banner" aria-hidden="true"><img class="building-banner__image" src="%s" alt="" width="1470" height="630"></div></div>',
-		esc_url( add_query_arg( 'ver', INGBIRO_VERSION, ingbiro_asset( 'images/building-animation.svg' ) ) )
 	);
 }
 

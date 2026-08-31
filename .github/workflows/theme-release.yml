@@ -50,7 +50,7 @@ jobs:
             --workdir /theme \
             php:8.0-cli \
             sh -c "find . -type f -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l"
-          node --check assets/js/theme.js
+          find assets/js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
 
       - name: Build release ZIP
         id: package

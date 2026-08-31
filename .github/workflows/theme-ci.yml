@@ -33,7 +33,7 @@ jobs:
             sh -c "find . -type f -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l"
 
       - name: Validate JavaScript syntax
-        run: node --check assets/js/theme.js
+        run: find assets/js -type f -name '*.js' -print0 | xargs -0 -n1 node --check
 
       - name: Validate packaging script
         run: bash -n scripts/package-theme.sh

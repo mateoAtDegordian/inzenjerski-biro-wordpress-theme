@@ -18,6 +18,7 @@ Prijenosna custom WordPress tema izrađena prema Figma dokumentu **UI Design Ver
 - typewriter naslovi, animirani povijesni foto-stack i rotirajući Figma zupčanici uz podršku za smanjeno kretanje
 - lokalno spremljeni originalni Figma asseti; tema ne ovisi o privremenim Figma URL-ovima
 - lokalno hostani Inter variable font za svu tipografiju, bez vanjskog font CDN-a; Helvetica ostaje sistemski fallback
+- jedna globalna postavka završnog animiranog bannera, s podrškom za video i slikovne formate
 
 ## Instalacija
 
@@ -40,6 +41,7 @@ Postojeći sadržaj se pri ponovnoj aktivaciji ne briše niti prepisuje.
 - **Stranice → English**: engleska verzija koristi iste predloške kao hrvatska, dok su engleska događanja namjerno izostavljena.
 - **Engleska Karijera i Newsletter**: koriste iste shared predloške i Forminator obrasce, s engleskim poljima, privolama i validacijama.
 - **Umetanje blokova → Patterns → Inženjerski biro sekcije**: gotove modularne sekcije za nove stranice.
+- **Izgled → Postavke teme**: odabir ili zamjena zajedničkog završnog bannera zgrade. Jedan odabrani medij automatski se koristi na naslovnici, Konzaltingu, Kontaktu i Newsletteru, uključujući engleske varijante istih predložaka. Podržani su WEBM, MP4 i drugi WordPress video formati te JPG, PNG, WebP, GIF i SVG ako je SVG upload omogućen na instalaciji.
 - Opći WordPress sadržaj i politika privatnosti uređuju se kroz **Stranice**.
 
 E-mail obavijesti koristi Forminator preko standardnog WordPress `wp_mail()`. Na produkciji je preporučena konfiguracija SMTP plugina ili transakcijskog mail servisa. Analytics/API priključci dokumentirani su u [FORM-INTEGRATIONS.md](FORM-INTEGRATIONS.md).
