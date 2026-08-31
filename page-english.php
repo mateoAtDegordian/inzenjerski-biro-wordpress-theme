@@ -14,6 +14,9 @@ $template_map = array(
 	'legal-portal'             => 'page-pravni-portal.php',
 	'conferences-and-training' => 'page-savjetovanja-i-edukacije.php',
 	'contact'                  => 'page-kontakt.php',
+	'careers'                  => 'page-karijera.php',
+	'career-application'       => 'page-prijava-za-posao.php',
+	'newsletter'               => 'page-newsletter.php',
 );
 $shared_template = $template_map[ get_post_field( 'post_name', get_queried_object_id() ) ] ?? '';
 

@@ -41,8 +41,15 @@
 
 			<a class="contact-link" href="<?php echo esc_url( ingbiro_is_english() ? ingbiro_english_page_url( 'contact' ) : ingbiro_page_url( 'kontakt' ) ); ?>"><?php echo esc_html( ingbiro_is_english() ? 'Contact us' : 'Kontaktirajte nas' ); ?></a>
 
-			<button class="menu-toggle" type="button" aria-controls="site-navigation" aria-expanded="false">
-				<span></span>
+			<button
+				class="menu-toggle"
+				type="button"
+				aria-controls="site-navigation"
+				aria-expanded="false"
+				data-open-label="<?php echo esc_attr( ingbiro_is_english() ? 'Open menu' : 'Otvori meni' ); ?>"
+				data-close-label="<?php echo esc_attr( ingbiro_is_english() ? 'Close menu' : 'Zatvori meni' ); ?>"
+			>
+				<span class="menu-toggle__line" aria-hidden="true"></span>
 				<span class="screen-reader-text"><?php echo esc_html( ingbiro_is_english() ? 'Open menu' : 'Otvori meni' ); ?></span>
 			</button>
 		</div>

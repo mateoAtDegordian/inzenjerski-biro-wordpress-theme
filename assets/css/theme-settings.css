@@ -1,0 +1,62 @@
+.ingbiro-theme-settings {
+	max-width: 980px;
+}
+
+.ingbiro-media-setting {
+	max-width: 760px;
+}
+
+.ingbiro-media-preview {
+	width: min(100%, 720px);
+	aspect-ratio: var(--ingbiro-preview-aspect, 1138 / 640);
+	overflow: hidden;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	background: #fff4e5;
+}
+
+.ingbiro-media-preview__asset {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.ingbiro-media-setting__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+	margin: 14px 0 8px;
+}
+
+.ingbiro-media-setting .button-link-delete:disabled {
+	color: #a7aaad;
+	cursor: default;
+}
+
+.ingbiro-video-options {
+	display: grid;
+	gap: 12px;
+	max-width: 560px;
+}
+
+.ingbiro-video-options > label:not(.ingbiro-video-options__select) {
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+}
+
+.ingbiro-video-options__select {
+	display: grid;
+	grid-template-columns: minmax(150px, auto) minmax(180px, 1fr);
+	gap: 12px;
+	align-items: center;
+}
+
+@media (max-width: 782px) {
+	.ingbiro-video-options__select {
+		grid-template-columns: 1fr;
+	}
+}

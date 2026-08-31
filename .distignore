@@ -1,0 +1,16 @@
+.git
+.github
+.gitignore
+.distignore
+.DS_Store
+.playwright-cli
+README.md
+DEPLOYMENT.md
+FORM-INTEGRATIONS.md
+CHANGELOG.md
+scripts
+dist
+node_modules
+output
+tmp
+*.log

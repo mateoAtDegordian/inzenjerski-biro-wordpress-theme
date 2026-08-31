@@ -16,6 +16,7 @@ $events = new WP_Query(
 		'posts_per_page' => 6,
 		'post_status'    => 'publish',
 		'meta_key'       => 'ing_event_start_date',
+		'meta_query'     => ingbiro_active_event_meta_query(),
 		'orderby'        => 'meta_value',
 		'order'          => 'ASC',
 	)

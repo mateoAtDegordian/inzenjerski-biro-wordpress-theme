@@ -39,11 +39,16 @@ function ingbiro_render_form( $key, $class = '' ) {
 	$form_id = ingbiro_get_form_id( $key );
 
 	if ( $form_id && shortcode_exists( 'forminator_form' ) ) {
+		$previous_form_key                  = isset( $GLOBALS['ingbiro_form_render_key'] ) ? $GLOBALS['ingbiro_form_render_key'] : '';
+		$GLOBALS['ingbiro_form_render_key'] = $key;
+		$form_markup                       = do_shortcode( sprintf( '[forminator_form id="%d"]', $form_id ) );
+		$GLOBALS['ingbiro_form_render_key'] = $previous_form_key;
+
 		printf(
 			'<div class="ing-forminator ing-forminator--%1$s %2$s" data-form-key="%1$s">%3$s</div>',
 			esc_attr( $key ),
 			esc_attr( $class ),
-			do_shortcode( sprintf( '[forminator_form id="%d"]', $form_id ) ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$form_markup // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 		return;
 	}
@@ -54,6 +59,260 @@ function ingbiro_render_form( $key, $class = '' ) {
 }
 
 /**
+ * Return the published job selected for the career application.
+ */
+function ingbiro_get_career_application_job( $job_id = null ) {
+	if ( null === $job_id ) {
+		$job_id = isset( $_GET['job_id'] ) ? absint( wp_unslash( $_GET['job_id'] ) ) : 0;
+	}
+
+	$job = $job_id ? get_post( absint( $job_id ) ) : null;
+	if (
+		! $job instanceof WP_Post ||
+		'ing_job' !== $job->post_type ||
+		'publish' !== $job->post_status
+	) {
+		return null;
+	}
+
+	return $job;
+}
+
+/**
+ * Adapt the shared career form to its current application context.
+ *
+ * A specific job stores its title in the existing position field without
+ * asking the applicant to repeat it. The open application keeps the same
+ * field visible and labels it "Željena pozicija".
+ */
+function ingbiro_render_career_position_field( $wrappers, $form_id ) {
+	if (
+		'career' !== ( isset( $GLOBALS['ingbiro_form_render_key'] ) ? $GLOBALS['ingbiro_form_render_key'] : '' ) ||
+		ingbiro_get_form_id( 'career' ) !== absint( $form_id )
+	) {
+		return $wrappers;
+	}
+
+	$job          = ingbiro_get_career_application_job();
+	$position     = __( 'Željena pozicija', 'ingbiro' );
+	$job_id_added = false;
+
+	foreach ( $wrappers as &$wrapper ) {
+		if ( empty( $wrapper['fields'] ) || ! is_array( $wrapper['fields'] ) ) {
+			continue;
+		}
+
+		foreach ( $wrapper['fields'] as &$field ) {
+			$element_id = isset( $field['element_id'] ) ? $field['element_id'] : '';
+
+			if ( $job && 'url-1' === $element_id ) {
+				$field['cols'] = '12';
+			}
+
+			if ( 'text-3' !== $element_id ) {
+				continue;
+			}
+
+			if ( $job ) {
+				$field = array(
+					'element_id'   => 'text-3',
+					'type'         => 'hidden',
+					'cols'         => '12',
+					'required'     => 'false',
+					'field_label'  => __( 'Pozicija', 'ingbiro' ),
+					'default_value' => 'custom_value',
+					'custom_value' => $job->post_title,
+				);
+
+				$wrapper['fields'][] = array(
+					'element_id'    => 'ingbiro_job_id',
+					'type'          => 'hidden',
+					'cols'          => '12',
+					'required'      => 'false',
+					'field_label'   => __( 'ID pozicije', 'ingbiro' ),
+					'default_value' => 'custom_value',
+					'custom_value'  => (string) $job->ID,
+				);
+				$job_id_added = true;
+			} else {
+				$field['field_label'] = $position;
+				$field['placeholder'] = $position;
+			}
+		}
+		unset( $field );
+
+		if ( $job_id_added ) {
+			break;
+		}
+	}
+	unset( $wrapper );
+
+	return $wrappers;
+}
+add_filter( 'forminator_cform_render_fields', 'ingbiro_render_career_position_field', 20, 2 );
+
+/**
+ * Detect the language of the page that rendered or submitted a Forminator form.
+ *
+ * AJAX submissions do not have a queried WordPress page, so the English form
+ * adds a small language marker to its regular Forminator payload.
+ */
+function ingbiro_form_request_is_english() {
+	if ( isset( $_POST['ingbiro_form_language'] ) ) {
+		return 'en' === sanitize_key( wp_unslash( $_POST['ingbiro_form_language'] ) );
+	}
+
+	return function_exists( 'ingbiro_is_english' ) && ingbiro_is_english();
+}
+
+/**
+ * English equivalents for labels and custom messages stored in Forminator.
+ *
+ * The database remains Croatian and editable as one shared form. These values
+ * are applied only to the public English render.
+ */
+function ingbiro_form_english_strings() {
+	return array(
+		'Ime'                                           => 'First name',
+		'Prezime'                                       => 'Last name',
+		'Ime i prezime'                                 => 'Full name',
+		'Srednje ime'                                   => 'Middle name',
+		'Titula'                                        => 'Title',
+		'Broj telefona'                                 => 'Phone number',
+		'Tvrtka / organizacija'                         => 'Company / organization',
+		'Tvrtka / institucija'                          => 'Company / institution',
+		'Tvrtka'                                        => 'Company',
+		'Grad'                                          => 'City',
+		'Država'                                        => 'Country',
+		'Vaš e-mail'                                    => 'Your email',
+		'Vaša poruka'                                   => 'Your message',
+		'Napomena'                                      => 'Note',
+		'Željena pozicija'                              => 'Desired position',
+		'Pozicija'                                      => 'Position',
+		'ID pozicije'                                   => 'Position ID',
+		'Životopis (PDF, DOC ili DOCX)'                 => 'CV / résumé (PDF, DOC or DOCX)',
+		'Kratko motivacijsko pismo'                     => 'Short cover letter',
+		'Savjetovanju ću prisustvovati'                 => 'I will attend the conference',
+		'Uživo'                                         => 'In person',
+		'Online'                                        => 'Online',
+		'Naručitelj'                                    => 'Purchaser',
+		'Naziv'                                         => 'Name',
+		'Adresa'                                        => 'Address',
+		'Mjesto'                                        => 'City',
+		'Telefon'                                       => 'Phone',
+		'Broj narudžbenice'                             => 'Purchase order number',
+		'Naznačiti broj isključivo ako se plaćanje vrši putem narudžbenice.' => 'Enter the number only if payment is made by purchase order.',
+		'Prijavljujem sljedeće osobe'                   => 'I am registering the following participants',
+		'Dodaj još osoba'                               => 'Add another participant',
+		'Ukloni osobu'                                  => 'Remove participant',
+		'Naknadu plaćamo'                               => 'Payment method',
+		'Virmanom'                                      => 'Bank transfer',
+		'Gotovinom'                                     => 'Cash',
+		'Prijavite se'                                  => 'Register',
+		'Pošaljite upit'                                => 'Send enquiry',
+		'Pretplatite se'                                => 'Subscribe',
+		'Pošaljite prijavu'                             => 'Submit application',
+		'Provjerite označena polja i pokušajte ponovno.' => 'Please check the highlighted fields and try again.',
+		'Hvala! Vaš upit je poslan.'                    => 'Thank you! Your enquiry has been sent.',
+		'Hvala! Uspješno ste se prijavili na newsletter.' => 'Thank you! You have successfully subscribed to the newsletter.',
+		'Hvala! Vaša prijava je zaprimljena.'           => 'Thank you! Your application has been received.',
+		'Ovo polje je obavezno.'                        => 'This field is required.',
+		'Unesite e-mail adresu.'                        => 'Enter your email address.',
+		'Unesite ispravnu e-mail adresu.'               => 'Enter a valid email address.',
+		'Unesite broj telefona.'                        => 'Enter your phone number.',
+		'Unesite ispravan broj telefona.'               => 'Enter a valid phone number.',
+		'Unesite poveznicu.'                            => 'Enter a URL.',
+		'Unesite ispravnu poveznicu (npr. https://primjer.hr/).' => 'Enter a valid URL (e.g. https://example.com/).',
+		'Unesite LinkedIn ili portfolio poveznicu.'     => 'Enter your LinkedIn or portfolio URL.',
+		'Unesite željenu poziciju.'                     => 'Enter the desired position.',
+		'Unesite naziv tvrtke.'                         => 'Enter the company name.',
+		'Dodajte životopis.'                            => 'Upload your CV / résumé.',
+		'Unesite kratko motivacijsko pismo.'            => 'Enter a short cover letter.',
+		'Dodajte traženu datoteku.'                     => 'Upload the required file.',
+		'Provjerite označena polja prije slanja.'       => 'Please correct the highlighted fields before submitting.',
+		'Slanje obrasca je u tijeku, pričekajte.'       => 'Submitting form, please wait.',
+		'Slanje...'                                     => 'Submitting...',
+		'Pokušajte ponovno.'                            => 'Please try again.',
+		'Prethodno'                                     => 'Previous',
+		'Sljedeće'                                      => 'Next',
+		'Pošalji'                                       => 'Submit',
+		'Odaberite datoteku'                            => 'Choose File',
+		'Datoteka nije odabrana'                        => 'No file chosen',
+		'Ukloni odabranu datoteku'                      => 'Delete uploaded file',
+		'Uredi obrazac'                                 => 'Edit form',
+	);
+}
+
+/**
+ * Recursively translate Forminator field settings without changing the saved
+ * form configuration in the WordPress dashboard.
+ */
+function ingbiro_translate_forminator_field_values( $values ) {
+	$translations = ingbiro_form_english_strings();
+
+	foreach ( $values as $key => $value ) {
+		if ( is_array( $value ) ) {
+			$values[ $key ] = ingbiro_translate_forminator_field_values( $value );
+		} elseif ( is_string( $value ) && isset( $translations[ $value ] ) ) {
+			$values[ $key ] = $translations[ $value ];
+		}
+	}
+
+	return $values;
+}
+
+/**
+ * Localize all labels, placeholders and custom field validation messages on
+ * English pages.
+ */
+function ingbiro_translate_forminator_fields_to_english( $wrappers, $form_id ) {
+	unset( $form_id );
+
+	if ( ! ingbiro_form_request_is_english() ) {
+		return $wrappers;
+	}
+
+	return ingbiro_translate_forminator_field_values( $wrappers );
+}
+add_filter( 'forminator_cform_render_fields', 'ingbiro_translate_forminator_fields_to_english', 40, 2 );
+
+/**
+ * Replace the submitted position with the authoritative title from WordPress.
+ */
+function ingbiro_store_career_position( $field_data, $form_id ) {
+	if ( ingbiro_get_form_id( 'career' ) !== absint( $form_id ) ) {
+		return $field_data;
+	}
+
+	$job_id = isset( $_POST['ingbiro_job_id'] ) ? absint( wp_unslash( $_POST['ingbiro_job_id'] ) ) : 0;
+	$job    = ingbiro_get_career_application_job( $job_id );
+
+	if ( ! $job ) {
+		return $field_data;
+	}
+
+	$position_found = false;
+	foreach ( $field_data as &$field ) {
+		if ( isset( $field['name'] ) && 'text-3' === $field['name'] ) {
+			$field['value']   = $job->post_title;
+			$position_found   = true;
+			break;
+		}
+	}
+	unset( $field );
+
+	if ( ! $position_found ) {
+		$field_data[] = array(
+			'name'  => 'text-3',
+			'value' => $job->post_title,
+		);
+	}
+
+	return $field_data;
+}
+add_filter( 'forminator_custom_form_submit_field_data', 'ingbiro_store_career_position', 20, 2 );
+
+/**
  * Small helpers keep the generated forms readable and editable in Forminator.
  */
 function ingbiro_form_text_field( $id, $label, $cols = '6', $required = false, $type = 'text' ) {
@@ -61,7 +320,7 @@ function ingbiro_form_text_field( $id, $label, $cols = '6', $required = false, $
 		'element_id'  => $id,
 		'type'        => $type,
 		'cols'        => $cols,
-		'required'    => $required ? 'true' : 'false',
+		'required'    => (bool) $required,
 		'field_label' => $label,
 		'placeholder' => $label,
 	);
@@ -82,10 +341,145 @@ function ingbiro_form_text_field( $id, $label, $cols = '6', $required = false, $
 
 function ingbiro_form_wrapper( $id, $fields ) {
 	return array(
-		'wrapper_id' => 'ingbiro-' . $id,
+		'wrapper_id' => 'wrapper-' . sprintf( '%u', crc32( 'ingbiro-' . $id ) ) . '-1',
 		'fields'     => $fields,
 	);
 }
+
+/**
+ * Add the legally required consent to every managed form at render time.
+ * This keeps one editable Forminator form per use case while allowing links
+ * and copy to follow the active HR/EN page.
+ */
+function ingbiro_add_form_consent( $wrappers, $form_id ) {
+	$key = '';
+	foreach ( array( 'contact', 'newsletter', 'quick', 'career', 'event' ) as $candidate ) {
+		if ( ingbiro_get_form_id( $candidate ) === absint( $form_id ) ) {
+			$key = $candidate;
+			break;
+		}
+	}
+	if ( ! $key ) {
+		return $wrappers;
+	}
+
+	$english = ingbiro_form_request_is_english();
+	$privacy = ingbiro_legal_url( 'privacy', $english ? 'en' : 'hr' );
+	$terms   = ingbiro_legal_url( 'terms', $english ? 'en' : 'hr' );
+	$label   = $english ? 'Privacy consent' : 'Privola';
+
+	if ( 'career' === $key ) {
+		$label = $english ? 'Processing of personal data submitted with an open application' : 'Obrada podataka iz otvorene prijave';
+		$description = $english
+			? 'The Data Controller is INŽENJERSKI BIRO d.o.o., Ulica Vjekoslava Heinzela 4A, and the processing is carried out for the purpose of possible employment (Article 6(1)(a) GDPR). By submitting an open application, you consent to the data provided being retained for 12 months from the date of submission, after which it will be permanently deleted. During the retention period, you have the right of access, rectification, erasure, restriction, portability and objection. You may withdraw your consent at any time by e-mailing <a href="mailto:zop@ingbiro.hr">zop@ingbiro.hr</a>, without affecting the lawfulness of processing carried out before withdrawal, and you may lodge a complaint with the Croatian Personal Data Protection Agency (<a href="https://azop.hr" target="_blank" rel="noopener noreferrer">azop.hr</a>).'
+			: 'Voditelj obrade je INŽENJERSKI BIRO d.o.o., Ulica Vjekoslava Heinzela 4A te se obrada provodi u svrhu eventualnog zapošljavanja (čl. 6., stavak 1(a), GDPR-a). Slanjem otvorene prijave pristajete da se Vaši dostavljeni podaci čuvaju 12 mjeseci od dana slanja, nakon čega se trajno brišu. Imate pravo na pristup, ispravak, brisanje, ograničenje, prenosivost i prigovor tijekom vremena čuvanja Vaših podataka. Privolu možete povući u svakom trenutku na e-mail adresu <a href="mailto:zop@ingbiro.hr">zop@ingbiro.hr</a> bez utjecaja na zakonitost prethodne obrade, a pritužbu možete podnijeti Agenciji za zaštitu osobnih podataka (<a href="https://azop.hr" target="_blank" rel="noopener noreferrer">azop.hr</a>).';
+	} elseif ( 'event' === $key ) {
+		$description = $english
+			? sprintf( 'I have read the <a href="%1$s" target="_blank">Privacy Policy</a> and accept the <a href="%2$s" target="_blank">General Terms and Conditions</a>.', esc_url( $privacy ), esc_url( $terms ) )
+			: sprintf( 'Upoznat/a sam s <a href="%1$s" target="_blank">Politikom privatnosti</a> i prihvaćam <a href="%2$s" target="_blank">Opće uvjete poslovanja</a>.', esc_url( $privacy ), esc_url( $terms ) );
+	} else {
+		$description = $english
+			? sprintf( 'I have read the <a href="%s" target="_blank">Privacy Policy</a>.', esc_url( $privacy ) )
+			: sprintf( 'Upoznat/a sam s <a href="%s" target="_blank">Politikom privatnosti</a>.', esc_url( $privacy ) );
+	}
+
+	$wrappers[] = ingbiro_form_wrapper(
+		$key . '-consent',
+		array(
+			array(
+				'element_id'          => 'consent-1',
+				'type'                => 'consent',
+				'cols'                => '12',
+				'required'            => 'true',
+				'field_label'         => $label,
+				'validation'          => true,
+				'validation_text'     => '',
+				'consent_description' => $description,
+			),
+		)
+	);
+	return $wrappers;
+}
+add_filter( 'forminator_cform_render_fields', 'ingbiro_add_form_consent', 30, 2 );
+
+/**
+ * Event registration fields based on the current LING conference form.
+ */
+function ingbiro_event_form_fields() {
+	return array(
+		ingbiro_form_wrapper( 'event-attendance', array(
+			array(
+				'element_id' => 'radio-1', 'type' => 'radio', 'cols' => '12', 'required' => 'true',
+				'field_label' => __( 'Savjetovanju ću prisustvovati', 'ingbiro' ), 'value_type' => 'radio',
+				'options' => array(
+					array( 'label' => __( 'Uživo', 'ingbiro' ), 'value' => 'uzivo' ),
+					array( 'label' => __( 'Online', 'ingbiro' ), 'value' => 'online' ),
+				),
+			),
+		) ),
+		ingbiro_form_wrapper( 'event-primary-email', array(
+			ingbiro_form_text_field( 'email-2', __( 'E-mail', 'ingbiro' ), '12', true, 'email' ),
+		) ),
+		ingbiro_form_wrapper( 'event-purchaser-heading', array(
+			array( 'element_id' => 'html-1', 'type' => 'html', 'cols' => '12', 'field_label' => '', 'variations' => '<h3>' . esc_html__( 'Naručitelj', 'ingbiro' ) . '</h3>' ),
+		) ),
+		ingbiro_form_wrapper( 'event-purchaser-name', array(
+			ingbiro_form_text_field( 'text-1', __( 'Naziv', 'ingbiro' ), '6', true ),
+			ingbiro_form_text_field( 'text-2', __( 'Adresa', 'ingbiro' ), '6', true ),
+		) ),
+		ingbiro_form_wrapper( 'event-purchaser-place', array(
+			ingbiro_form_text_field( 'text-3', __( 'Mjesto', 'ingbiro' ), '6', true ),
+			ingbiro_form_text_field( 'phone-1', __( 'Telefon', 'ingbiro' ), '6', true, 'phone' ),
+		) ),
+		ingbiro_form_wrapper( 'event-purchaser-data', array(
+			ingbiro_form_text_field( 'text-4', __( 'OIB', 'ingbiro' ), '6', true ),
+			array_merge( ingbiro_form_text_field( 'text-5', __( 'Broj narudžbenice', 'ingbiro' ), '6', false ), array( 'description' => __( 'Naznačiti broj isključivo ako se plaćanje vrši putem narudžbenice.', 'ingbiro' ) ) ),
+		) ),
+		ingbiro_form_wrapper( 'event-participants', array(
+			array(
+				'element_id' => 'group-1', 'type' => 'group', 'cols' => '12', 'field_label' => __( 'Prijavljujem sljedeće osobe', 'ingbiro' ),
+				'is_repeater' => 'true', 'min_type' => 'custom', 'min_limit' => 1, 'max_type' => 'custom', 'max_limit' => 10,
+				'action_element_type' => 'button', 'add_action_text' => __( 'Dodaj još osoba', 'ingbiro' ), 'remove_action_text' => __( 'Ukloni osobu', 'ingbiro' ),
+			),
+		) ),
+		array(
+			'wrapper_id' => 'wrapper-' . sprintf( '%u', crc32( 'ingbiro-event-participant-row' ) ) . '-1', 'parent_group' => 'group-1',
+			'fields' => array(
+				ingbiro_form_text_field( 'text-6', __( 'Ime i prezime', 'ingbiro' ), '6', true ),
+				ingbiro_form_text_field( 'email-1', __( 'E-mail', 'ingbiro' ), '6', true, 'email' ),
+			),
+		),
+		ingbiro_form_wrapper( 'event-payment', array(
+			array(
+				'element_id' => 'radio-2', 'type' => 'radio', 'cols' => '12', 'required' => 'true',
+				'field_label' => __( 'Naknadu plaćamo', 'ingbiro' ), 'value_type' => 'radio',
+				'options' => array(
+					array( 'label' => __( 'Virmanom', 'ingbiro' ), 'value' => 'virmanom' ),
+					array( 'label' => __( 'Gotovinom', 'ingbiro' ), 'value' => 'gotovinom' ),
+				),
+			),
+		) )
+	);
+}
+
+function ingbiro_migrate_event_form() {
+	if ( version_compare( (string) get_option( 'ingbiro_event_form_schema_version', '0' ), '2.0.2', '>=' ) || ! class_exists( 'Forminator_API' ) ) {
+		return;
+	}
+	$form_id = ingbiro_get_form_id( 'event' );
+	$model   = $form_id ? Forminator_Base_Form_Model::get_model( $form_id ) : null;
+	if ( ! $model ) {
+		return;
+	}
+	$settings = $model->settings;
+	$settings['formName'] = __( 'Prijava na događanje', 'ingbiro' );
+	$settings['submitData']['custom-submit-text'] = __( 'Prijavite se', 'ingbiro' );
+	$result = Forminator_API::update_form( $form_id, ingbiro_event_form_fields(), $settings, '', $model->notifications );
+	if ( ! is_wp_error( $result ) ) {
+		update_option( 'ingbiro_event_form_schema_version', '2.0.2' );
+	}
+}
+add_action( 'admin_init', 'ingbiro_migrate_event_form', 45 );
 
 /**
  * Create one managed form from the shared Forminator contact template.
@@ -206,11 +600,11 @@ function ingbiro_create_managed_forms() {
 				ingbiro_form_text_field( 'phone-1', __( 'Broj telefona', 'ingbiro' ), '6', false, 'phone' ),
 			) ),
 			ingbiro_form_wrapper( 'career-profile', array(
-				ingbiro_form_text_field( 'url-1', __( 'LinkedIn / portfolio', 'ingbiro' ), '6', false, 'url' ),
-				ingbiro_form_text_field( 'text-3', __( 'Pozicija', 'ingbiro' ), '6', false ),
+				ingbiro_form_text_field( 'url-1', __( 'LinkedIn / portfolio', 'ingbiro' ), '6', true, 'url' ),
+				ingbiro_form_text_field( 'text-3', __( 'Željena pozicija', 'ingbiro' ), '6', true ),
 			) ),
 			ingbiro_form_wrapper( 'career-company', array(
-				ingbiro_form_text_field( 'text-4', __( 'Tvrtka', 'ingbiro' ), '6', false ),
+				ingbiro_form_text_field( 'text-4', __( 'Tvrtka', 'ingbiro' ), '6', true ),
 				array(
 					'element_id'  => 'upload-1',
 					'type'        => 'upload',
@@ -240,6 +634,180 @@ function ingbiro_create_managed_forms() {
 	update_option( 'ingbiro_managed_forms_version', '1.2.0' );
 }
 add_action( 'admin_init', 'ingbiro_create_managed_forms', 20 );
+
+/**
+ * Bring already provisioned career forms in line with their visible labels.
+ *
+ * This runs once and updates the real Forminator configuration, after which
+ * administrators can continue editing the fields normally in Forminator.
+ */
+function ingbiro_migrate_managed_form_validations() {
+	if (
+		'1.0.0' === get_option( 'ingbiro_managed_forms_validation_version' ) ||
+		! class_exists( 'Forminator_API' )
+	) {
+		return;
+	}
+
+	$form_id = ingbiro_get_form_id( 'career' );
+	if ( ! $form_id ) {
+		return;
+	}
+
+	$updates = array(
+		'url-1'      => array(
+			'required'           => 'true',
+			'required_message'   => __( 'Unesite LinkedIn ili portfolio poveznicu.', 'ingbiro' ),
+			'validation_message' => __( 'Unesite ispravnu poveznicu (npr. https://primjer.hr/).', 'ingbiro' ),
+		),
+		'text-3'     => array(
+			'required'         => 'true',
+			'field_label'      => __( 'Željena pozicija', 'ingbiro' ),
+			'placeholder'      => __( 'Željena pozicija', 'ingbiro' ),
+			'required_message' => __( 'Unesite željenu poziciju.', 'ingbiro' ),
+		),
+		'text-4'     => array(
+			'required'         => 'true',
+			'required_message' => __( 'Unesite naziv tvrtke.', 'ingbiro' ),
+		),
+		'upload-1'   => array(
+			'required_message' => __( 'Dodajte životopis.', 'ingbiro' ),
+		),
+		'textarea-1' => array(
+			'required_message' => __( 'Unesite kratko motivacijsko pismo.', 'ingbiro' ),
+		),
+	);
+
+	foreach ( $updates as $field_id => $settings ) {
+		$result = Forminator_API::update_form_field( $form_id, $field_id, $settings );
+		if ( is_wp_error( $result ) ) {
+			return;
+		}
+	}
+
+	update_option( 'ingbiro_managed_forms_validation_version', '1.0.0' );
+}
+add_action( 'admin_init', 'ingbiro_migrate_managed_form_validations', 30 );
+
+/**
+ * Translate Forminator's public validation and upload messages.
+ *
+ * The managed forms deliberately keep Forminator's native validation so they
+ * remain editable and integration-friendly. These translations cover both
+ * inline browser validation and AJAX/server responses.
+ */
+function ingbiro_translate_forminator_message( $translated, $text, $domain ) {
+	if ( 'forminator' !== $domain || ( is_admin() && ! wp_doing_ajax() ) ) {
+		return $translated;
+	}
+
+	/*
+	 * Forminator's source strings are English. Return those originals on the
+	 * English site even when the WordPress installation locale is Croatian.
+	 */
+	if ( ingbiro_form_request_is_english() ) {
+		return $text;
+	}
+
+	$translations = array(
+		'This field is required. Please enter text.'                              => 'Ovo polje je obavezno.',
+		'This field is required. Please input a valid email.'                     => 'Unesite e-mail adresu.',
+		'This is not a valid email.'                                               => 'Unesite ispravnu e-mail adresu.',
+		'This email is not allowed. Please use a different one.'                  => 'Ova e-mail adresa nije dopuštena. Upotrijebite drugu adresu.',
+		'You must confirm your email address'                                     => 'Potvrdite svoju e-mail adresu.',
+		'Your email addresses do not match'                                       => 'Unesene e-mail adrese se ne podudaraju.',
+		'This field is required. Please input a phone number.'                     => 'Unesite broj telefona.',
+		'Please input a valid phone number.'                                      => 'Unesite ispravan broj telefona.',
+		'Please enter a valid phone number.'                                      => 'Unesite ispravan broj telefona.',
+		'Please input a valid international phone number.'                        => 'Unesite ispravan međunarodni broj telefona.',
+		'Invalid phone number. %s'                                                 => 'Neispravan broj telefona. %s',
+		'You exceeded the allowed amount of numbers. Please check again.'          => 'Unijeli ste previše znamenki. Provjerite broj telefona.',
+		'This field is required. Please input a valid URL'                         => 'Unesite poveznicu.',
+		'Please enter a valid Website URL (e.g. https://wpmudev.com/).'             => 'Unesite ispravnu poveznicu (npr. https://primjer.hr/).',
+		'This field is required. Please upload a file.'                            => 'Dodajte traženu datoteku.',
+		'Error saving form. Uploaded file extension is not allowed.'               => 'Odabrana vrsta datoteke nije dopuštena.',
+		'Error saving form. Failed to read uploaded file.'                         => 'Datoteku nije moguće pročitati. Pokušajte ponovno.',
+		'Error saving form. Upload error.'                                         => 'Prijenos datoteke nije uspio. Pokušajte ponovno.',
+		'Sorry, you are not allowed to upload this file type.'                     => 'Ova vrsta datoteke nije dopuštena.',
+		'The attached file is empty and can\'t be uploaded.'                       => 'Odabrana datoteka je prazna i nije je moguće prenijeti.',
+		'file extension is not allowed.'                                           => 'vrsta datoteke nije dopuštena.',
+		'.%s file extension is not allowed.'                                       => 'Datoteke vrste .%s nisu dopuštene.',
+		'You can upload a maximum of %d files.'                                    => 'Možete prenijeti najviše %d datoteka.',
+		'Maximum file size allowed is %s. '                                        => 'Najveća dopuštena veličina datoteke je %s.',
+		'This field is required. Please input your name.'                          => 'Unesite ime i prezime.',
+		'This field is required. Please input your first name.'                    => 'Unesite ime.',
+		'This field is required. Please input your middle name.'                   => 'Unesite srednje ime.',
+		'This field is required. Please input your last name.'                     => 'Unesite prezime.',
+		'Prefix is required.'                                                      => 'Unesite titulu.',
+		'This field is required. Please select a value.'                           => 'Odaberite jednu od ponuđenih vrijednosti.',
+		'Please, enter a custom value'                                             => 'Unesite vlastitu vrijednost.',
+		'Selected value does not exist.'                                           => 'Odabrana vrijednost ne postoji.',
+		'This field is required. Please check it.'                                 => 'Ovo polje je obavezno.',
+		'This field is required. Please enter number.'                             => 'Unesite broj.',
+		'This is not valid number.'                                                => 'Unesite ispravan broj.',
+		'Please enter a value greater than or equal to {0}.'                       => 'Unesite vrijednost veću od ili jednaku {0}.',
+		'Please enter a value less than or equal to {0}.'                          => 'Unesite vrijednost manju od ili jednaku {0}.',
+		'You exceeded the allowed amount of characters. Please check again.'       => 'Unijeli ste previše znakova. Skratite unos.',
+		'You exceeded the allowed amount of words. Please check again.'            => 'Unijeli ste previše riječi. Skratite unos.',
+		'Please correct the errors before submission.'                             => 'Provjerite označena polja prije slanja.',
+		'Submitting form, please wait'                                             => 'Slanje obrasca je u tijeku, pričekajte.',
+		'Submitting...'                                                            => 'Slanje...',
+		'An error occurred while processing the form. Please try again'            => 'Došlo je do pogreške pri obradi obrasca. Pokušajte ponovno.',
+		'An upload error occurred while processing the form. Please try again'     => 'Došlo je do pogreške pri prijenosu datoteke. Pokušajte ponovno.',
+		'Please try again'                                                         => 'Pokušajte ponovno.',
+		'Invalid CAPTCHA'                                                          => 'CAPTCHA provjera nije uspjela.',
+		'Previous'                                                                 => 'Prethodno',
+		'Next'                                                                     => 'Sljedeće',
+		'Submit'                                                                   => 'Pošalji',
+		'Choose File'                                                              => 'Odaberite datoteku',
+		'No file chosen'                                                           => 'Datoteka nije odabrana',
+		'Delete uploaded file'                                                     => 'Ukloni odabranu datoteku',
+		'Edit form'                                                                => 'Uredi obrazac',
+	);
+
+	return isset( $translations[ $text ] ) ? $translations[ $text ] : $translated;
+}
+add_filter( 'gettext', 'ingbiro_translate_forminator_message', 20, 3 );
+
+/**
+ * Translate the saved submit label and include the language in AJAX requests.
+ */
+function ingbiro_translate_forminator_submit_markup( $html, $form_id, $post_id, $nonce, $settings ) {
+	unset( $form_id, $post_id, $nonce, $settings );
+
+	if ( ! ingbiro_form_request_is_english() ) {
+		return $html;
+	}
+
+	foreach ( ingbiro_form_english_strings() as $croatian => $english ) {
+		$html = str_replace(
+			array(
+				$croatian,
+				htmlentities( $croatian, ENT_QUOTES, 'UTF-8' ),
+			),
+			esc_html( $english ),
+			$html
+		);
+	}
+	$html .= '<input type="hidden" name="ingbiro_form_language" value="en">';
+
+	return $html;
+}
+add_filter( 'forminator_render_form_submit_markup', 'ingbiro_translate_forminator_submit_markup', 20, 5 );
+
+/**
+ * Translate custom database-backed Forminator response messages after submit.
+ */
+function ingbiro_translate_forminator_response_to_english( $message ) {
+	if ( ! ingbiro_form_request_is_english() ) {
+		return $message;
+	}
+
+	$translations = ingbiro_form_english_strings();
+	return isset( $translations[ $message ] ) ? $translations[ $message ] : $message;
+}
+add_filter( 'forminator_custom_form_invalid_form_message', 'ingbiro_translate_forminator_response_to_english', 20 );
+add_filter( 'forminator_custom_form_thankyou_message', 'ingbiro_translate_forminator_response_to_english', 20 );
 
 /**
  * Stable server-side integration point for future CRM/API code.

@@ -10,7 +10,8 @@ get_header();
 while ( have_posts() ) :
 	the_post();
 	$event_id            = get_the_ID();
-	$registration_active = (bool) get_post_meta( $event_id, 'ing_event_registration_enabled', true );
+	$is_archived         = ingbiro_is_event_archived( $event_id );
+	$registration_active = ! $is_archived && (bool) get_post_meta( $event_id, 'ing_event_registration_enabled', true );
 	$format_parts        = preg_split( '/\s*[·|]\s*/', (string) get_post_meta( $event_id, 'ing_event_format', true ) );
 	$related_events      = new WP_Query(
 		array(
@@ -19,6 +20,7 @@ while ( have_posts() ) :
 			'posts_per_page' => 3,
 			'post__not_in'   => array( $event_id ),
 			'meta_key'       => 'ing_event_start_date',
+			'meta_query'     => ingbiro_active_event_meta_query(),
 			'orderby'        => 'meta_value',
 			'order'          => 'ASC',
 		)
@@ -28,7 +30,7 @@ while ( have_posts() ) :
 		<article class="event-single">
 			<header class="event-single__hero">
 				<div class="container">
-					<a class="back-link" href="<?php echo esc_url( ingbiro_page_url( 'savjetovanja-i-edukacije' ) ); ?>">← <span>Natrag</span></a>
+					<a class="back-link" href="<?php echo esc_url( ingbiro_page_url( $is_archived ? 'arhiva' : 'savjetovanja-i-edukacije' ) ); ?>">← <span>Natrag</span></a>
 					<h1><?php the_title(); ?></h1>
 					<div class="event-single__meta-row">
 						<div class="tag-list">
@@ -81,12 +83,12 @@ while ( have_posts() ) :
 
 			<section class="event-download">
 				<div class="container event-download__inner">
-					<div>
-						<?php ingbiro_section_label( 'Dokument događanja' ); ?>
+					<div class="event-download__copy">
+						<?php ingbiro_section_label( 'Dokument događanja', true ); ?>
 						<h2>Sve informacije u uređenom PDF dokumentu</h2>
 						<p>PDF se generira iz aktualnih podataka i Gutenberg sadržaja ovog događanja.</p>
 					</div>
-					<?php ingbiro_button( 'Preuzmite informacije kao PDF', ingbiro_event_pdf_url( $event_id ), 'pill-button--blue pill-button--download' ); ?>
+					<?php ingbiro_button( 'Preuzmite informacije kao PDF', ingbiro_event_pdf_url( $event_id ), 'pill-button--cream pill-button--download' ); ?>
 				</div>
 			</section>
 
@@ -95,10 +97,15 @@ while ( have_posts() ) :
 					<div class="container">
 						<div class="event-registration__heading">
 							<?php ingbiro_section_label( 'Prijava' ); ?>
-							<h2>Prijavite se za edukaciju</h2>
+							<h2>Prijava na događanje</h2>
 							<p>Polja i poruke ove forme uređuju se u Forminatoru, a prijave ostaju dostupne u WordPress dashboardu.</p>
 						</div>
 						<?php ingbiro_render_event_form( $event_id ); ?>
+						<div class="event-registration__fineprint">
+							<p><strong>Podaci za uplatu:</strong><br>IBAN: HR2323400091100205049 (Privredna banka d.d.), SWIFT: PBZGHR2X<br>za INŽENJERSKI BIRO d.o.o. Zagreb.</p>
+							<p>Gore navedena e-mail adresa koristit će se za slanje materijala s webinara i obavijesti o nadolazećim događajima.</p>
+							<p>Napominjemo da postoji mogućnost da na događaju budete fotografirani ili snimljeni, kao i da te fotografije, odnosno snimke, budu objavljene na našim internetskim stranicama i profilima na društvenim mrežama. Ako ne želite da koristimo Vaše fotografije i/ili snimke za promotivne aktivnosti, molimo da se javite našem osoblju na događaju. Ako to ne učinite, smatra se da ste dali pristanak. Zahvaljujemo na razumijevanju.</p>
+						</div>
 					</div>
 				</section>
 			<?php endif; ?>

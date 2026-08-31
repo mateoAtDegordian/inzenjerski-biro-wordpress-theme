@@ -11,20 +11,23 @@ if ( ! $ingbiro_embedded_template ) {
 }
 ?>
 <main id="main" class="page-main">
-	<section class="page-hero">
+	<section class="page-hero page-hero--portal">
 		<div class="container">
 			<div class="page-hero__copy">
-				<h1>Pravni portal<br>LING</h1>
+				<h1 class="page-hero__title--portal">Pravni portal LING</h1>
 				<div class="page-hero__aside">
 					<p>Pravni portal nove generacije, dizajniran da zadovolji sve potrebe modernih pravnih profesionalaca, od sudaca, odvjetnika i javnih bilježnika preko pravnika u gospodarstvu, do djelatnika državnih i lokalnih institucija.</p>
 					<?php ingbiro_button( 'Posjetite portal', 'https://ling.hr/' ); ?>
 				</div>
 			</div>
-			<div class="portal-video">
-				<video controls playsinline preload="metadata" poster="<?php echo esc_url( ingbiro_asset( 'images/ling-video-poster.jpg' ) ); ?>">
-					<source src="<?php echo esc_url( ingbiro_asset( 'video/ling-promo.mp4' ) ); ?>" type="video/mp4">
-					Vaš preglednik ne podržava HTML5 video.
-				</video>
+			<div class="cinematic-scroll" data-cinematic-scroll>
+				<div class="cinematic-scroll__sticky">
+					<div class="portal-video cinematic-scroll__media">
+						<video data-cinematic-video autoplay muted loop playsinline preload="metadata" poster="<?php echo esc_url( ingbiro_asset( 'images/ling-video-poster.jpg' ) ); ?>" aria-hidden="true" tabindex="-1">
+							<source src="<?php echo esc_url( ingbiro_asset( 'video/ling-promo.mp4' ) ); ?>" type="video/mp4">
+						</video>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>

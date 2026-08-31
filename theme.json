@@ -20,12 +20,12 @@
       "fontFamilies": [
         {
           "slug": "sans",
-          "name": "Helvetica",
-          "fontFamily": "\"Helvetica Neue\", Helvetica, Arial, sans-serif"
+          "name": "Inter",
+          "fontFamily": "Inter, Helvetica, sans-serif"
         },
         {
           "slug": "mono",
-          "name": "Mono",
+          "name": "JetBrains Mono",
           "fontFamily": "\"JetBrains Mono\", \"SFMono-Regular\", Consolas, monospace"
         }
       ]
