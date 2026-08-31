@@ -35,3 +35,28 @@
 	color: #a7aaad;
 	cursor: default;
 }
+
+.ingbiro-video-options {
+	display: grid;
+	gap: 12px;
+	max-width: 560px;
+}
+
+.ingbiro-video-options > label:not(.ingbiro-video-options__select) {
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+}
+
+.ingbiro-video-options__select {
+	display: grid;
+	grid-template-columns: minmax(150px, auto) minmax(180px, 1fr);
+	gap: 12px;
+	align-items: center;
+}
+
+@media (max-width: 782px) {
+	.ingbiro-video-options__select {
+		grid-template-columns: 1fr;
+	}
+}

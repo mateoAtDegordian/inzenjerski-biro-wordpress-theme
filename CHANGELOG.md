@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.24 — 2026-08-31
+
+- Globalna postavka bannera sada omogućuje uključivanje ili isključivanje autoplay, loop, muted, video kontrola i inline reprodukcije.
+- Dodan je izbor načina učitavanja videa: automatski, samo metadata ili bez unaprijednog učitavanja.
+- Backend pregled odabranog videa uživo prati promjene postavki prije spremanja.
+
 ## 1.9.23 — 2026-08-31
 
 - Završna SVG ilustracija zgrade zamijenjena je dostavljenom lokalnom WEBM animacijom u izvornom 16:9 omjeru.

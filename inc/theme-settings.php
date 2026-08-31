@@ -10,6 +10,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const INGBIRO_BUILDING_BANNER_MEDIA_OPTION = 'ingbiro_building_banner_media_id';
+const INGBIRO_BUILDING_BANNER_VIDEO_OPTION = 'ingbiro_building_banner_video_settings';
+
+/**
+ * Defaults preserve the current silent, automatic decorative animation.
+ *
+ * @return array<string, int|string>
+ */
+function ingbiro_default_building_banner_video_settings() {
+	return array(
+		'autoplay'   => 1,
+		'loop'       => 1,
+		'muted'      => 1,
+		'controls'   => 0,
+		'playsinline' => 1,
+		'preload'    => 'auto',
+	);
+}
+
+/**
+ * Return normalized playback settings for frontend and admin preview use.
+ *
+ * @return array<string, int|string>
+ */
+function ingbiro_get_building_banner_video_settings() {
+	$defaults = ingbiro_default_building_banner_video_settings();
+	$stored   = get_option( INGBIRO_BUILDING_BANNER_VIDEO_OPTION, $defaults );
+	return ingbiro_sanitize_building_banner_video_settings( wp_parse_args( is_array( $stored ) ? $stored : array(), $defaults ) );
+}
 
 /**
  * Determine whether a media source should render as a video or an image.
@@ -100,9 +128,25 @@ function ingbiro_get_building_banner_media() {
  */
 function ingbiro_building_banner_media_markup( $media, $class = 'building-banner__media' ) {
 	if ( 'video' === $media['kind'] ) {
+		$settings   = ingbiro_get_building_banner_video_settings();
+		$attributes = '';
+		foreach ( array( 'autoplay', 'muted', 'loop', 'controls', 'playsinline' ) as $attribute ) {
+			if ( ! empty( $settings[ $attribute ] ) ) {
+				$attributes .= ' ' . $attribute;
+			}
+		}
+
+		if ( empty( $settings['controls'] ) ) {
+			$attributes .= ' tabindex="-1" aria-hidden="true"';
+		} else {
+			$attributes .= ' aria-label="' . esc_attr__( 'Animacija zgrade', 'ingbiro' ) . '"';
+		}
+
 		return sprintf(
-			'<video class="%1$s" autoplay muted loop playsinline preload="auto" tabindex="-1" aria-hidden="true"><source src="%2$s" type="%3$s"></video>',
+			'<video class="%1$s"%2$s preload="%3$s"><source src="%4$s" type="%5$s"></video>',
 			esc_attr( $class . ' building-banner__video' ),
+			$attributes, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			esc_attr( $settings['preload'] ),
 			esc_url( $media['url'] ),
 			esc_attr( $media['mime'] )
 		);
@@ -121,11 +165,14 @@ function ingbiro_building_banner_media_markup( $media, $class = 'building-banner
  * Shared banner used by all relevant page templates.
  */
 function ingbiro_building_banner() {
-	$media = ingbiro_get_building_banner_media();
+	$media            = ingbiro_get_building_banner_media();
+	$video_settings   = ingbiro_get_building_banner_video_settings();
+	$hidden_attribute = ( 'video' === $media['kind'] && ! empty( $video_settings['controls'] ) ) ? '' : ' aria-hidden="true"';
 	printf(
-		'<div class="building-banner-shell"><div class="building-banner" style="--building-banner-aspect: %1$d / %2$d;" aria-hidden="true">%3$s</div></div>',
+		'<div class="building-banner-shell"><div class="building-banner" style="--building-banner-aspect: %1$d / %2$d;"%3$s>%4$s</div></div>',
 		absint( $media['width'] ),
 		absint( $media['height'] ),
+		$hidden_attribute, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		ingbiro_building_banner_media_markup( $media ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	);
 }
@@ -156,6 +203,27 @@ function ingbiro_sanitize_building_banner_media_id( $value ) {
 	return $attachment_id;
 }
 
+/**
+ * Normalize all editable video attributes and reject unsupported preload modes.
+ *
+ * @param mixed $value Submitted settings array.
+ * @return array<string, int|string>
+ */
+function ingbiro_sanitize_building_banner_video_settings( $value ) {
+	$value    = is_array( $value ) ? $value : array();
+	$preload  = isset( $value['preload'] ) ? sanitize_key( $value['preload'] ) : 'auto';
+	$preloads = array( 'none', 'metadata', 'auto' );
+
+	return array(
+		'autoplay'    => empty( $value['autoplay'] ) ? 0 : 1,
+		'loop'        => empty( $value['loop'] ) ? 0 : 1,
+		'muted'       => empty( $value['muted'] ) ? 0 : 1,
+		'controls'    => empty( $value['controls'] ) ? 0 : 1,
+		'playsinline' => empty( $value['playsinline'] ) ? 0 : 1,
+		'preload'     => in_array( $preload, $preloads, true ) ? $preload : 'auto',
+	);
+}
+
 function ingbiro_register_theme_settings() {
 	register_setting(
 		'ingbiro_theme_settings',
@@ -164,6 +232,17 @@ function ingbiro_register_theme_settings() {
 			'type'              => 'integer',
 			'sanitize_callback' => 'ingbiro_sanitize_building_banner_media_id',
 			'default'           => 0,
+			'show_in_rest'      => false,
+		)
+	);
+
+	register_setting(
+		'ingbiro_theme_settings',
+		INGBIRO_BUILDING_BANNER_VIDEO_OPTION,
+		array(
+			'type'              => 'array',
+			'sanitize_callback' => 'ingbiro_sanitize_building_banner_video_settings',
+			'default'           => ingbiro_default_building_banner_video_settings(),
 			'show_in_rest'      => false,
 		)
 	);
@@ -233,7 +312,8 @@ function ingbiro_render_theme_settings_page() {
 		return;
 	}
 
-	$media = ingbiro_get_building_banner_media();
+	$media          = ingbiro_get_building_banner_media();
+	$video_settings = ingbiro_get_building_banner_video_settings();
 	?>
 	<div class="wrap ingbiro-theme-settings">
 		<h1><?php esc_html_e( 'Postavke teme', 'ingbiro' ); ?></h1>
@@ -257,6 +337,28 @@ function ingbiro_render_theme_settings_page() {
 							<p class="description"><strong><?php esc_html_e( 'Trenutačno:', 'ingbiro' ); ?></strong> <span data-media-label><?php echo esc_html( $media['label'] ); ?></span></p>
 							<p class="description"><?php esc_html_e( 'Podržani su video i slikovni formati koje WordPress prihvaća u Media Libraryju. Video se prikazuje automatski, utišano i u petlji, bez play gumba.', 'ingbiro' ); ?></p>
 						</div>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Postavke videa', 'ingbiro' ); ?></th>
+					<td>
+						<fieldset class="ingbiro-video-options" data-video-playback-settings>
+							<legend class="screen-reader-text"><?php esc_html_e( 'Postavke reprodukcije završnog videa', 'ingbiro' ); ?></legend>
+							<label><input type="checkbox" name="<?php echo esc_attr( INGBIRO_BUILDING_BANNER_VIDEO_OPTION ); ?>[autoplay]" value="1" data-video-setting="autoplay" <?php checked( $video_settings['autoplay'] ); ?>> <?php esc_html_e( 'Automatski pokreni video', 'ingbiro' ); ?></label>
+							<label><input type="checkbox" name="<?php echo esc_attr( INGBIRO_BUILDING_BANNER_VIDEO_OPTION ); ?>[loop]" value="1" data-video-setting="loop" <?php checked( $video_settings['loop'] ); ?>> <?php esc_html_e( 'Ponavljaj video u petlji (loop)', 'ingbiro' ); ?></label>
+							<label><input type="checkbox" name="<?php echo esc_attr( INGBIRO_BUILDING_BANNER_VIDEO_OPTION ); ?>[muted]" value="1" data-video-setting="muted" <?php checked( $video_settings['muted'] ); ?>> <?php esc_html_e( 'Utišaj zvuk', 'ingbiro' ); ?></label>
+							<label><input type="checkbox" name="<?php echo esc_attr( INGBIRO_BUILDING_BANNER_VIDEO_OPTION ); ?>[controls]" value="1" data-video-setting="controls" <?php checked( $video_settings['controls'] ); ?>> <?php esc_html_e( 'Prikaži video kontrole', 'ingbiro' ); ?></label>
+							<label><input type="checkbox" name="<?php echo esc_attr( INGBIRO_BUILDING_BANNER_VIDEO_OPTION ); ?>[playsinline]" value="1" data-video-setting="playsinline" <?php checked( $video_settings['playsinline'] ); ?>> <?php esc_html_e( 'Reproduciraj unutar stranice na mobitelu', 'ingbiro' ); ?></label>
+							<label class="ingbiro-video-options__select" for="ingbiro-building-banner-preload">
+								<span><?php esc_html_e( 'Učitavanje videa', 'ingbiro' ); ?></span>
+								<select id="ingbiro-building-banner-preload" name="<?php echo esc_attr( INGBIRO_BUILDING_BANNER_VIDEO_OPTION ); ?>[preload]" data-video-setting="preload">
+									<option value="auto" <?php selected( $video_settings['preload'], 'auto' ); ?>><?php esc_html_e( 'Automatski učitaj', 'ingbiro' ); ?></option>
+									<option value="metadata" <?php selected( $video_settings['preload'], 'metadata' ); ?>><?php esc_html_e( 'Samo metadata', 'ingbiro' ); ?></option>
+									<option value="none" <?php selected( $video_settings['preload'], 'none' ); ?>><?php esc_html_e( 'Ne učitavaj unaprijed', 'ingbiro' ); ?></option>
+								</select>
+							</label>
+							<p class="description"><?php esc_html_e( 'Za pouzdan autoplay preglednici uglavnom zahtijevaju uključen utišani zvuk. Ove postavke primjenjuju se samo kada je odabrani banner video.', 'ingbiro' ); ?></p>
+						</fieldset>
 					</td>
 				</tr>
 			</table>

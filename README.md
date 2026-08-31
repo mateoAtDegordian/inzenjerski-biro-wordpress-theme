@@ -41,7 +41,7 @@ Postojeći sadržaj se pri ponovnoj aktivaciji ne briše niti prepisuje.
 - **Stranice → English**: engleska verzija koristi iste predloške kao hrvatska, dok su engleska događanja namjerno izostavljena.
 - **Engleska Karijera i Newsletter**: koriste iste shared predloške i Forminator obrasce, s engleskim poljima, privolama i validacijama.
 - **Umetanje blokova → Patterns → Inženjerski biro sekcije**: gotove modularne sekcije za nove stranice.
-- **Izgled → Postavke teme**: odabir ili zamjena zajedničkog završnog bannera zgrade. Jedan odabrani medij automatski se koristi na naslovnici, Konzaltingu, Kontaktu i Newsletteru, uključujući engleske varijante istih predložaka. Podržani su WEBM, MP4 i drugi WordPress video formati te JPG, PNG, WebP, GIF i SVG ako je SVG upload omogućen na instalaciji.
+- **Izgled → Postavke teme**: odabir ili zamjena zajedničkog završnog bannera zgrade. Jedan odabrani medij automatski se koristi na naslovnici, Konzaltingu, Kontaktu i Newsletteru, uključujući engleske varijante istih predložaka. Podržani su WEBM, MP4 i drugi WordPress video formati te JPG, PNG, WebP, GIF i SVG ako je SVG upload omogućen na instalaciji. Na istom mjestu uređuju se autoplay, loop, muted, kontrole, inline reprodukcija i preload videa.
 - Opći WordPress sadržaj i politika privatnosti uređuju se kroz **Stranice**.
 
 E-mail obavijesti koristi Forminator preko standardnog WordPress `wp_mail()`. Na produkciji je preporučena konfiguracija SMTP plugina ili transakcijskog mail servisa. Analytics/API priključci dokumentirani su u [FORM-INTEGRATIONS.md](FORM-INTEGRATIONS.md).

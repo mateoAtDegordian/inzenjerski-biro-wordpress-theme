@@ -11,7 +11,38 @@
 	const label = setting.querySelector("[data-media-label]");
 	const selectButton = setting.querySelector("[data-media-select]");
 	const resetButton = setting.querySelector("[data-media-reset]");
+	const playbackSettings = document.querySelector("[data-video-playback-settings]");
 	let frame = null;
+
+	const readPlaybackSettings = () => ({
+		autoplay: playbackSettings?.querySelector('[data-video-setting="autoplay"]')?.checked ?? true,
+		loop: playbackSettings?.querySelector('[data-video-setting="loop"]')?.checked ?? true,
+		muted: playbackSettings?.querySelector('[data-video-setting="muted"]')?.checked ?? true,
+		controls: playbackSettings?.querySelector('[data-video-setting="controls"]')?.checked ?? false,
+		playsInline: playbackSettings?.querySelector('[data-video-setting="playsinline"]')?.checked ?? true,
+		preload: playbackSettings?.querySelector('[data-video-setting="preload"]')?.value || "auto",
+	});
+
+	const applyPlaybackSettings = (video) => {
+		if (!video) {
+			return;
+		}
+
+		const settings = readPlaybackSettings();
+		video.autoplay = settings.autoplay;
+		video.defaultMuted = settings.muted;
+		video.muted = settings.muted;
+		video.loop = settings.loop;
+		video.controls = settings.controls;
+		video.playsInline = settings.playsInline;
+		video.preload = settings.preload;
+
+		if (settings.autoplay) {
+			video.play().catch(() => {});
+		} else {
+			video.pause();
+		}
+	};
 
 	const mediaKind = (mime = "", url = "") => {
 		if (mime.startsWith("video/")) {
@@ -36,23 +67,16 @@
 		asset.className = `ingbiro-media-preview__asset building-banner__${kind}`;
 		asset.setAttribute("aria-hidden", "true");
 
-		if (kind === "video") {
-			asset.autoplay = true;
-			asset.defaultMuted = true;
-			asset.muted = true;
-			asset.loop = true;
-			asset.playsInline = true;
-			asset.preload = "auto";
-		}
-
 		asset.src = url;
 		preview.replaceChildren(asset);
 		preview.style.setProperty("--ingbiro-preview-aspect", `${width || 1138} / ${height || 640}`);
 		label.textContent = filename;
-		if (kind === "video") {
-			asset.play().catch(() => {});
-		}
+		applyPlaybackSettings(kind === "video" ? asset : null);
 	};
+
+	playbackSettings?.addEventListener("change", () => {
+		applyPlaybackSettings(preview.querySelector("video"));
+	});
 
 	selectButton.addEventListener("click", () => {
 		if (!frame) {
